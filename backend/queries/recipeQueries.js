@@ -41,8 +41,6 @@ const getRecipeImageContent = async (recipeId) => {
 		[recipeId]
 	);
 
-	console.log(result.rows[0].image_content);
-
 	const row = result.rows[0];
 	if (row) {
 		return {

@@ -16,7 +16,6 @@ const onePixelTransparentPngImage = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAA
 
 router.get('/:id/image', (req, res, next) => {
 	const id = req.params.id;
-	console.log("id:", id);
 	recipeQueries.getRecipeImageContent(id).then(imageInfo => {
 		if (imageInfo && imageInfo.imageContent) {
 			if (imageInfo.imageContentType) {
