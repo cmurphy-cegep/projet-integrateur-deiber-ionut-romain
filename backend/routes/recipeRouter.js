@@ -12,6 +12,20 @@ router.get('/', (req, res, next) => {
 	});
 });
 
+router.get('/:id', (req, res, next) => {
+	const id = req.params.id;
+	console.log("id:", id);
+	recipeQueries.getDetailedRecipeById(id).then(recipe => {
+		if (recipe) {
+			res.json(recipe);
+		} else {
+			return next(new HttpError(404, `Recette ${id} introuvable`));
+		}
+	}).catch(err => {
+		return next(err);
+	});
+});
+
 const onePixelTransparentPngImage = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+P///38ACfsD/QVDRcoAAAAASUVORK5CYII=", "base64");
 
 router.get('/:id/image', (req, res, next) => {
