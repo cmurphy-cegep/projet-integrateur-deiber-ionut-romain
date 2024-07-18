@@ -74,7 +74,6 @@ const getRecipeIngredientsByRecipeId = async (recipeId) => {
 			quantity: row.quantity,
 			unit: row.unit
 		};
-
 		return ingredient;
 	});
 };
@@ -93,7 +92,6 @@ const getRecipeStepsRecipeById = async (recipeId) => {
 			index: row.index,
 			description: row.description
 		};
-
 		return step;
 	});
 };

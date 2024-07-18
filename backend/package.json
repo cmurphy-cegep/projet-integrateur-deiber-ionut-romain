@@ -5,12 +5,11 @@
   "scripts": {
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
-    "test": "test"
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "debug": "^4.3.5",
     "express": "^4.19.2",
     "http-errors": "^2.0.0",
     "morgan": "^1.10.0",
@@ -18,5 +17,9 @@
     "passport": "^0.7.0",
     "passport-http": "^0.3.0",
     "pg": "^8.12.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
   }
 }

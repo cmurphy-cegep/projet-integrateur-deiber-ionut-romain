@@ -16,13 +16,12 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Change directory
-        run: cd ${{ matrix.environment }}
-
       - name: Install dependencies
+        working-directory: ./${{ matrix.environment }}
         run: npm install
 
       - name: Run tests
+        working-directory: ./${{ matrix.environment }}
         run: npm run test
 
       - name: Build frontend application
