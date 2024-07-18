@@ -10,7 +10,8 @@
     "test": "echo \"tests à définir\""
   },
   "dependencies": {
-    "vue": "^3.4.29"
+    "vue": "^3.4.29",
+    "vue-router": "^4.4.0"
   },
   "devDependencies": {
     "@nightwatch/vue": "^3.1.1",
