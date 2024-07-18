@@ -26,4 +26,5 @@ jobs:
 
       - name: Build frontend application
         if: ${{ matrix.environment == 'frontend' }}
+        working-directory: ./${{ matrix.environment }}
         run: npm run build
