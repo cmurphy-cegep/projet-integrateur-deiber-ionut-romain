@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const HttpError = require("../HttpError");
-const recipeQueries = require("../queries/RecipeQueries");
+const HttpError = require("../error/HttpError");
+const recipeQueries = require("../queries/recipeQueries");
 
 router.get('/', (req, res, next) => {
 	recipeQueries.getAllRecipes().then(recipes => {
