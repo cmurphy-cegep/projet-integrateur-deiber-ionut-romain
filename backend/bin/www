@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-let app = require('../app');
+let app = require('../src/app');
 let http = require('http');
 
 /**
