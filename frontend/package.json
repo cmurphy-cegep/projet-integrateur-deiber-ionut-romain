@@ -1,0 +1,27 @@
+{
+  "name": "frontend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:e2e": "nightwatch tests/e2e/*",
+    "test:unit": "nightwatch src/**/__tests__/*"
+  },
+  "dependencies": {
+    "vue": "^3.4.29"
+  },
+  "devDependencies": {
+    "@nightwatch/vue": "^3.1.1",
+    "@vitejs/plugin-vue": "^5.0.5",
+    "@vue/test-utils": "^2.4.6",
+    "chromedriver": "^126.0.2",
+    "geckodriver": "^4.4.1",
+    "nightwatch": "^3.6.3",
+    "ts-node": "^10.9.2",
+    "vite": "^5.3.1",
+    "vite-plugin-nightwatch": "^0.4.6"
+  }
+}
