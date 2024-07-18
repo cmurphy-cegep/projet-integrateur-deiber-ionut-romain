@@ -22,7 +22,6 @@ const getLoginByUserAccountId = async (userAccountId) => {
 };
 exports.getLoginByUserAccountId = getLoginByUserAccountId;
 
-
 const getUserAccount = async (userId, client) => {
 	const result = await (client || pool).query(
 		`SELECT user_account_id, full_name, is_admin
