@@ -1,4 +1,4 @@
-const pool = require('./DBPool');
+const pool = require('./dbPool');
 
 const getLoginByUserAccountId = async (userAccountId) => {
 	const result = await pool.query(
