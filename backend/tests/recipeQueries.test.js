@@ -1,9 +1,21 @@
 const recipeQueries = require('../src/queries/recipeQueries');
-const pool = require('../src/queries/dbPool');
+const {Pool} = require('pg');
 
-pool.query = jest.fn().mockReturnThis();
+jest.mock('pg', () => {
+	const mockQuery = jest.fn();
+	return {
+		Pool: jest.fn(() => ({
+			query: mockQuery
+		}))
+	};
+});
 
 describe('Test recipe queries', () => {
+	let mockQuery;
+
+	beforeEach(() => {
+		mockQuery = require('pg').Pool().query;
+	});
 	describe('getAllRecipes', () => {
 		it('should return a list of recipes', async () => {
 			const mockRecipes = [
@@ -24,7 +36,10 @@ describe('Test recipe queries', () => {
 					servings: 2
 				}
 			];
-			pool.query.mockResolvedValue({rows: mockRecipes});
+
+
+			mockQuery.mockResolvedValue({rows: mockRecipes});
+
 			const expectedRecipes = [
 				{
 					id: 1,
@@ -47,5 +62,4 @@ describe('Test recipe queries', () => {
 			expect(recipes).toEqual(expectedRecipes);
 		});
 	});
-	
 });
