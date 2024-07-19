@@ -1,0 +1,6 @@
+Pour configurer la connexion à la BD PostgreSQL :
+
+1. Créer un fichier .env dans backend
+1. Copier .env.exemple vers .env
+2. Ajouter les paramètres DB_USER et DB_PASSWORD de connexion vers la BD dans .env.
+3. Lancer le back-end comme d'habitude.
