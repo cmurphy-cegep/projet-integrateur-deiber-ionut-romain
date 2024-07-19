@@ -1,5 +1,4 @@
 const recipeQueries = require('../src/queries/recipeQueries');
-const {Pool} = require('pg');
 
 jest.mock('pg', () => {
 	const mockQuery = jest.fn();
@@ -36,7 +35,6 @@ describe('Test recipe queries', () => {
 					servings: 2
 				}
 			];
-
 
 			mockQuery.mockResolvedValue({rows: mockRecipes});
 
