@@ -1,5 +1,16 @@
 const pool = require('./dbPool');
 
+const convertToRecipe = row => {
+	return {
+		id: row.recipe_id,
+		name: row.name,
+		description: row.description,
+		preparation_time: row.preparation_time,
+		cooking_time: row.cooking_time,
+		servings: row.servings
+	};
+};
+
 const getAllRecipes = async () => {
 	const result = await pool.query(
 		`SELECT recipe_id, name, description, preparation_time, cooking_time, servings
@@ -8,16 +19,7 @@ const getAllRecipes = async () => {
 	);
 
 	return result.rows.map(row => {
-		const recipe = {
-			id: row.recipe_id,
-			name: row.name,
-			description: row.description,
-			preparation_time: row.preparation_time,
-			cooking_time: row.cooking_time,
-			servings: row.servings
-		};
-
-		return recipe;
+		return convertToRecipe(row);
 	});
 };
 exports.getAllRecipes = getAllRecipes;
@@ -43,16 +45,7 @@ const getRecipeById = async (recipeId) => {
 
 	const row = result.rows[0];
 	if (row) {
-		const recipe = {
-			id: row.recipe_id,
-			name: row.name,
-			description: row.description,
-			preparation_time: row.preparation_time,
-			cooking_time: row.cooking_time,
-			servings: row.servings
-		};
-
-		return recipe
+		return convertToRecipe(row);
 	}
 	return undefined;
 };
@@ -96,17 +89,6 @@ const getRecipeStepsRecipeById = async (recipeId) => {
 	});
 };
 
-
-/**
- * Fonction permettant d'obtenir le contenu binaire de la colonne image_content et son type
- * (colonne image_content_type). Utilisé par un endpoint qui offre le téléchargement d'une image
- * de produit stockée dans la table product de la BD.
- *
- * @param {string} recipeId
- * @returns Promesse pour un objet avec deux propriétés :
- *          imageContent : un Buffer avec le contenu binaire de l'image
- *          imageContentType : une chaîne de caractères avec le Content-Type de l'image (p.ex. "image/jpeg")
- */
 const getRecipeImageContent = async (recipeId) => {
 	const result = await pool.query(
 		`SELECT image_content, image_content_type
