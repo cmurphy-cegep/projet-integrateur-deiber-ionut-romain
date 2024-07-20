@@ -34,7 +34,7 @@ describe('Test recipes routes', () => {
 					expect(response.body).toEqual(mockRecipes);
 				});
 		});
-		it('should return code 500 if query fails', async () => {
+		it('should return code 500 if query fails', () => {
 			recipeQueries.getAllRecipes.mockRejectedValue(new Error('Database query failed'));
 			return request(app)
 				.get('/recipes')
@@ -70,7 +70,7 @@ describe('Test recipes routes', () => {
 					expect(response.body.message).toEqual(expectedMessageError);
 				});
 		});
-		it('should return code 500 if query fails', async () => {
+		it('should return code 500 if query fails', () => {
 			recipeQueries.getDetailedRecipeById.mockRejectedValue(new Error('Database query failed'));
 			return request(app)
 				.get('/recipes/invalidId')

@@ -9,8 +9,7 @@ router.get('/',
 			const userDetails = {
 				userAccountId: req.user.userAccountId,
 				userFullName: req.user.userFullName,
-				isAdmin: req.user.isAdmin,
-				isActive: req.user.isActive
+				isAdmin: req.user.isAdmin
 			};
 
 			res.json(userDetails);
