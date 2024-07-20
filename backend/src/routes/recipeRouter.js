@@ -14,7 +14,6 @@ router.get('/', (req, res, next) => {
 
 router.get('/:id', (req, res, next) => {
 	const id = req.params.id;
-	console.log("id:", id);
 	recipeQueries.getDetailedRecipeById(id).then(recipe => {
 		if (recipe) {
 			res.json(recipe);
