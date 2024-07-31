@@ -1,11 +1,12 @@
-<script setup>
-</script>
-
 <template>
 	<!--  <EnteteNavigation />-->
 	<router-view></router-view>
 	<!--  <PiedPage />-->
 </template>
+
+<script >
+
+</script>
 
 <style>
 * {
