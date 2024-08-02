@@ -1,9 +1,11 @@
 <template>
-    <div id="recipe-list">
+    <div class="container">
         <h2>Les Recettes</h2>
-        <LoadingSpinner :loading="loading" :error="loadError" />
-        <ItemRecetteDescription v-if="!loading" v-for="recipe in recipes" :key="recipe.id"
-            :name="recipe.name" :description="recipe.description" :id="recipe.id" :image="recipe.image" />
+        <div id="recipe-list">        
+            <LoadingSpinner :loading="loading" :error="loadError" />
+            <ItemRecetteDescription v-if="!loading" v-for="recipe in recipes" :key="recipe.id"
+                :name="recipe.name" :description="recipe.description" :id="recipe.id" :image="recipe.image" />
+        </div>
     </div>
 </template>
 
@@ -39,3 +41,23 @@ export default {
 }
 
 </script>
+
+<style scoped>
+.container {
+    border: 1px solid black;
+    padding: 20px;
+}
+
+.container h2{
+    text-align: center;
+}
+#recipe-list {
+    display: grid;
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;    
+}
+
+</style>
