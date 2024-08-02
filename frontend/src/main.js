@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from 'vue';
+import App from './App.vue';
+import CatalogueRecettes from './pages/catalogue/CatalogueRecettes.vue';
 
 const app = createApp(App);
 
@@ -8,8 +9,8 @@ const app = createApp(App);
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-       /* { path: '', component: PageAchats },
-        { path: '/recettes/:id', component: ItemCatalogueDetail, props: true },
+        { path: '', component: CatalogueRecettes },
+        /*{ path: '/recettes/:id', component: ItemCatalogueDetail, props: true },
         { path: '/checkout', component: PageCheckout },
         { path: '/admin/new-product', component: NewItemCatalogue },
         { path: '/login', component: FormulaireLogin }*/
