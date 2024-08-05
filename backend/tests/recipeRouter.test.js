@@ -14,7 +14,8 @@ describe('Test recipes routes', () => {
 					description: 'Test Description',
 					preparation_time: 10,
 					cooking_time: 20,
-					servings: 4
+					servings: 4,
+					image: "/recipes/1/image"
 				},
 				{
 					id: 2,
@@ -22,7 +23,8 @@ describe('Test recipes routes', () => {
 					description: 'Test Description',
 					preparation_time: 5,
 					cooking_time: 45,
-					servings: 2
+					servings: 2,
+					image: "/recipes/2/image"
 				}
 			];
 			recipeQueries.getAllRecipes.mockResolvedValue(mockRecipes);
@@ -49,7 +51,8 @@ describe('Test recipes routes', () => {
 				description: 'Test Description',
 				preparation_time: 10,
 				cooking_time: 20,
-				servings: 4
+				servings: 4,
+				image: "/recipes/validId/image"
 			};
 			recipeQueries.getDetailedRecipeById.mockResolvedValue(mockRecipe);
 			return request(app)
