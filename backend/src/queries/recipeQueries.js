@@ -70,6 +70,9 @@ const getRecipeIngredientsByRecipeId = async (recipeId) => {
 		return ingredient;
 	});
 };
+if (process.env.NODE_ENV === 'test') {
+	exports.getRecipeIngredientsByRecipeId = getRecipeIngredientsByRecipeId;
+}
 
 const getRecipeStepsRecipeById = async (recipeId) => {
 	const result = await pool.query(
@@ -88,6 +91,9 @@ const getRecipeStepsRecipeById = async (recipeId) => {
 		return step;
 	});
 };
+if (process.env.NODE_ENV === 'test') {
+	exports.getRecipeStepsRecipeById = getRecipeStepsRecipeById;
+}
 
 const getRecipeImageContent = async (recipeId) => {
 	const result = await pool.query(
