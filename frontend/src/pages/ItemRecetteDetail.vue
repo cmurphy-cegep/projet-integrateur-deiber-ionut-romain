@@ -1,6 +1,6 @@
 <template>
 	<div v-if="recipe" class="recipe">
-		
+
 		<div class="recipe-name">{{ recipe.name }}</div>
 
 		<div class="recipe-row">
