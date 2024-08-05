@@ -13,7 +13,8 @@ describe('Test recipes queries', () => {
 					description: 'Test Description',
 					preparation_time: 10,
 					cooking_time: 20,
-					servings: 4
+					servings: 4,
+					image: "/recipes/1/image"
 				},
 				{
 					recipe_id: 2,
@@ -21,7 +22,8 @@ describe('Test recipes queries', () => {
 					description: 'Test Description',
 					preparation_time: 5,
 					cooking_time: 45,
-					servings: 2
+					servings: 2,
+					image: "/recipes/2/image"
 				}
 			];
 
@@ -34,7 +36,8 @@ describe('Test recipes queries', () => {
 					description: 'Test Description',
 					preparation_time: 10,
 					cooking_time: 20,
-					servings: 4
+					servings: 4,
+					image: "/recipes/1/image"
 				},
 				{
 					id: 2,
@@ -42,7 +45,8 @@ describe('Test recipes queries', () => {
 					description: 'Test Description',
 					preparation_time: 5,
 					cooking_time: 45,
-					servings: 2
+					servings: 2,
+					image: "/recipes/2/image"
 				}
 			]
 			const recipes = await recipeQueries.getAllRecipes();
@@ -58,7 +62,8 @@ describe('Test recipes queries', () => {
 				description: 'Test Description',
 				preparation_time: 10,
 				cooking_time: 20,
-				servings: 4
+				servings: 4,
+				image: "/recipes/validId/image"
 			};
 			const mockIngredients = [
 				{index: 1, name: 'Ingredient 1', quantity: '2', unit: 'ml'},
@@ -80,6 +85,7 @@ describe('Test recipes queries', () => {
 				preparation_time: 10,
 				cooking_time: 20,
 				servings: 4,
+				image: "/recipes/validId/image",
 				ingredients: mockIngredients.map(ingredient => ({
 					index: ingredient.index,
 					name: ingredient.name,
