@@ -1,11 +1,22 @@
+<script setup>
+</script>
+
 <template>
-	<!--  <EnteteNavigation />-->
+	<EnteteNavigation />
 	<router-view></router-view>
-	<!--  <PiedPage />-->
+	<PiedPage />
 </template>
 
-<script >
+<script>
+import EnteteNavigation from './components/EnteteNavigation.vue';
+import PiedPage from './components/PiedPage.vue';
 
+export default {
+	components: {
+		EnteteNavigation,
+		PiedPage
+	}
+}
 </script>
 
 <style>
