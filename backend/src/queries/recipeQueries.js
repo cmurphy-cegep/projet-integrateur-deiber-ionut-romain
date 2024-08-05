@@ -7,7 +7,7 @@ const convertToRecipe = row => {
 		description: row.description,
 		preparation_time: row.preparation_time,
 		cooking_time: row.cooking_time,
-		servings: row.servings
+		servings: row.servings,
 	};
 };
 
