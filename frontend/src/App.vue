@@ -13,9 +13,9 @@ import PiedPage from './components/PiedPage.vue';
 
 export default {
 	components: {
-        EnteteNavigation,
+		EnteteNavigation,
 		PiedPage
-    }
+	}
 }
 </script>
 
