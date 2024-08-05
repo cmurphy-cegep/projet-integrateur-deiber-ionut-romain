@@ -53,6 +53,45 @@ describe('Test recipes queries', () => {
 			expect(recipes).toEqual(expectedRecipes);
 		});
 	});
+	describe('getRecipeById', () => {
+		it('should return a recipe', async () => {
+			const recipeId = "validId";
+			const mockRecipe = {
+				recipe_id: recipeId,
+				name: 'Test Recipe',
+				description: 'Test Description',
+				preparation_time: 10,
+				cooking_time: 20,
+				servings: 4,
+				image: `/recipes/${recipeId}/image`
+			};
+
+			pool.query.mockResolvedValue({rows: [mockRecipe]});
+
+			const expectedRecipe = {
+				id: recipeId,
+				name: 'Test Recipe',
+				description: 'Test Description',
+				preparation_time: 10,
+				cooking_time: 20,
+				servings: 4,
+				image: `/recipes/${recipeId}/image`
+			}
+
+			const recipe = await recipeQueries.getRecipeById(recipeId);
+			expect(recipe).toEqual(expectedRecipe);
+		});
+		it('should return "undefined" if recipe id not found ', async () => {
+			pool.query.mockResolvedValue({rows: []});
+			const recipe = await recipeQueries.getRecipeById("invalidId");
+			expect(recipe).toBeUndefined();
+		});
+	});
+
+	//TODO getRecipeIngredientsByRecipeId
+
+	//TODO getRecipeStepsRecipeById
+
 	describe('getDetailedRecipeById', () => {
 		it('should return a detailed recipe with valid id', async () => {
 			const recipeId = "validId";
@@ -63,7 +102,7 @@ describe('Test recipes queries', () => {
 				preparation_time: 10,
 				cooking_time: 20,
 				servings: 4,
-				image: "/recipes/validId/image"
+				image: `/recipes/${recipeId}/image`
 			};
 			const mockIngredients = [
 				{index: 1, name: 'Ingredient 1', quantity: '2', unit: 'ml'},
@@ -85,7 +124,7 @@ describe('Test recipes queries', () => {
 				preparation_time: 10,
 				cooking_time: 20,
 				servings: 4,
-				image: "/recipes/validId/image",
+				image: `/recipes/${recipeId}/image`,
 				ingredients: mockIngredients.map(ingredient => ({
 					index: ingredient.index,
 					name: ingredient.name,
@@ -101,7 +140,7 @@ describe('Test recipes queries', () => {
 			expect(detailedRecipe).toEqual(expectedDetailedRecipe);
 		});
 		it('should return "undefined" if recipe id not found ', async () => {
-			pool.query.mockResolvedValueOnce({rows: []});
+			pool.query.mockResolvedValue({rows: []});
 			const detailedRecipe = await recipeQueries.getDetailedRecipeById("invalidId");
 			expect(detailedRecipe).toBeUndefined();
 		});
@@ -113,7 +152,7 @@ describe('Test recipes queries', () => {
 				image_content_type: "jpeg"
 			};
 
-			pool.query.mockResolvedValueOnce({rows: [mockImageInfos]});
+			pool.query.mockResolvedValue({rows: [mockImageInfos]});
 
 			const expectedImageInfos = {
 				imageContent: "image content",
@@ -123,7 +162,7 @@ describe('Test recipes queries', () => {
 			expect(imageInfos).toEqual(expectedImageInfos);
 		});
 		it('should return "undefined" if image not found', async () => {
-			pool.query.mockResolvedValueOnce({rows: []});
+			pool.query.mockResolvedValue({rows: []});
 			const detailedRecipe = await recipeQueries.getRecipeImageContent("invalidId");
 			expect(detailedRecipe).toBeUndefined();
 		});

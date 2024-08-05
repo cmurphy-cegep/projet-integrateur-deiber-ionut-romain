@@ -53,7 +53,9 @@ const getRecipeById = async (recipeId) => {
 	}
 	return undefined;
 };
-exports.getRecipeById = getRecipeById;
+if (process.env.NODE_ENV === 'test') {
+	exports.getRecipeById = getRecipeById;
+}
 
 const getRecipeIngredientsByRecipeId = async (recipeId) => {
 	const result = await pool.query(
