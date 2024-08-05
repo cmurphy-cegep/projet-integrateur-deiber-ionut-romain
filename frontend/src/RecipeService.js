@@ -18,6 +18,6 @@ export async function fetchRecipes() {
 		const respJson = await response.json();
 		return respJson.map(p => convertToRecipe(p));
 	} else {
-		throw new Error("Impossible de récupérer la liste des produits");
+		throw new Error("Impossible de récupérer la liste des recettes");
 	}
 }
