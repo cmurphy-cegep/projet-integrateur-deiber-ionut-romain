@@ -71,6 +71,8 @@ export default {
 </script>
 
 <style scoped>
+
+
 .recipe-name {
 	text-align: center;
 	font-size: 2em;
@@ -82,6 +84,8 @@ export default {
 	display: flex;
 	justify-content: space-between;
 	margin-bottom: 10px;
+	border: 1px solid black;
+	padding: 20px;
 }
 
 .recipe-image-container {
@@ -106,6 +110,8 @@ export default {
 
 .recipe-ingredients, .recipe-steps {
 	flex: 1;
+	border: 1px solid black;
+	padding: 20px;
 }
 
 .recipe-ingredients-title, .recipe-steps-title {
