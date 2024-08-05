@@ -1,8 +1,5 @@
 const pool = require('./dbPool');
 
-const getImagePathForRecipeId = productId => `/recipes/${productId}/image`;
-exports.getImagePathForRecipeId = getImagePathForRecipeId;
-
 const convertToRecipe = row => {
 	return {
 		id: row.recipe_id,
@@ -11,7 +8,6 @@ const convertToRecipe = row => {
 		preparation_time: row.preparation_time,
 		cooking_time: row.cooking_time,
 		servings: row.servings,
-		image: getImagePathForRecipeId(row.recipe_id)
 	};
 };
 
