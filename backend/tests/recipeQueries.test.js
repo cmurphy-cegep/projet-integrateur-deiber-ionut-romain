@@ -4,55 +4,52 @@ jest.mock('../src/queries/dbPool');
 const pool = require('../src/queries/dbPool');
 
 describe('Test recipes queries', () => {
-	describe('getAllRecipes', () => {
-		it('should return a list of recipes', async () => {
-			const mockRecipes = [
-				{
-					recipe_id: 1,
-					name: 'Test Recipe',
-					description: 'Test Description',
-					preparation_time: 10,
-					cooking_time: 20,
-					servings: 4,
-					image: "/recipes/1/image"
-				},
-				{
-					recipe_id: 2,
-					name: 'Test Recipe 2',
-					description: 'Test Description',
-					preparation_time: 5,
-					cooking_time: 45,
-					servings: 2,
-					image: "/recipes/2/image"
-				}
-			];
+	it('getAllRecipes should return a list of recipes', async () => {
+		const mockRecipes = [
+			{
+				recipe_id: 1,
+				name: 'Test Recipe',
+				description: 'Test Description',
+				preparation_time: 10,
+				cooking_time: 20,
+				servings: 4
+			},
+			{
+				recipe_id: 2,
+				name: 'Test Recipe 2',
+				description: 'Test Description',
+				preparation_time: 5,
+				cooking_time: 45,
+				servings: 2
+			}
+		];
 
-			pool.query.mockResolvedValue({rows: mockRecipes});
+		pool.query.mockResolvedValue({rows: mockRecipes});
 
-			const expectedRecipes = [
-				{
-					id: 1,
-					name: 'Test Recipe',
-					description: 'Test Description',
-					preparation_time: 10,
-					cooking_time: 20,
-					servings: 4,
-					image: "/recipes/1/image"
-				},
-				{
-					id: 2,
-					name: 'Test Recipe 2',
-					description: 'Test Description',
-					preparation_time: 5,
-					cooking_time: 45,
-					servings: 2,
-					image: "/recipes/2/image"
-				}
-			]
-			const recipes = await recipeQueries.getAllRecipes();
-			expect(recipes).toEqual(expectedRecipes);
-		});
+		const expectedRecipes = [
+			{
+				id: 1,
+				name: 'Test Recipe',
+				description: 'Test Description',
+				preparation_time: 10,
+				cooking_time: 20,
+				servings: 4,
+				image: "/recipes/1/image"
+			},
+			{
+				id: 2,
+				name: 'Test Recipe 2',
+				description: 'Test Description',
+				preparation_time: 5,
+				cooking_time: 45,
+				servings: 2,
+				image: "/recipes/2/image"
+			}
+		]
+		const recipes = await recipeQueries.getAllRecipes();
+		expect(recipes).toEqual(expectedRecipes);
 	});
+
 	describe('getRecipeById', () => {
 		it('should return a recipe', async () => {
 			const recipeId = "validId";
@@ -62,8 +59,7 @@ describe('Test recipes queries', () => {
 				description: 'Test Description',
 				preparation_time: 10,
 				cooking_time: 20,
-				servings: 4,
-				image: `/recipes/${recipeId}/image`
+				servings: 4
 			};
 
 			pool.query.mockResolvedValue({rows: [mockRecipe]});
@@ -88,15 +84,45 @@ describe('Test recipes queries', () => {
 		});
 	});
 
-	//TODO getRecipeIngredientsByRecipeId
+	it('getRecipeIngredientsByRecipeId should return a list of ingredients', async () => {
+		const mockIngredients = [
+			{index: 1, name: 'Ingredient 1', quantity: '2', unit: 'ml'},
+			{index: 2, name: 'Ingredient 2', quantity: '1', unit: 'g'}
+		];
 
-	//TODO getRecipeStepsRecipeById
+		pool.query.mockResolvedValue({rows: mockIngredients});
 
-	describe('getDetailedRecipeById', () => {
+		const expectedIngredients = [
+			{index: 1, name: 'Ingredient 1', quantity: '2', unit: 'ml'},
+			{index: 2, name: 'Ingredient 2', quantity: '1', unit: 'g'}
+		];
+
+		const ingredients = await recipeQueries.getRecipeIngredientsByRecipeId("validId");
+		expect(ingredients).toEqual(expectedIngredients);
+	});
+
+	it('getRecipeStepsRecipeById should return a list of steps', async () => {
+		const mockSteps = [
+			{index: 1, description: 'Step 1 description'},
+			{index: 2, description: 'Step 2 description'}
+		];
+
+		pool.query.mockResolvedValue({rows: mockSteps});
+
+		const expectedSteps = [
+			{index: 1, description: 'Step 1 description'},
+			{index: 2, description: 'Step 2 description'}
+		];
+
+		const steps = await recipeQueries.getRecipeStepsRecipeById("validId");
+		expect(steps).toEqual(expectedSteps);
+	});
+
+	describe('getDetailedRecipeById', (object, method) => {
 		it('should return a detailed recipe with valid id', async () => {
 			const recipeId = "validId";
-			const mockRecipe = {
-				recipe_id: recipeId,
+			const mockGetRecipeById = {
+				id: recipeId,
 				name: 'Test Recipe',
 				description: 'Test Description',
 				preparation_time: 10,
@@ -104,18 +130,18 @@ describe('Test recipes queries', () => {
 				servings: 4,
 				image: `/recipes/${recipeId}/image`
 			};
-			const mockIngredients = [
+			const mockGetRecipeIngredientsByRecipeId = [
 				{index: 1, name: 'Ingredient 1', quantity: '2', unit: 'ml'},
 				{index: 2, name: 'Ingredient 2', quantity: '1', unit: 'g'}
 			];
-			const mockSteps = [
+			const mockGetRecipeStepsRecipeById = [
 				{index: 1, description: 'Step 1 description'},
 				{index: 2, description: 'Step 2 description'}
 			];
 
-			pool.query.mockResolvedValueOnce({rows: [mockRecipe]})
-				.mockResolvedValueOnce({rows: mockIngredients})
-				.mockResolvedValueOnce({rows: mockSteps});
+			jest.spyOn(recipeQueries, 'getRecipeById').mockResolvedValue(mockGetRecipeById);
+			jest.spyOn(recipeQueries, 'getRecipeIngredientsByRecipeId').mockResolvedValue(mockGetRecipeIngredientsByRecipeId);
+			jest.spyOn(recipeQueries, 'getRecipeStepsRecipeById').mockResolvedValue(mockGetRecipeStepsRecipeById);
 
 			const expectedDetailedRecipe = {
 				id: recipeId,
@@ -125,26 +151,27 @@ describe('Test recipes queries', () => {
 				cooking_time: 20,
 				servings: 4,
 				image: `/recipes/${recipeId}/image`,
-				ingredients: mockIngredients.map(ingredient => ({
-					index: ingredient.index,
-					name: ingredient.name,
-					quantity: ingredient.quantity,
-					unit: ingredient.unit
-				})),
-				steps: mockSteps.map(step => ({
-					index: step.index,
-					description: step.description
-				}))
+				ingredients: [
+					{index: 1, name: 'Ingredient 1', quantity: '2', unit: 'ml'},
+					{index: 2, name: 'Ingredient 2', quantity: '1', unit: 'g'}
+				],
+				steps: [
+					{index: 1, description: 'Step 1 description'},
+					{index: 2, description: 'Step 2 description'}
+				]
 			};
+
 			const detailedRecipe = await recipeQueries.getDetailedRecipeById(recipeId);
 			expect(detailedRecipe).toEqual(expectedDetailedRecipe);
 		});
+
 		it('should return "undefined" if recipe id not found ', async () => {
-			pool.query.mockResolvedValue({rows: []});
+			jest.spyOn(recipeQueries, 'getRecipeById').mockResolvedValue(undefined);
 			const detailedRecipe = await recipeQueries.getDetailedRecipeById("invalidId");
 			expect(detailedRecipe).toBeUndefined();
 		});
 	});
+
 	describe('getRecipeImageContent', () => {
 		it('should return recipe image and type', async () => {
 			const mockImageInfos = {

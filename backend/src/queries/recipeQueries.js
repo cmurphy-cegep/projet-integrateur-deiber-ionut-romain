@@ -29,10 +29,10 @@ const getAllRecipes = async () => {
 exports.getAllRecipes = getAllRecipes;
 
 const getDetailedRecipeById = async (recipeId) => {
-	let recipe = await getRecipeById(recipeId);
+	let recipe = await exports.getRecipeById(recipeId);
 	if (recipe) {
-		recipe.ingredients = await getRecipeIngredientsByRecipeId(recipeId);
-		recipe.steps = await getRecipeStepsRecipeById(recipeId);
+		recipe.ingredients = await exports.getRecipeIngredientsByRecipeId(recipeId);
+		recipe.steps = await exports.getRecipeStepsRecipeById(recipeId);
 		return recipe;
 	}
 	return undefined;
@@ -53,9 +53,7 @@ const getRecipeById = async (recipeId) => {
 	}
 	return undefined;
 };
-if (process.env.NODE_ENV === 'test') {
-	exports.getRecipeById = getRecipeById;
-}
+exports.getRecipeById = getRecipeById;
 
 const getRecipeIngredientsByRecipeId = async (recipeId) => {
 	const result = await pool.query(
@@ -76,9 +74,7 @@ const getRecipeIngredientsByRecipeId = async (recipeId) => {
 		return ingredient;
 	});
 };
-if (process.env.NODE_ENV === 'test') {
-	exports.getRecipeIngredientsByRecipeId = getRecipeIngredientsByRecipeId;
-}
+exports.getRecipeIngredientsByRecipeId = getRecipeIngredientsByRecipeId;
 
 const getRecipeStepsRecipeById = async (recipeId) => {
 	const result = await pool.query(
@@ -97,9 +93,7 @@ const getRecipeStepsRecipeById = async (recipeId) => {
 		return step;
 	});
 };
-if (process.env.NODE_ENV === 'test') {
-	exports.getRecipeStepsRecipeById = getRecipeStepsRecipeById;
-}
+exports.getRecipeStepsRecipeById = getRecipeStepsRecipeById;
 
 const getRecipeImageContent = async (recipeId) => {
 	const result = await pool.query(

@@ -43,6 +43,7 @@ describe('Test recipes routes', () => {
 				.expect(500)
 		});
 	});
+
 	describe('GET /recipes/:id', () => {
 		it('should return a recipe in json with code 200', () => {
 			const mockRecipe = {
@@ -80,6 +81,7 @@ describe('Test recipes routes', () => {
 				.expect(500)
 		});
 	});
+	
 	describe('GET /recipes/:id/image', () => {
 		const onePixelTransparentPngImage = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+P///38ACfsD/QVDRcoAAAAASUVORK5CYII=", "base64");
 
