@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { createApp } from 'vue';
 import App from './App.vue';
 import CatalogueRecettes from './pages/catalogue/CatalogueRecettes.vue';
-import ItemRecetteDetail from './pages/ItemRecetteDetail.vue';
+import ItemRecetteDetail from './pages/catalogue/ItemRecetteDetail.vue';
 
 const app = createApp(App);
 

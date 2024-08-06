@@ -1,21 +1,17 @@
 <template>
 	<div v-if="recipe" class="recipe">
-
 		<div class="recipe-name">{{ recipe.name }}</div>
-
 		<div class="recipe-row">
 			<div class="recipe-image-container">
 				<img :src="imageSrc" alt="Recipe Image" class="recipe-image" />
 			</div>
 			<div class="recipe-description">{{ recipe.description }}</div>
 		</div>
-
 		<div class="recipe-row">
 			<div class="recipe-preparation-time">Preparation <br> {{ recipe.preparation_time }} minutes</div>
 			<div class="recipe-cooking-time">Cuisson <br>{{ recipe.cooking_time }} minutes</div>
 			<div class="recipe-servings">Portion(s) <br>{{ recipe.servings }}</div>
 		</div>
-
 		<div class="recipe-row">
 			<div class="recipe-ingredients">
 				<div class="recipe-ingredients-title">Ingrédients</div>
@@ -37,32 +33,39 @@
 </template>
 
 <script>
-import {fetchRecipe, fetchRecipeImage} from '../model/recipeService';
+import {fetchRecipe} from '../../model/recipeService.js';
+import { addApiPrefixToPath } from '../../api_utils';
 
 export default {
-
 	props: {
-		id: String
+		id: String,
+		image: String
 	},
 	data() {
 		return {
 			recipe: null,
-			imageSrc:''
+			imageSrc: ''
 		};
 	},
 	methods: {
-		async refreshRecipe(id) {
-			try {
-				const recipe = await fetchRecipe(id);
+
+		refreshRecipe(id) {
+			this.loadError = false;
+			this.loading = true;
+			this.errorMessage = null;
+			this.recipe = null;
+
+			fetchRecipe(id).then(recipe => {
 				this.recipe = recipe;
-				const image = await fetchRecipeImage(id);
-				this.imageSrc = `data:image/jpeg;base64,${image}`;
-			} catch (err) {
-				console.error('Error fetching recipe or image:', err);
+				this.imageSrc = addApiPrefixToPath(recipe.image);
+				this.loading = false;
+			}).catch(err => {
 				this.recipe = null;
-				this.imageSrc = '';
-			}
-		}
+				this.loadError = true;
+				this.loading = false;
+				this.errorMessage = err.message;
+			});
+		},
 	},
 	mounted() {
 		this.refreshRecipe(this.id);
