@@ -23,13 +23,17 @@ const session = reactive({
             this.fetchUser().catch(err => console.error("L'authentification initiale a échouée: ", err));
         }
     },
-    login(username, password) {
+    async login(username, password) {
         this.setCredentials(username, password);
-        return this.fetchUser();
+        try {
+            return await this.fetchUser();
+        } catch (err) {
+            this.clearCredentials();
+            throw err;
+        }
     },
     setCredentials(username, password) {
         this.username = username;
-        sessionStorage.username = username;
         this.password = password;
         sessionStorage.password = password;
     },
@@ -76,6 +80,7 @@ const session = reactive({
     }
 });
 
-export default session;
-
 session.initialize();
+export default session;
+export const { login } = session;
+export { AuthError };
