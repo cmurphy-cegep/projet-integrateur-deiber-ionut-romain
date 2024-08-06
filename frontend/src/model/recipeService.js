@@ -21,3 +21,13 @@ export async function fetchRecipe(recipeId) {
         throw new Error(`Recette ${recipeId} introuvable`);
     }
 };
+export async function fetchRecipes() {
+    const response = await fetch('/api/recipes');
+
+    if (response.ok) {
+        const respJson = await response.json();
+        return respJson.map(p => convertToRecipe(p));
+    } else {
+        throw new Error("Impossible de récupérer la liste des recettes");
+    }
+};

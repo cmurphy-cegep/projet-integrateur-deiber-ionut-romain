@@ -12,7 +12,7 @@
 <script>
 import ItemRecetteDescription from './ItemRecetteDescription.vue';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
-import { fetchRecipes } from '../../RecipeService';
+import {fetchRecipes} from '../../model/recipeService.js';
 
 export default {
 	components: {

@@ -1,5 +1,6 @@
 <template>
-	<div v-if="recipe" class="recipe">
+	<LoadingSpinner :loading="loading" :error="loadError" />
+	<div v-if="recipe && !loading && !loadError" class="recipe">
 		<div class="recipe-name">{{ recipe.name }}</div>
 		<div class="recipe-row">
 			<div class="recipe-image-container">
@@ -29,14 +30,15 @@
 			</div>
 		</div>
 	</div>
-	<h1 v-else>Recipe not found</h1>
 </template>
 
 <script>
 import {fetchRecipe} from '../../model/recipeService.js';
 import { addApiPrefixToPath } from '../../api_utils';
+import LoadingSpinner from '../../components/LoadingSpinner.vue';
 
 export default {
+	components: {LoadingSpinner: LoadingSpinner},
 	props: {
 		id: String,
 		image: String
@@ -44,15 +46,15 @@ export default {
 	data() {
 		return {
 			recipe: null,
-			imageSrc: ''
+			imageSrc: '',
+			loading: true,
+			loadError: false,
 		};
 	},
 	methods: {
 
 		refreshRecipe(id) {
-			this.loadError = false;
 			this.loading = true;
-			this.errorMessage = null;
 			this.recipe = null;
 
 			fetchRecipe(id).then(recipe => {
@@ -60,10 +62,10 @@ export default {
 				this.imageSrc = addApiPrefixToPath(recipe.image);
 				this.loading = false;
 			}).catch(err => {
+				console.error(err);
 				this.recipe = null;
 				this.loadError = true;
-				this.loading = false;
-				this.errorMessage = err.message;
+				this.loading = true;
 			});
 		},
 	},
