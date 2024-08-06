@@ -33,7 +33,7 @@ export default {
 .recipe {
 	border: 1px solid black;
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
+	grid-template-columns: repeat(auto-fit, minmax(150px, 0fr));
 	width: auto;
 	grid-template-rows: auto;
 	grid-template-areas:

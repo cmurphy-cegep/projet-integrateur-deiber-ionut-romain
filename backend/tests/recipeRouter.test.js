@@ -14,7 +14,8 @@ describe('Test recipes routes', () => {
 					description: 'Test Description',
 					preparation_time: 10,
 					cooking_time: 20,
-					servings: 4
+					servings: 4,
+					image: "/recipes/1/image"
 				},
 				{
 					id: 2,
@@ -22,7 +23,8 @@ describe('Test recipes routes', () => {
 					description: 'Test Description',
 					preparation_time: 5,
 					cooking_time: 45,
-					servings: 2
+					servings: 2,
+					image: "/recipes/2/image"
 				}
 			];
 			recipeQueries.getAllRecipes.mockResolvedValue(mockRecipes);
@@ -41,6 +43,7 @@ describe('Test recipes routes', () => {
 				.expect(500)
 		});
 	});
+
 	describe('GET /recipes/:id', () => {
 		it('should return a recipe in json with code 200', () => {
 			const mockRecipe = {
@@ -49,7 +52,8 @@ describe('Test recipes routes', () => {
 				description: 'Test Description',
 				preparation_time: 10,
 				cooking_time: 20,
-				servings: 4
+				servings: 4,
+				image: "/recipes/validId/image"
 			};
 			recipeQueries.getDetailedRecipeById.mockResolvedValue(mockRecipe);
 			return request(app)
@@ -77,6 +81,7 @@ describe('Test recipes routes', () => {
 				.expect(500)
 		});
 	});
+	
 	describe('GET /recipes/:id/image', () => {
 		const onePixelTransparentPngImage = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+P///38ACfsD/QVDRcoAAAAASUVORK5CYII=", "base64");
 
