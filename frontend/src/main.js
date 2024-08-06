@@ -13,8 +13,6 @@ const router = createRouter({
 	routes: [
 		{ path: '', component: CatalogueRecettes },
 		{ path: '/recipes/:id', component: ItemRecetteDetail, props: true },
-		/*{ path: '/checkout', component: PageCheckout },
-		{ path: '/admin/new-product', component: NewItemCatalogue },*/
 		{ path: '/login', component: FormulaireLogin }
 	]
 });
