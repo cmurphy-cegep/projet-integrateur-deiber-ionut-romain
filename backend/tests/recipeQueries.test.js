@@ -74,12 +74,12 @@ describe('Test recipes queries', () => {
 				image: `/recipes/${recipeId}/image`
 			}
 
-			const recipe = await recipeQueries.getRecipeById(recipeId);
+			const recipe = await recipeQueries._getRecipeById(recipeId);
 			expect(recipe).toEqual(expectedRecipe);
 		});
 		it('should return "undefined" if recipe id not found ', async () => {
 			pool.query.mockResolvedValue({rows: []});
-			const recipe = await recipeQueries.getRecipeById("invalidId");
+			const recipe = await recipeQueries._getRecipeById("invalidId");
 			expect(recipe).toBeUndefined();
 		});
 	});
@@ -97,7 +97,7 @@ describe('Test recipes queries', () => {
 			{index: 2, name: 'Ingredient 2', quantity: '1', unit: 'g'}
 		];
 
-		const ingredients = await recipeQueries.getRecipeIngredientsByRecipeId("validId");
+		const ingredients = await recipeQueries._getRecipeIngredientsByRecipeId("validId");
 		expect(ingredients).toEqual(expectedIngredients);
 	});
 
@@ -114,7 +114,7 @@ describe('Test recipes queries', () => {
 			{index: 2, description: 'Step 2 description'}
 		];
 
-		const steps = await recipeQueries.getRecipeStepsRecipeById("validId");
+		const steps = await recipeQueries._getRecipeStepsRecipeById("validId");
 		expect(steps).toEqual(expectedSteps);
 	});
 
