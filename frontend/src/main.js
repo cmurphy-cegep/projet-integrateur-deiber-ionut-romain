@@ -21,6 +21,5 @@ const router = createRouter({
 
 // Ajout de Vue Router à l'application
 app.use(router);
-
 app.mount("#app");
 
