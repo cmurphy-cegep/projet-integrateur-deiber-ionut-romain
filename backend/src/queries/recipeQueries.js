@@ -29,10 +29,10 @@ const getAllRecipes = async () => {
 exports.getAllRecipes = getAllRecipes;
 
 const getDetailedRecipeById = async (recipeId) => {
-	let recipe = await getRecipeById(recipeId);
+	let recipe = await exports.getRecipeById(recipeId);
 	if (recipe) {
-		recipe.ingredients = await getRecipeIngredientsByRecipeId(recipeId);
-		recipe.steps = await getRecipeStepsRecipeById(recipeId);
+		recipe.ingredients = await exports.getRecipeIngredientsByRecipeId(recipeId);
+		recipe.steps = await exports.getRecipeStepsRecipeById(recipeId);
 		return recipe;
 	}
 	return undefined;
@@ -74,6 +74,7 @@ const getRecipeIngredientsByRecipeId = async (recipeId) => {
 		return ingredient;
 	});
 };
+exports.getRecipeIngredientsByRecipeId = getRecipeIngredientsByRecipeId;
 
 const getRecipeStepsRecipeById = async (recipeId) => {
 	const result = await pool.query(
@@ -92,6 +93,7 @@ const getRecipeStepsRecipeById = async (recipeId) => {
 		return step;
 	});
 };
+exports.getRecipeStepsRecipeById = getRecipeStepsRecipeById;
 
 const getRecipeImageContent = async (recipeId) => {
 	const result = await pool.query(
