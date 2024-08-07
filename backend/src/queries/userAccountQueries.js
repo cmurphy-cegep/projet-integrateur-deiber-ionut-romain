@@ -54,7 +54,6 @@ class UserAccountQueries {
 		if (userExists) {
 			return undefined;
 		}
-
 		const passwordHashAndSalt = await this._createHashAndSalt(password);
 
 		await pool.query(
