@@ -78,4 +78,21 @@ describe('Test signup route', () => {
 				expect(response.body).toEqual(expectUserDetails);
 			});
 	});
+	it('with unavailable username should return code 409', () => {
+		const bodyReq = {
+			username: 'userId',
+			password: 'password',
+			fullname: 'fullname'
+		};
+
+		userAccountQueries.createUserAccount.mockResolvedValue(undefined);
+
+		return request(app)
+			.post('/signup')
+			.send(bodyReq)
+			.expect(409)
+			.then(response => {
+				expect(response.body.message).toEqual('Le username n\'est pas disponible');
+			});
+	});
 });
