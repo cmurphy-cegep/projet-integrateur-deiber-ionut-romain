@@ -8,6 +8,18 @@ router.post('/', (req, res, next) => {
 		const password = req.body.password;
 		const fullname = req.body.fullname;
 
+		if (!userId || userId === '') {
+			return next(new HttpError(400, 'Le champ username est requis'));
+		}
+
+		if (!password || password === '') {
+			return next(new HttpError(400, 'Le champ password est requis'));
+		}
+
+		if (!fullname || fullname === '') {
+			return next(new HttpError(400, 'Le champ fullname est requis'));
+		}
+
 		userAccountQueries.createUserAccount(userId, password, fullname)
 			.then(response => {
 				if (response) {
