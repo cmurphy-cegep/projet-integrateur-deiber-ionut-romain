@@ -5,6 +5,10 @@ jest.mock('../src/queries/userAccountQueries');
 const userAccountQueries = require('../src/queries/userAccountQueries');
 
 describe('Test signup route', () => {
+	beforeEach(() => {
+		jest.resetAllMocks();
+	});
+	
 	it('with inexistant username should return code 400', async () => {
 		const bodyReq = {
 			username: null,
