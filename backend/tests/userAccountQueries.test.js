@@ -4,7 +4,7 @@ jest.mock('../src/queries/dbPool');
 const pool = require('../src/queries/dbPool');
 
 describe('Test user account queries', () => {
-	describe('getLoginByUserAccountId', () => {
+	describe('getUserByUserId', () => {
 		it('should return user details with valid user id', async () => {
 			const userId = "validId";
 			const mockUserDetails = {
@@ -31,6 +31,25 @@ describe('Test user account queries', () => {
 			pool.query.mockResolvedValueOnce({rows: []});
 			const userDetails = await userAccountQueries.getLoginByUserAccountId("invalidId");
 			expect(userDetails).toBeUndefined();
+		});
+	});
+
+	describe('createUserAccount', () => {
+		it('should return user details if user created', async () => {
+			const userId = "userId";
+			const mockUserDetails = {
+				userAccountId: userId,
+				password_hash: 'hashedPassword',
+				password_salt: 'randomSalt',
+				userFullName: 'fullname',
+				isAdmin: false
+			};
+			const expectUserDetails = mockUserDetails;
+
+			jest.spyOn(userAccountQueries, 'getUserByUserId').mockResolvedValue(mockUserDetails);
+
+			const userDetails = await userAccountQueries.getUserByUserId(userId);
+			expect(userDetails).toEqual(expectUserDetails);
 		});
 	});
 });
