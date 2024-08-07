@@ -95,4 +95,16 @@ describe('Test signup route', () => {
 				expect(response.body.message).toEqual('Le username n\'est pas disponible');
 			});
 	});
+	it('should return code 500 if query fails', () => {
+		const bodyReq = {
+			username: 'userId',
+			password: 'password',
+			fullname: 'fullname'
+		};
+		userAccountQueries.getUserByUserId.mockRejectedValue(new Error('Database query failed'));
+		return request(app)
+			.post('/signup')
+			.send(bodyReq)
+			.expect(500);
+	});
 });
