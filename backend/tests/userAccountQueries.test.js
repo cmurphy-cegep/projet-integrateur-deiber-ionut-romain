@@ -51,5 +51,11 @@ describe('Test user account queries', () => {
 			const userDetails = await userAccountQueries.getUserByUserId(userId);
 			expect(userDetails).toEqual(expectUserDetails);
 		});
+		it('should return undefined if user does not exist', async () => {
+			jest.spyOn(userAccountQueries, '_userExistsById').mockResolvedValue(false);
+
+			const user = await userAccountQueries.createUserAccount("userId", "password", "fullname");
+			expect(user).toBeUndefined();
+		});
 	});
 });
