@@ -8,19 +8,19 @@ describe('Test login route', () => {
 	describe('GET /login', () => {
 		it('with correct credentials should return user information in json with code 200', () => {
 			const mockUserDetails = {
-				userAccountId: 'userId',
+				userId: 'userId',
 				passwordHash: 'UeexcyA2hWKIZejQoV2ajaqhdvxqyZHXGmfRzg3TwJLhhmiBVGzYh8bUkKCsWJZ4E9oFmuQwEHYBI63pQK47Vw==',
 				passwordSalt: 'HLq2XxQQdDT/Fj0pRI3JNA==',
-				userFullName: 'userFullname',
+				fullName: 'fullname',
 				isAdmin: false
 			};
 			const expectUserDetails = {
-				userAccountId: 'userId',
-				userFullName: 'userFullname',
+				userId: 'userId',
+				fullName: 'fullname',
 				isAdmin: false
 			};
 
-			userAccountQueries.getLoginByUserAccountId.mockResolvedValue(mockUserDetails);
+			userAccountQueries.getUserByUserId.mockResolvedValue(mockUserDetails);
 
 			return request(app)
 				.get('/login')
@@ -36,25 +36,25 @@ describe('Test login route', () => {
 				userAccountId: 'userId',
 				passwordHash: 'UeexcyA2hWKIZejQoV2ajaqhdvxqyZHXGmfRzg3TwJLhhmiBVGzYh8bUkKCsWJZ4E9oFmuQwEHYBI63pQK47Vw==',
 				passwordSalt: 'HLq2XxQQdDT/Fj0pRI3JNA==',
-				userFullName: 'userFullname',
+				fullName: 'fullname',
 				isAdmin: false
 			};
 
-			userAccountQueries.getLoginByUserAccountId.mockResolvedValue(mockUserDetails);
+			userAccountQueries.getUserByUserId.mockResolvedValue(mockUserDetails);
 			return request(app)
 				.get('/login')
 				.auth('userId', 'wrongPassword')
 				.expect(401)
 		});
 		it('with inexistant userID should return code 401', () => {
-			userAccountQueries.getLoginByUserAccountId.mockResolvedValue(undefined);
+			userAccountQueries.getUserByUserId.mockResolvedValue(undefined);
 			return request(app)
 				.get('/login')
 				.auth('inexistantUserId', 'password')
 				.expect(401)
 		});
 		it('should return code 500 if query fails', () => {
-			userAccountQueries.getLoginByUserAccountId.mockRejectedValue(new Error('Database query failed'));
+			userAccountQueries.getUserByUserId.mockRejectedValue(new Error('Database query failed'));
 			return request(app)
 				.get('/login')
 				.auth('inexistantUserId', 'password')
