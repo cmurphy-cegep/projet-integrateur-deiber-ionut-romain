@@ -11,12 +11,12 @@ describe('Test login route', () => {
 				userId: 'userId',
 				passwordHash: 'UeexcyA2hWKIZejQoV2ajaqhdvxqyZHXGmfRzg3TwJLhhmiBVGzYh8bUkKCsWJZ4E9oFmuQwEHYBI63pQK47Vw==',
 				passwordSalt: 'HLq2XxQQdDT/Fj0pRI3JNA==',
-				fullName: 'fullname',
+				fullname: 'fullname',
 				isAdmin: false
 			};
 			const expectUserDetails = {
 				userId: 'userId',
-				fullName: 'fullname',
+				fullname: 'fullname',
 				isAdmin: false
 			};
 
@@ -36,7 +36,7 @@ describe('Test login route', () => {
 				userAccountId: 'userId',
 				passwordHash: 'UeexcyA2hWKIZejQoV2ajaqhdvxqyZHXGmfRzg3TwJLhhmiBVGzYh8bUkKCsWJZ4E9oFmuQwEHYBI63pQK47Vw==',
 				passwordSalt: 'HLq2XxQQdDT/Fj0pRI3JNA==',
-				fullName: 'fullname',
+				fullname: 'fullname',
 				isAdmin: false
 			};
 

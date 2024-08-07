@@ -17,7 +17,7 @@ class UserAccountQueries {
 				userId: row.user_account_id,
 				passwordHash: row.password_hash,
 				passwordSalt: row.password_salt,
-				fullName: row.full_name,
+				fullname: row.full_name,
 				isAdmin: row.is_admin
 			};
 		}

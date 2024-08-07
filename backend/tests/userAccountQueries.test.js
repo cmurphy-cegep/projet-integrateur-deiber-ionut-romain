@@ -18,7 +18,7 @@ describe('Test user account queries', () => {
 				userId: userId,
 				passwordHash: 'hashedPassword',
 				passwordSalt: 'randomSalt',
-				fullName: 'fullname',
+				fullname: 'fullname',
 				isAdmin: false
 			};
 

@@ -8,7 +8,7 @@ router.get('/',
 		if (req.user) {
 			const userDetails = {
 				userId: req.user.userId,
-				fullName: req.user.fullName,
+				fullname: req.user.fullname,
 				isAdmin: req.user.isAdmin
 			};
 
