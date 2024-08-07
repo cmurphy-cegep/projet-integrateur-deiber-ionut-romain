@@ -1,23 +1,36 @@
 const pool = require('./dbPool');
 
-const getLoginByUserAccountId = async (userAccountId) => {
-	const result = await pool.query(
-		`SELECT user_account_id, password_hash, password_salt, full_name, is_admin
-         FROM user_account
-         WHERE user_account_id = $1`,
-		[userAccountId]
-	);
+class UserAccountQueries {
+	static async getUserByUserId(userId) {
+		const result = await pool.query(
+			`SELECT user_account_id, password_hash, password_salt, full_name, is_admin
+             FROM user_account
+             WHERE user_account_id = $1`,
+			[userId]
+		);
 
-	const row = result.rows[0];
-	if (row) {
-		return {
-			userAccountId: row.user_account_id,
-			passwordHash: row.password_hash,
-			passwordSalt: row.password_salt,
-			userFullName: row.full_name,
-			isAdmin: row.is_admin
-		};
+		const row = result.rows[0];
+		if (row) {
+			return {
+				userAccountId: row.user_account_id,
+				passwordHash: row.password_hash,
+				passwordSalt: row.password_salt,
+				userFullName: row.full_name,
+				isAdmin: row.is_admin
+			};
+		}
+		return undefined;
 	}
-	return undefined;
-};
-exports.getLoginByUserAccountId = getLoginByUserAccountId;
+
+	static async createUserAccount(userId, password, fullname) {
+		await pool.query(
+			`INSERT INTO user_account (user_account_id, password_hash, password_salt, full_name, is_admin)
+             VALUES ($1, $2, $3, $4)`,
+			[userId, 'passwordHash', 'passwordSalt', fullname, false]
+		);
+
+		return this.getUserByUserId(userId);
+	}
+}
+
+module.exports = UserAccountQueries;
