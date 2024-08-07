@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const userAccountQueries = require("../queries/userAccountQueries");
 
 passport.use(new BasicStrategyModified((username, password, done) => {
-	userAccountQueries.getLoginByUserAccountId(username).then(user => {
+	userAccountQueries.getUserByUserId(username).then(user => {
 		if (!user) {
 			return done(null, false);
 		}

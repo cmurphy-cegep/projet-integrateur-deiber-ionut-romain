@@ -12,7 +12,7 @@ class UserAccountQueries {
 		const row = result.rows[0];
 		if (row) {
 			return {
-				userAccountId: row.user_account_id,
+				userId: row.user_account_id,
 				passwordHash: row.password_hash,
 				passwordSalt: row.password_salt,
 				fullName: row.full_name,

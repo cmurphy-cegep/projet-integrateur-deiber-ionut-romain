@@ -15,7 +15,7 @@ describe('Test user account queries', () => {
 				is_admin: false
 			};
 			const expectUserDetails = {
-				userAccountId: userId,
+				userId: userId,
 				passwordHash: 'hashedPassword',
 				passwordSalt: 'randomSalt',
 				fullName: 'fullname',
@@ -33,7 +33,7 @@ describe('Test user account queries', () => {
 			expect(userDetails).toBeUndefined();
 		});
 	});
-	
+
 	describe('createUserAccount', () => {
 		it('should return user details if user created', async () => {
 			const userId = "userId";
