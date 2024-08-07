@@ -45,6 +45,12 @@ describe('Test user account queries', () => {
 	describe('createUserAccount', () => {
 		it('should return user details if user created', async () => {
 			const userId = "userId";
+
+			const mockPasswordHashAndSalt = {
+				passwordHash: 'hashedPassword',
+				passwordSalt: 'randomSalt'
+			}
+
 			const mockUserDetails = {
 				userAccountId: userId,
 				password_hash: 'hashedPassword',
@@ -52,15 +58,18 @@ describe('Test user account queries', () => {
 				userFullName: 'fullname',
 				isAdmin: false
 			};
+
 			const expectUserDetails = mockUserDetails;
 
+			jest.spyOn(userAccountQueries, '_userExistsById').mockResolvedValue(false);
+			jest.spyOn(userAccountQueries, '_createHashAndSalt').mockResolvedValue(mockPasswordHashAndSalt);
 			jest.spyOn(userAccountQueries, 'getUserByUserId').mockResolvedValue(mockUserDetails);
 
-			const userDetails = await userAccountQueries.getUserByUserId(userId);
+			const userDetails = await userAccountQueries.createUserAccount(userId, 'password', 'fullname');
 			expect(userDetails).toEqual(expectUserDetails);
 		});
-		it('should return undefined if user does not exist', async () => {
-			jest.spyOn(userAccountQueries, '_userExistsById').mockResolvedValue(false);
+		it('should return undefined if user already exists', async () => {
+			jest.spyOn(userAccountQueries, '_userExistsById').mockResolvedValue(true);
 
 			const user = await userAccountQueries.createUserAccount("userId", "password", "fullname");
 			expect(user).toBeUndefined();

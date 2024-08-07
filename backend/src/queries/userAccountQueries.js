@@ -1,4 +1,6 @@
 const pool = require('./dbPool');
+const crypto = require("crypto");
+const {iterations, keylen, digest} = require('../config/cryptoConfig');
 
 class UserAccountQueries {
 	static async getUserByUserId(userId) {
@@ -36,16 +38,29 @@ class UserAccountQueries {
 		return false;
 	}
 
+	static async _createHashAndSalt(password) {
+		const saltBuf = crypto.randomBytes(16);
+		const salt = saltBuf.toString("base64");
+		const derivedKey = crypto.pbkdf2Sync(password, salt, iterations, keylen, digest);
+
+		return {
+			passwordHash: derivedKey.toString("base64"),
+			passwordSalt: salt
+		};
+	}
+
 	static async createUserAccount(userId, password, fullname) {
 		const userExists = await this._userExistsById(userId);
-		if (!userExists) {
+		if (userExists) {
 			return undefined;
 		}
+
+		const passwordHashAndSalt = await this._createHashAndSalt(password);
 
 		await pool.query(
 			`INSERT INTO user_account (user_account_id, password_hash, password_salt, full_name, is_admin)
              VALUES ($1, $2, $3, $4)`,
-			[userId, 'passwordHash', 'passwordSalt', fullname, false]
+			[userId, passwordHashAndSalt.passwordHash, passwordHashAndSalt.passwordSalt, fullname, false]
 		);
 
 		return this.getUserByUserId(userId);
