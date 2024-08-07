@@ -91,5 +91,28 @@ describe('Test user account queries', () => {
 				expect.arrayContaining(['userId', 'hashedPassword', 'randomSalt', 'fullname'])
 			);
 		});
+		it('should create a non-admin account', async () => {
+			const mockPasswordHashAndSalt = {
+				passwordHash: 'hashedPassword',
+				passwordSalt: 'randomSalt'
+			}
+
+			jest.spyOn(userAccountQueries, '_userExistsById').mockResolvedValue(false);
+			jest.spyOn(userAccountQueries, '_createHashAndSalt').mockResolvedValue(mockPasswordHashAndSalt);
+			jest.spyOn(userAccountQueries, 'getUserByUserId').mockResolvedValue(null);
+
+			await userAccountQueries.createUserAccount('userId', 'password', 'fullname');
+
+			expect(pool.query).toHaveBeenCalledWith(
+				expect.stringContaining('NSERT INTO user_account (user_account_id, password_hash, password_salt, full_name, is_admin)'),
+				[
+					'userId',
+					'hashedPassword',
+					'randomSalt',
+					'fullname',
+					false
+				]
+			);
+		});
 	});
 });
