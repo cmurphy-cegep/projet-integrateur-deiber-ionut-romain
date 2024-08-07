@@ -34,6 +34,14 @@ describe('Test user account queries', () => {
 		});
 	});
 
+	it('createHashAndSalt should return hash from password and create salt', async () => {
+		const password = 'motdepasse';
+		const passwordHashAndSalt = await userAccountQueries._createHashAndSalt(password);
+
+		expect(passwordHashAndSalt.passwordHash).toHaveLength(88); // 64 bytes in base64
+		expect(passwordHashAndSalt.passwordSalt).toHaveLength(24); // 16 bytes in base64
+	});
+
 	describe('createUserAccount', () => {
 		it('should return user details if user created', async () => {
 			const userId = "userId";
@@ -56,6 +64,23 @@ describe('Test user account queries', () => {
 
 			const user = await userAccountQueries.createUserAccount("userId", "password", "fullname");
 			expect(user).toBeUndefined();
+		});
+		it('should sent hash and salt in query', async () => {
+			const mockPasswordHashAndSalt = {
+				passwordHash: 'hashedPassword',
+				passwordSalt: 'randomSalt'
+			}
+
+			jest.spyOn(userAccountQueries, '_userExistsById').mockResolvedValue(true);
+			jest.spyOn(userAccountQueries, '_createHashAndSalt').mockResolvedValue(mockPasswordHashAndSalt);
+			jest.spyOn(userAccountQueries, 'getUserByUserId').mockResolvedValue(null);
+
+			await userAccountQueries.createUserAccount('userId', 'password', 'fullname');
+
+			expect(pool.query).toHaveBeenCalledWith(
+				expect.stringContaining('NSERT INTO user_account'),
+				expect.arrayContaining(['userId', 'hashedPassword', 'randomSalt', 'fullname'])
+			);
 		});
 	});
 });
