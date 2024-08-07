@@ -30,6 +30,8 @@ router.post('/', (req, res, next) => {
 					};
 
 					res.json(userDetails);
+				} else {
+					return next(new HttpError(409, 'Le username n\'est pas disponible'));
 				}
 			});
 	}
