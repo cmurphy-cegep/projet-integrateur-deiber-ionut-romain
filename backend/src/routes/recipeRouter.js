@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-
+const passport = require('passport');
 const HttpError = require("../error/HttpError");
 const recipeQueries = require("../queries/recipeQueries");
+const userAccountQueries = require("../queries/userAccountQueries");
 
 router.get('/', (req, res, next) => {
 	recipeQueries.getAllRecipes().then(recipes => {
@@ -45,5 +46,30 @@ router.get('/:id/image', (req, res, next) => {
 		return next(err);
 	});
 });
+
+router.post('/',
+	passport.authenticate('basic', {session: false}),
+	(req, res, next) => {
+		if (!req.user.isAdmin) {
+			return next(new HttpError(403, 'Vous n\'avez pas les permissions'));
+		}
+
+		const id = req.body.id;
+		if (!id || id === '') {
+			return next(new HttpError(400, 'Le champ id est requis'));
+		}
+
+		recipeQueries.getRecipeById(id).then(recipe => {
+			if (recipe) {
+				throw new HttpError(400, `Une recette avec l'id ${id} existe déjà`);
+			}
+
+			return recipeQueries.createRecipe(req.body);
+		}).then(result => {
+			res.json(result);
+		}).catch(err => {
+			next(err);
+		});
+	});
 
 module.exports = router;
