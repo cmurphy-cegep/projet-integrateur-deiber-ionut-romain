@@ -139,7 +139,7 @@ describe('Test recipes queries', () => {
 				{index: 2, description: 'Step 2 description'}
 			];
 
-			jest.spyOn(recipeQueries, '_getRecipeById').mockResolvedValue(mockGetRecipeById);
+			jest.spyOn(recipeQueries, 'getRecipeById').mockResolvedValue(mockGetRecipeById);
 			jest.spyOn(recipeQueries, '_getRecipeIngredientsByRecipeId').mockResolvedValue(mockGetRecipeIngredientsByRecipeId);
 			jest.spyOn(recipeQueries, '_getRecipeStepsRecipeById').mockResolvedValue(mockGetRecipeStepsRecipeById);
 
@@ -166,7 +166,7 @@ describe('Test recipes queries', () => {
 		});
 
 		it('should return "undefined" if recipe id not found ', async () => {
-			jest.spyOn(recipeQueries, '_getRecipeById').mockResolvedValue(undefined);
+			jest.spyOn(recipeQueries, 'getRecipeById').mockResolvedValue(undefined);
 			const detailedRecipe = await recipeQueries.getDetailedRecipeById("invalidId");
 			expect(detailedRecipe).toBeUndefined();
 		});
