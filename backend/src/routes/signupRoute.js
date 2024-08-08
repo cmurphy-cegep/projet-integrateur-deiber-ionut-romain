@@ -25,7 +25,7 @@ router.post('/', (req, res, next) => {
 				if (response) {
 					const userDetails = {
 						userId: response.userId,
-						fullName: response.fullName,
+						fullname: response.fullname,
 						isAdmin: response.isAdmin
 					};
 
