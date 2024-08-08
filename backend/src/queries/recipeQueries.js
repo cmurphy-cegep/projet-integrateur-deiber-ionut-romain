@@ -105,8 +105,58 @@ class RecipeQueries {
 	static async createRecipe(recipe) {
 		this._checkRecipeProperties(recipe);
 		recipe = this._convertRecipePropertiesToString(recipe);
+		return await this._insertRecipeTransaction(recipe);
+	}
 
-		
+	static async _insertRecipeTransaction(recipe) {
+		const client = await pool.connect();
+
+		try {
+			await client.query('BEGIN');
+
+			await this._insertRecipeDecription(recipe, client);
+			await this._insertRecipeIngredients(recipe, client);
+			await this._insertRecipeSteps(recipe, client);
+
+			const newRecipe = this.getDetailedRecipeById(recipe.id);
+
+			await client.query('COMMIT');
+
+			return newRecipe;
+		} catch (err) {
+			await client.query('ROLLBACK');
+			throw err;
+		} finally {
+			client.release();
+		}
+	}
+
+	static async _insertRecipeDecription(recipe, client) {
+		await client.query(
+			`INSERT INTO recipe (recipe_id, name, description, preparation_time, cooking_time, servings)
+             VALUES ($1, $2, $3, $4, $5, $6)`,
+			[recipe.id, recipe.name, recipe.description, recipe.preparation_time, recipe.cooking_time, recipe.servings]
+		);
+	}
+
+	static async _insertRecipeIngredients(recipe, client) {
+		for (const ingredient of recipe.ingredients) {
+			await client.query(
+				`INSERT INTO ingredient (index, name, quantity, unit, recipe_id)
+                 VALUES ($1, $2, $3, $4, $5)`,
+				[ingredient.index, ingredient.name, ingredient.quantity, ingredient.unit, recipe.id]
+			);
+		}
+	}
+
+	static async _insertRecipeSteps(recipe, client) {
+		for (const step of recipe.steps) {
+			await client.query(
+				`INSERT INTO step (index, description, recipe_id)
+                 VALUES ($1, $2, $3)`,
+				[step.index, step.description, recipe.id]
+			);
+		}
 	}
 
 	static _checkRecipeProperties(recipe) {
@@ -134,7 +184,7 @@ class RecipeQueries {
 			throw new HttpError(400, 'Les ingrédients sont requis');
 		}
 
-		for (const ingredient in recipe.ingredients) {
+		for (const ingredient of recipe.ingredients) {
 			if (!ingredient.index || !Number.isInteger(ingredient.index)) {
 				throw new HttpError(400, 'Le numéro de l\'ingrédient est requis');
 			}
@@ -151,7 +201,7 @@ class RecipeQueries {
 			throw new HttpError(400, 'Les étapes sont requises');
 		}
 
-		for (const step in recipe.steps) {
+		for (const step of recipe.steps) {
 			if (!step.index || !Number.isInteger(step.index)) {
 				throw new HttpError(400, 'Le numéro de l\'étape est requis');
 			}

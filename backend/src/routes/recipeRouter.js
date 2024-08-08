@@ -3,7 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 const HttpError = require("../error/HttpError");
 const recipeQueries = require("../queries/recipeQueries");
-const userAccountQueries = require("../queries/userAccountQueries");
+const onePixelTransparentPngImage = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+P///38ACfsD/QVDRcoAAAAASUVORK5CYII=", "base64");
 
 router.get('/', (req, res, next) => {
 	recipeQueries.getAllRecipes().then(recipes => {
@@ -25,8 +25,6 @@ router.get('/:id', (req, res, next) => {
 		return next(err);
 	});
 });
-
-const onePixelTransparentPngImage = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+P///38ACfsD/QVDRcoAAAAASUVORK5CYII=", "base64");
 
 router.get('/:id/image', (req, res, next) => {
 	const id = req.params.id;
