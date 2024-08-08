@@ -77,6 +77,7 @@ describe('Test recipes queries', () => {
 			const recipe = await recipeQueries.getRecipeById(recipeId);
 			expect(recipe).toEqual(expectedRecipe);
 		});
+
 		it('should return "undefined" if recipe id not found ', async () => {
 			pool.query.mockResolvedValue({rows: []});
 			const recipe = await recipeQueries.getRecipeById("invalidId");

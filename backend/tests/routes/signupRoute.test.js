@@ -20,6 +20,7 @@ describe('Test signup route', () => {
 				expect(response.body.message).toEqual('Le champ username est requis');
 			});
 	});
+
 	it('with inexistant password should return code 400', async () => {
 		const bodyReq = {
 			username: 'userId',
@@ -35,6 +36,7 @@ describe('Test signup route', () => {
 				expect(response.body.message).toEqual('Le champ password est requis');
 			});
 	});
+
 	it('with inexistant fullname should return code 400', async () => {
 		const bodyReq = {
 			username: 'userId',
@@ -49,6 +51,7 @@ describe('Test signup route', () => {
 				expect(response.body.message).toEqual('Le champ fullname est requis');
 			});
 	});
+
 	it('with successful signup should return user information in json with code 200', () => {
 		const userId = 'userId';
 		const password = 'motdepasse';
@@ -78,6 +81,7 @@ describe('Test signup route', () => {
 				expect(response.body).toEqual(expectUserDetails);
 			});
 	});
+
 	it('with unavailable username should return code 409', () => {
 		const bodyReq = {
 			username: 'userId',
@@ -95,6 +99,7 @@ describe('Test signup route', () => {
 				expect(response.body.message).toEqual('Le username n\'est pas disponible');
 			});
 	});
+
 	it('should return code 500 if query fails', () => {
 		const bodyReq = {
 			username: 'userId',

@@ -36,6 +36,7 @@ describe('Test recipes routes', () => {
 					expect(response.body).toEqual(mockRecipes);
 				});
 		});
+
 		it('should return code 500 if query fails', () => {
 			recipeQueries.getAllRecipes.mockRejectedValue(new Error('Database query failed'));
 			return request(app)
@@ -64,6 +65,7 @@ describe('Test recipes routes', () => {
 					expect(response.body).toEqual(mockRecipe);
 				});
 		});
+
 		it('throws error with code 404 if recipe not found', () => {
 			recipeQueries.getDetailedRecipeById.mockResolvedValue(undefined);
 			const expectedMessageError = 'Recette invalidId introuvable';
@@ -74,6 +76,7 @@ describe('Test recipes routes', () => {
 					expect(response.body.message).toEqual(expectedMessageError);
 				});
 		});
+
 		it('should return code 500 if query fails', () => {
 			recipeQueries.getDetailedRecipeById.mockRejectedValue(new Error('Database query failed'));
 			return request(app)
@@ -100,6 +103,7 @@ describe('Test recipes routes', () => {
 					expect(response.body).toEqual(imageInfo.imageContent);
 				});
 		});
+
 		it('should return onePixelTransparentPngImage with code 200', () => {
 			recipeQueries.getRecipeImageContent.mockResolvedValue(undefined);
 			return request(app)
@@ -110,6 +114,7 @@ describe('Test recipes routes', () => {
 					expect(response.body).toEqual(onePixelTransparentPngImage);
 				});
 		});
+
 		it('should return code 500 if query fails', async () => {
 			recipeQueries.getRecipeImageContent.mockRejectedValue(new Error('Database query failed'));
 			return request(app)
