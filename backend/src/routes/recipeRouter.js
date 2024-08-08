@@ -70,4 +70,29 @@ router.post('/',
 		});
 	});
 
+router.put('/:id',
+	passport.authenticate('basic', {session: false}),
+	(req, res, next) => {
+		if (!req.user.isAdmin) {
+			return next(new HttpError(403, 'Vous n\'avez pas les permissions'));
+		}
+
+		const id = req.body.id;
+		if (!id || id === '') {
+			return next(new HttpError(400, 'Le champ id est requis'));
+		}
+
+		recipeQueries.getRecipeById(id).then(recipe => {
+			if (!recipe) {
+				throw new HttpError(400, `L'id ${id} ne correspond à aucune recette existante`);
+			}
+
+			return recipeQueries.editRecipe(req.body);
+		}).then(result => {
+			res.json(result);
+		}).catch(err => {
+			next(err);
+		});
+	});
+
 module.exports = router;

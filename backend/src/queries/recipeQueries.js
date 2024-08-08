@@ -192,8 +192,8 @@ class RecipeQueries {
 				throw new HttpError(400, 'Le nom de l\'ingrédient est requis');
 			}
 
-			if (ingredient.quantity !== '' && !isNaN(ingredient.quantity)) {
-				throw new HttpError(400, 'La quantité de l\'ingrédient doit être un nombre entier');
+			if (ingredient.quantity !== '' && isNaN(ingredient.quantity)) {
+				throw new HttpError(400, 'La quantité de l\'ingrédient doit être un nombre');
 			}
 		}
 
