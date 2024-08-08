@@ -1,7 +1,7 @@
-const recipeQueries = require('../src/queries/recipeQueries');
+const recipeQueries = require('../../src/queries/recipeQueries');
 
-jest.mock('../src/queries/dbPool');
-const pool = require('../src/queries/dbPool');
+jest.mock('../../src/queries/dbPool');
+const pool = require('../../src/queries/dbPool');
 
 describe('Test recipes queries', () => {
 	it('getAllRecipes should return a list of recipes', async () => {
@@ -118,7 +118,7 @@ describe('Test recipes queries', () => {
 		expect(steps).toEqual(expectedSteps);
 	});
 
-	describe('getDetailedRecipeById', (object, method) => {
+	describe('getDetailedRecipeById', () => {
 		it('should return a detailed recipe with valid id', async () => {
 			const recipeId = "validId";
 			const mockGetRecipeById = {
@@ -188,6 +188,7 @@ describe('Test recipes queries', () => {
 			const imageInfos = await recipeQueries.getRecipeImageContent("validId");
 			expect(imageInfos).toEqual(expectedImageInfos);
 		});
+
 		it('should return "undefined" if image not found', async () => {
 			pool.query.mockResolvedValue({rows: []});
 			const detailedRecipe = await recipeQueries.getRecipeImageContent("invalidId");

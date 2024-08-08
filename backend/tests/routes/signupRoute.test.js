@@ -1,8 +1,8 @@
 const request = require('supertest');
-const app = require('../src/app');
+const app = require('../../src/app');
 
-jest.mock('../src/queries/userAccountQueries');
-const userAccountQueries = require('../src/queries/userAccountQueries');
+jest.mock('../../src/queries/userAccountQueries');
+const userAccountQueries = require('../../src/queries/userAccountQueries');
 
 describe('Test signup route', () => {
 	it('with inexistant username should return code 400', async () => {

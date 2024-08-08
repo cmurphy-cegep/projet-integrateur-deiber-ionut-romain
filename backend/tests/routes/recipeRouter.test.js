@@ -1,8 +1,8 @@
 const request = require('supertest');
-const app = require('../src/app');
+const app = require('../../src/app');
 
-jest.mock('../src/queries/recipeQueries');
-const recipeQueries = require('../src/queries/recipeQueries');
+jest.mock('../../src/queries/recipeQueries');
+const recipeQueries = require('../../src/queries/recipeQueries');
 
 describe('Test recipes routes', () => {
 	describe('GET /recipes', () => {
@@ -81,7 +81,7 @@ describe('Test recipes routes', () => {
 				.expect(500)
 		});
 	});
-	
+
 	describe('GET /recipes/:id/image', () => {
 		const onePixelTransparentPngImage = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+P///38ACfsD/QVDRcoAAAAASUVORK5CYII=", "base64");
 

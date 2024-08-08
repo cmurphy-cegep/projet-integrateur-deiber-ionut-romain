@@ -1,7 +1,7 @@
-const userAccountQueries = require('../src/queries/userAccountQueries');
+const userAccountQueries = require('../../src/queries/userAccountQueries');
 
-jest.mock('../src/queries/dbPool');
-const pool = require('../src/queries/dbPool');
+jest.mock('../../src/queries/dbPool');
+const pool = require('../../src/queries/dbPool');
 
 describe('Test user account queries', () => {
 	describe('getUserByUserId', () => {
