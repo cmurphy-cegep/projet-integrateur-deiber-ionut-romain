@@ -80,16 +80,16 @@ describe('Test user account queries', () => {
 				passwordSalt: 'randomSalt'
 			}
 
-			jest.spyOn(userAccountQueries, '_userExistsById').mockResolvedValue(true);
+			jest.spyOn(userAccountQueries, '_userExistsById').mockResolvedValue(false);
 			jest.spyOn(userAccountQueries, '_createHashAndSalt').mockResolvedValue(mockPasswordHashAndSalt);
 			jest.spyOn(userAccountQueries, 'getUserByUserId').mockResolvedValue(null);
 
 			await userAccountQueries.createUserAccount('userId', 'password', 'fullname');
 
-			expect(pool.query).toHaveBeenCalledWith(
-				expect.stringContaining('NSERT INTO user_account'),
-				expect.arrayContaining(['userId', 'hashedPassword', 'randomSalt', 'fullname'])
-			);
+			const lastQueryCallArgs = pool.query.mock.calls.pop();
+
+			expect(lastQueryCallArgs[0]).toMatch('NSERT INTO user_account');
+			expect(lastQueryCallArgs[1]).toEqual(expect.arrayContaining(['userId', 'hashedPassword', 'randomSalt', 'fullname']));
 		});
 		it('should create a non-admin account', async () => {
 			const mockPasswordHashAndSalt = {
@@ -103,16 +103,10 @@ describe('Test user account queries', () => {
 
 			await userAccountQueries.createUserAccount('userId', 'password', 'fullname');
 
-			expect(pool.query).toHaveBeenCalledWith(
-				expect.stringContaining('NSERT INTO user_account (user_account_id, password_hash, password_salt, full_name, is_admin)'),
-				[
-					'userId',
-					'hashedPassword',
-					'randomSalt',
-					'fullname',
-					false
-				]
-			);
+			const lastQueryCallArgs = pool.query.mock.calls.pop();
+
+			expect(lastQueryCallArgs[0]).toContain('NSERT INTO user_account (user_account_id, password_hash, password_salt, full_name, is_admin)');
+			expect(lastQueryCallArgs[0]).toContain('VALUES ($1, $2, $3, $4, false)');
 		});
 	});
 });

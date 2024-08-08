@@ -54,12 +54,13 @@ class UserAccountQueries {
 		if (userExists) {
 			return undefined;
 		}
+		
 		const passwordHashAndSalt = await this._createHashAndSalt(password);
 
 		await pool.query(
 			`INSERT INTO user_account (user_account_id, password_hash, password_salt, full_name, is_admin)
-             VALUES ($1, $2, $3, $4)`,
-			[userId, passwordHashAndSalt.passwordHash, passwordHashAndSalt.passwordSalt, fullname, false]
+             VALUES ($1, $2, $3, $4, false)`,
+			[userId, passwordHashAndSalt.passwordHash, passwordHashAndSalt.passwordSalt, fullname]
 		);
 
 		return this.getUserByUserId(userId);
