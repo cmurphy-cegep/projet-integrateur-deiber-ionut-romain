@@ -91,7 +91,7 @@ router.put('/:id',
 
 		const id = req.body.id;
 		if (!id || id === '') {
-			return next(new HttpError(400, 'Le champ id est requis'));
+			return next(new HttpError(400, 'L\'identifiant est requis'));
 		}
 
 		try {
@@ -101,6 +101,7 @@ router.put('/:id',
 			}
 
 			const result = await RecipeServices.editRecipe(req.body);
+
 			res.json(result);
 		} catch (err) {
 			next(err);

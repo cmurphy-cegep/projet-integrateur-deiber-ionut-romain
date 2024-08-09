@@ -1,6 +1,37 @@
 const pool = require('../queries/dbPool');
 
 class RecipeQueries {
+	static async _deleteIngredientsByRecipeId(recipeId, client) {
+		await client.query(
+			`DELETE
+             FROM ingredient
+             WHERE recipe_id = $1`,
+			[recipeId]
+		);
+	}
+
+	static async _deleteStepsByRecipeId(recipeId, client) {
+		await client.query(
+			`DELETE
+             FROM step
+             WHERE recipe_id = $1`,
+			[recipeId]
+		);
+	}
+
+	static async _editRecipeDescription(recipe, client) {
+		await client.query(
+			`UPDATE recipe
+             SET name             = $1,
+                 description      = $2,
+                 preparation_time = $3,
+                 cooking_time     = $4,
+                 servings         = $5
+             WHERE recipe_id = $6`,
+			[recipe.name, recipe.description, recipe.preparation_time, recipe.cooking_time, recipe.servings, recipe.id]
+		);
+	}
+
 	static async _insertRecipeDescription(recipe, client) {
 		await client.query(
 			`INSERT INTO recipe (recipe_id, name, description, preparation_time, cooking_time, servings)
@@ -37,6 +68,29 @@ class RecipeQueries {
 
 			await this._insertRecipeDescription(recipe, client);
 			await this._insertRecipeIngredients(recipe, client);
+			await this._insertRecipeSteps(recipe, client);
+
+			await client.query('COMMIT');
+		} catch (err) {
+			await client.query('ROLLBACK');
+			throw err;
+		} finally {
+			client.release();
+		}
+	}
+
+	static async editRecipe(recipe) {
+		const client = await pool.connect();
+
+		try {
+			await client.query('BEGIN');
+
+			await this._editRecipeDescription(recipe, client);
+
+			await this._deleteIngredientsByRecipeId(recipe.id, client);
+			await this._insertRecipeIngredients(recipe, client);
+
+			await this._deleteStepsByRecipeId(recipe.id, client);
 			await this._insertRecipeSteps(recipe, client);
 
 			await client.query('COMMIT');
@@ -98,6 +152,7 @@ class RecipeQueries {
 		);
 		return result.rows;
 	}
+
 }
 
 module.exports = RecipeQueries;
