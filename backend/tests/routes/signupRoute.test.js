@@ -17,7 +17,7 @@ describe('Test signup route', () => {
 			.send(bodyReq)
 			.expect(400)
 
-		expect(response.body.message).toEqual('Le champ username est requis');
+		expect(response.body.message).toEqual('L\'identifiant est requis');
 	});
 
 	it('with undefined password should return code 400', async () => {
@@ -32,7 +32,7 @@ describe('Test signup route', () => {
 			.send(bodyReq)
 			.expect(400)
 
-		expect(response.body.message).toEqual('Le champ password est requis');
+		expect(response.body.message).toEqual('Le mot de passe est requis');
 	});
 
 	it('with undefined fullname should return code 400', async () => {
@@ -46,7 +46,7 @@ describe('Test signup route', () => {
 			.send(bodyReq)
 			.expect(400)
 
-		expect(response.body.message).toEqual('Le champ fullname est requis');
+		expect(response.body.message).toEqual('Le nom complet est requis');
 	});
 
 	it('with successful signup should return user information in json with code 200', async () => {
@@ -93,7 +93,7 @@ describe('Test signup route', () => {
 			.send(bodyReq)
 			.expect(409)
 
-		expect(response.body.message).toEqual('Le username n\'est pas disponible');
+		expect(response.body.message).toEqual('L\'identifiant n\'est pas disponible');
 	});
 
 	it('should return code 500 if query fails', async () => {
