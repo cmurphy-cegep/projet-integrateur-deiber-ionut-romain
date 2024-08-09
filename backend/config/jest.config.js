@@ -1,7 +1,6 @@
 const config = {
 	rootDir: '../',
-	restoreMocks: true,
-	verbose: true
+	restoreMocks: true
 };
 
 module.exports = config;

@@ -112,8 +112,8 @@ describe('Test recipe services', () => {
 			];
 
 			jest.spyOn(RecipeServices, 'getRecipeById').mockResolvedValue(mockGetRecipeById);
-			mockRecipeQueries.getRecipeIngredientsByRecipeId.mockResolvedValue(mockGetRecipeIngredientsByRecipeId);
-			mockRecipeQueries.getRecipeStepsByRecipeId.mockResolvedValue(mockGetRecipeStepsRecipeById);
+			mockRecipeQueries.getRecipeIngredients.mockResolvedValue(mockGetRecipeIngredientsByRecipeId);
+			mockRecipeQueries.getRecipeSteps.mockResolvedValue(mockGetRecipeStepsRecipeById);
 
 			const expectedDetailedRecipe = {
 				id: recipeId,
