@@ -9,9 +9,9 @@
 			<div class="recipe-description">{{ recipe.description }}</div>
 		</div>
 		<div class="recipe-row">
-			<div class="recipe-preparation-time">Preparation <br> {{ recipe.preparation_time }} minutes</div>
-			<div class="recipe-cooking-time">Cuisson <br>{{ recipe.cooking_time }} minutes</div>
-			<div class="recipe-servings">Portion(s) <br>{{ recipe.servings }}</div>
+			<div v-if="recipe.preparation_time" class="recipe-preparation-time">Preparation <br> {{ recipe.preparation_time }} minutes</div>
+			<div v-if="recipe.cooking_time" class="recipe-cooking-time">Cuisson <br>{{ recipe.cooking_time }} minutes</div>
+			<div v-if="recipe.servings" class="recipe-servings">Portion(s) <br>{{ recipe.servings }}</div>
 		</div>
 		<div class="recipe-row">
 			<div class="recipe-ingredients">
