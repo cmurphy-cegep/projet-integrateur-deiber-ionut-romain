@@ -79,6 +79,17 @@ class RecipeQueries {
 		}
 	}
 
+	static async deleteRecipe(recipeId) {
+		const result = await pool.query(
+			`DELETE
+             FROM recipe
+             WHERE recipe_id = $1`,
+			[recipeId]
+		);
+
+		return result.rowCount > 0;
+	}
+
 	static async getAllRecipes() {
 		const result = await pool.query(
 			`SELECT recipe_id, name, description, preparation_time, cooking_time, servings

@@ -97,7 +97,7 @@ router.put('/:id',
 
 		const id = req.params.id;
 		if (!id || id === '') {
-			return next(new HttpError(400, 'L\'identifiant est requis'));
+			return next(new HttpError(400, 'Le paramètre id est requis'));
 		}
 
 		if (id !== req.body.id) {
@@ -118,6 +118,36 @@ router.put('/:id',
 		}
 	});
 
+router.delete('/:id',
+	passport.authenticate('basic', {session: false}),
+	async (req, res, next) => {
+		if (!req.user.isAdmin) {
+			return next(new HttpError(403, 'Vous n\'avez pas les permissions'));
+		}
+
+		const id = req.params.id;
+		if (!id || id === '') {
+			return next(new HttpError(400, 'Le paramètre id est requis'));
+		}
+
+
+		try {
+			const recipe = await RecipeServices.getRecipeById(id);
+			if (!recipe) {
+				return next(new HttpError(404, `L'id ${id} ne correspond à aucune recette existante`));
+			}
+
+			await RecipeServices.deleteRecipe(id);
+
+			res.json({
+				status: 200,
+				message: "Recette supprimée avec succès"
+			});
+		} catch (err) {
+			next(err);
+		}
+	});
+
 router.post('/:id/image',
 	passport.authenticate('basic', {session: false}),
 	// Fonction middleware de multer pour gérer l'upload d'un fichier dans ce endpoint.
@@ -130,7 +160,7 @@ router.post('/:id/image',
 
 		const id = req.params.id;
 		if (!id || id === '') {
-			return next(new HttpError(400, 'L\'identifiant est requis'));
+			return next(new HttpError(400, 'Le paramètre id est requis'));
 		}
 
 		try {

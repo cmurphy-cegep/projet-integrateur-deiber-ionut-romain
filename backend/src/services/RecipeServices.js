@@ -96,6 +96,13 @@ class RecipeServices {
 		return this.getDetailedRecipeById(recipe.id);
 	}
 
+	static async deleteRecipe(recipeId) {
+		const isDeleted = await RecipeQueries.deleteRecipe(recipeId);
+		if (!isDeleted) {
+			throw new HttpError(500, "Erreur lors de la suppression de la recette");
+		}
+	}
+
 	static async getAllRecipes() {
 		const results = await RecipeQueries.getAllRecipes();
 		return results.map(result => this._convertToRecipe(result));
