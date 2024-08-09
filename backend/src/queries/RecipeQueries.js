@@ -79,29 +79,6 @@ class RecipeQueries {
 		}
 	}
 
-	static async editRecipe(recipe) {
-		const client = await pool.connect();
-
-		try {
-			await client.query('BEGIN');
-
-			await this._editRecipeDescription(recipe, client);
-
-			await this._deleteIngredientsByRecipeId(recipe.id, client);
-			await this._insertRecipeIngredients(recipe, client);
-
-			await this._deleteStepsByRecipeId(recipe.id, client);
-			await this._insertRecipeSteps(recipe, client);
-
-			await client.query('COMMIT');
-		} catch (err) {
-			await client.query('ROLLBACK');
-			throw err;
-		} finally {
-			client.release();
-		}
-	}
-
 	static async getAllRecipes() {
 		const result = await pool.query(
 			`SELECT recipe_id, name, description, preparation_time, cooking_time, servings
@@ -151,6 +128,29 @@ class RecipeQueries {
 			[recipeId]
 		);
 		return result.rows;
+	}
+
+	static async updateRecipe(recipe) {
+		const client = await pool.connect();
+
+		try {
+			await client.query('BEGIN');
+
+			await this._editRecipeDescription(recipe, client);
+
+			await this._deleteIngredientsByRecipeId(recipe.id, client);
+			await this._insertRecipeIngredients(recipe, client);
+
+			await this._deleteStepsByRecipeId(recipe.id, client);
+			await this._insertRecipeSteps(recipe, client);
+
+			await client.query('COMMIT');
+		} catch (err) {
+			await client.query('ROLLBACK');
+			throw err;
+		} finally {
+			client.release();
+		}
 	}
 
 }

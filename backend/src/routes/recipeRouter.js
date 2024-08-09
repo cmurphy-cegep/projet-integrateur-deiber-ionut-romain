@@ -71,7 +71,7 @@ router.post('/',
 		try {
 			const recipe = await RecipeServices.getRecipeById(id);
 			if (recipe) {
-				throw new HttpError(400, `Une recette avec l'id ${id} existe déjà`);
+				return next(new HttpError(400, `Une recette avec l'id ${id} existe déjà`));
 			}
 
 			const result = await RecipeServices.createRecipe(req.body);
@@ -94,18 +94,23 @@ router.put('/:id',
 			return next(new HttpError(400, 'L\'identifiant est requis'));
 		}
 
+		if (id !== req.body.id) {
+			return next(new HttpError(400, `Le paramètre spécifie l'id ${id} alors que la recette fournie a l'id ${req.body.id}`));
+		}
+
 		try {
 			const recipe = await RecipeServices.getRecipeById(id);
 			if (!recipe) {
-				throw new HttpError(400, `L'id ${id} ne correspond à aucune recette existante`);
+				return next(new HttpError(400, `L'id ${id} ne correspond à aucune recette existante`));
 			}
 
-			const result = await RecipeServices.editRecipe(req.body);
+			const result = await RecipeServices.updateRecipe(req.body);
 
 			res.json(result);
 		} catch (err) {
 			next(err);
 		}
-	});
+	}
+);
 
 module.exports = router;

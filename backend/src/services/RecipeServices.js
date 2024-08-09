@@ -96,13 +96,6 @@ class RecipeServices {
 		return this.getDetailedRecipeById(recipe.id);
 	}
 
-	static async editRecipe(recipe) {
-		this._checkRecipeProperties(recipe);
-		this._convertRecipePropertiesToString(recipe);
-		await RecipeQueries.editRecipe(recipe);
-		return this.getDetailedRecipeById(recipe.id);
-	}
-
 	static async getAllRecipes() {
 		const results = await RecipeQueries.getAllRecipes();
 		return results.map(result => this._convertToRecipe(result));
@@ -137,6 +130,13 @@ class RecipeServices {
 			};
 		}
 		return undefined;
+	}
+
+	static async updateRecipe(recipe) {
+		this._checkRecipeProperties(recipe);
+		this._convertRecipePropertiesToString(recipe);
+		await RecipeQueries.updateRecipe(recipe);
+		return this.getDetailedRecipeById(recipe.id);
 	}
 }
 
