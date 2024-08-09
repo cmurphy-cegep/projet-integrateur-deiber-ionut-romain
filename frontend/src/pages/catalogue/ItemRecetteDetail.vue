@@ -1,10 +1,10 @@
 <template>
-	<LoadingSpinner :loading="loading" :error="loadError" />
+	<LoadingSpinner :error="loadError" :loading="loading"/>
 	<div v-if="recipe && !loading && !loadError" class="recipe">
 		<div class="recipe-name">{{ recipe.name }}</div>
 		<div class="recipe-row">
 			<div class="recipe-image-container">
-				<img :src="imageSrc" alt="Recipe Image" class="recipe-image" />
+				<img :src="imageSrc" alt="Recipe Image" class="recipe-image"/>
 			</div>
 			<div class="recipe-description">{{ recipe.description }}</div>
 		</div>
@@ -33,8 +33,8 @@
 </template>
 
 <script>
-import {fetchRecipe} from '../../model/recipeService.js';
-import { addApiPrefixToPath } from '../../api_utils';
+import {fetchRecipe} from '../../services/recipeService.js';
+import {addApiPrefixToPath} from '../../api_utils';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
 
 export default {
