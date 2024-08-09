@@ -33,7 +33,7 @@ router.post('/', async (req, res, next) => {
 					fullname: response.fullname,
 					isAdmin: response.isAdmin
 				};
-				res.json(userDetails);
+				res.status(201).json(userDetails);
 			}
 		} catch (err) {
 			return next(err);

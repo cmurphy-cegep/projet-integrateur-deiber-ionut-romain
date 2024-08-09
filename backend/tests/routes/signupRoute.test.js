@@ -5,9 +5,9 @@ jest.mock('../../src/services/UserAccountServices');
 const mockUserAccountServices = require('../../src/services/UserAccountServices');
 
 describe('Test signup route', () => {
-	it('with inexistant username should return code 400', async () => {
+	it('with undefined username should return code 400', async () => {
 		const bodyReq = {
-			username: null,
+			username: undefined,
 			password: 'password',
 			fullname: 'fullname'
 		};
@@ -20,10 +20,10 @@ describe('Test signup route', () => {
 		expect(response.body.message).toEqual('Le champ username est requis');
 	});
 
-	it('with inexistant password should return code 400', async () => {
+	it('with undefined password should return code 400', async () => {
 		const bodyReq = {
 			username: 'userId',
-			password: null,
+			password: undefined,
 			fullname: 'fullname'
 		};
 
@@ -35,11 +35,11 @@ describe('Test signup route', () => {
 		expect(response.body.message).toEqual('Le champ password est requis');
 	});
 
-	it('with inexistant fullname should return code 400', async () => {
+	it('with undefined fullname should return code 400', async () => {
 		const bodyReq = {
 			username: 'userId',
 			password: 'password',
-			fullname: null
+			fullname: undefined
 		};
 		const response = await request(app)
 			.post('/signup')
@@ -74,7 +74,7 @@ describe('Test signup route', () => {
 			.post('/signup')
 			.send(bodyReq)
 			.expect('Content-Type', /json/)
-			.expect(200)
+			.expect(201)
 
 		expect(response.body).toEqual(expectUserDetails);
 	});

@@ -70,7 +70,8 @@ router.post('/',
 			}
 
 			const result = await RecipeServices.createRecipe(req.body);
-			res.json(result);
+
+			res.status(201).json(result);
 		} catch (err) {
 			next(err);
 		}
