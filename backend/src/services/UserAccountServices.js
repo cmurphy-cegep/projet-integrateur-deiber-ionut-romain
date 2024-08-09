@@ -1,5 +1,5 @@
 const crypto = require("crypto");
-const {iterations, keylen, digest} = require('../config/cryptoConfig');
+const {iterations, keylen, digest} = require('../auth/cryptoConfig');
 const UserAccountQueries = require("../queries/UserAccountQueries");
 
 class UserAccountServices {
