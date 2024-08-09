@@ -10,9 +10,10 @@ class RecipeServices {
 		if (!recipe.description) {
 			throw new HttpError(400, 'La description est requise');
 		}
-
-		if (recipe.preparation_time !== '' && !Number.isInteger(recipe.preparation_time)) {
-			throw new HttpError(400, 'Le temps de préparation doit être un nombre entier');
+		if (recipe.preparation_time) {
+			if (!Number.isInteger(recipe.preparation_time)) {
+				throw new HttpError(400, 'Le temps de préparation doit être un nombre entier');
+			}
 		}
 
 		if (recipe.cooking_time !== '' && !Number.isInteger(recipe.cooking_time)) {
@@ -58,19 +59,29 @@ class RecipeServices {
 		recipe.id = "" + recipe.id;
 		recipe.name = "" + recipe.name;
 		recipe.description = "" + recipe.description;
-		recipe.preparation_time = "" + recipe.preparation_time;
-		recipe.cooking_time = "" + recipe.cooking_time;
-		recipe.serving = "" + recipe.servings;
-		recipe.ingredients = recipe.ingredients.map(ingredient => ({
-			index: "" + ingredient.index,
-			name: "" + ingredient.name,
-			quantity: "" + ingredient.quantity,
-			unit: "" + ingredient.unit
-		}));
-		recipe.steps = recipe.steps.map(step => ({
-			index: "" + step.index,
-			description: "" + step.description
-		}))
+		if (recipe.preparation_time) {
+			recipe.preparation_time = "" + recipe.preparation_time;
+		}
+		if (recipe.cooking_time) {
+			recipe.cooking_time = "" + recipe.cooking_time;
+		}
+		if (recipe.serving) {
+			recipe.serving = "" + recipe.servings;
+		}
+		for (let ingredient of recipe.ingredients) {
+			ingredient.index = "" + ingredient.index;
+			ingredient.name = "" + ingredient.name;
+			if (ingredient.quantity) {
+				ingredient.quantity = "" + ingredient.quantity;
+			}
+			if (ingredient.unit) {
+				ingredient.unit = "" + ingredient.unit;
+			}
+		}
+		for (let step of recipe.steps) {
+			step.index = "" + step.index;
+			step.description = "" + step.description;
+		}
 	}
 
 	static _convertToRecipe(row) {
