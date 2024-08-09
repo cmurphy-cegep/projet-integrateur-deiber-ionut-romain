@@ -3,6 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 const HttpError = require("../error/HttpError");
 const RecipeServices = require("../services/RecipeServices");
+const {isValidIdSyntax} = require("../utils/utils");
 
 router.get('/', async (req, res, next) => {
 	try {
@@ -60,7 +61,11 @@ router.post('/',
 
 		const id = req.body.id;
 		if (!id || id === '') {
-			return next(new HttpError(400, 'Le champ id est requis'));
+			return next(new HttpError(400, 'L\'identifiant est requis'));
+		}
+
+		if (!isValidIdSyntax(id)) {
+			return next(new HttpError(400, 'L\'identifiant contient des caractères interdits'));
 		}
 
 		try {
