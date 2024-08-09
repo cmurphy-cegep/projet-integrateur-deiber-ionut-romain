@@ -35,7 +35,6 @@ CREATE TABLE ingredient
     quantity      numeric(10, 2),
     unit          text,
     recipe_id     text    NOT NULL REFERENCES recipe (recipe_id) ON DELETE CASCADE
---  A valider avec Charles. (Vaut-il mieux une transaction qui supprime manuellement les ingrédients de la recette ?)
 );
 
 CREATE INDEX idx_ingredient_recipe_id ON ingredient (recipe_id);
@@ -46,7 +45,6 @@ CREATE TABLE step
     index       integer NOT NULL,
     description text    NOT NULL,
     recipe_id   text    NOT NULL REFERENCES recipe (recipe_id) ON DELETE CASCADE
---  A valider avec Charles. (Vaut-il mieux une transaction qui supprime manuellement les étapes de la recette ?)
 );
 
 CREATE INDEX idx_step_recipe_id ON step (recipe_id);

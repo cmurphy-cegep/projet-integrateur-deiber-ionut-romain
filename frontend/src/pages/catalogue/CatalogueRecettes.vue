@@ -2,9 +2,9 @@
 	<div class="container">
 		<h2>Les Recettes</h2>
 		<div id="recipe-list">
-			<LoadingSpinner :loading="loading" :error="loadError" />
-			<ItemRecetteDescription v-if="!loading" v-for="recipe in recipes" :key="recipe.id" :name="recipe.name"
-				:description="recipe.description" :id="recipe.id" :image="recipe.image" />
+			<LoadingSpinner :error="loadError" :loading="loading"/>
+			<ItemRecetteDescription v-for="recipe in recipes" v-if="!loading" :id="recipe.id" :key="recipe.id"
+									:description="recipe.description" :image="recipe.image" :name="recipe.name"/>
 		</div>
 	</div>
 </template>
@@ -12,7 +12,7 @@
 <script>
 import ItemRecetteDescription from './ItemRecetteDescription.vue';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
-import { fetchRecipes } from '../../model/recipeService.js';
+import {fetchRecipes} from '../../services/recipeService.js';
 
 export default {
 	components: {
