@@ -1,113 +1,60 @@
-const userAccountQueries = require('../../src/queries/userAccountQueries');
+const UserAccountQueries = require("../../src/queries/UserAccountQueries");
 
 jest.mock('../../src/queries/dbPool');
-const pool = require('../../src/queries/dbPool');
+const mockPool = require('../../src/queries/dbPool');
 
 describe('Test user account queries', () => {
-	describe('getUserByUserId', () => {
+	describe('getUserById', () => {
 		it('should return user details with valid user id', async () => {
-			const userId = "validId";
-			const mockUserDetails = {
+			const userId = 'userId';
+			const mockResult = {
+				rows: [{
+					user_account_id: userId,
+					password_hash: 'hashedPassword',
+					password_salt: 'randomSalt',
+					full_name: 'fullname',
+					is_admin: false
+				}]
+			};
+
+			const expectResult = {
 				user_account_id: userId,
 				password_hash: 'hashedPassword',
 				password_salt: 'randomSalt',
 				full_name: 'fullname',
 				is_admin: false
 			};
-			const expectUserDetails = {
-				userId: userId,
-				passwordHash: 'hashedPassword',
-				passwordSalt: 'randomSalt',
-				fullname: 'fullname',
-				isAdmin: false
-			};
 
-			pool.query.mockResolvedValueOnce({rows: [mockUserDetails]});
+			mockPool.query.mockResolvedValue(mockResult);
 
-			const userDetails = await userAccountQueries.getUserByUserId(userId);
-			expect(userDetails).toEqual(expectUserDetails);
+			const result = await UserAccountQueries.getUserById(userId);
+
+			expect(result).toEqual(expectResult);
 		});
 
 		it('should return "undefined" if user id not found ', async () => {
-			pool.query.mockResolvedValueOnce({rows: []});
-			const userDetails = await userAccountQueries.getUserByUserId("invalidId");
-			expect(userDetails).toBeUndefined();
+			mockPool.query.mockResolvedValue({rows: []});
+
+			const result = await UserAccountQueries.getUserById("invalidId");
+
+			expect(result).toBeUndefined();
 		});
 	});
 
-	it('createHashAndSalt should return hash from password and create salt', async () => {
-		const password = 'motdepasse';
-		const passwordHashAndSalt = await userAccountQueries._createHashAndSalt(password);
-
-		expect(passwordHashAndSalt.passwordHash).toHaveLength(88); // 64 bytes in base64
-		expect(passwordHashAndSalt.passwordSalt).toHaveLength(24); // 16 bytes in base64
-	});
-
-	describe('createUserAccount', () => {
-		it('should return user details if user created', async () => {
-			const userId = "userId";
-
-			const mockPasswordHashAndSalt = {
-				passwordHash: 'hashedPassword',
-				passwordSalt: 'randomSalt'
-			}
-
-			const mockUserDetails = {
-				userAccountId: userId,
-				password_hash: 'hashedPassword',
-				password_salt: 'randomSalt',
-				userFullName: 'fullname',
-				isAdmin: false
-			};
-
-			const expectUserDetails = mockUserDetails;
-
-			jest.spyOn(userAccountQueries, '_userExistsById').mockResolvedValue(false);
-			jest.spyOn(userAccountQueries, '_createHashAndSalt').mockResolvedValue(mockPasswordHashAndSalt);
-			jest.spyOn(userAccountQueries, 'getUserByUserId').mockResolvedValue(mockUserDetails);
-
-			const userDetails = await userAccountQueries.createUserAccount(userId, 'password', 'fullname');
-			expect(userDetails).toEqual(expectUserDetails);
-		});
-
-		it('should return undefined if user already exists', async () => {
-			jest.spyOn(userAccountQueries, '_userExistsById').mockResolvedValue(true);
-
-			const user = await userAccountQueries.createUserAccount("userId", "password", "fullname");
-			expect(user).toBeUndefined();
-		});
-
+	describe('insertUserAccount', () => {
 		it('should sent hash and salt in query', async () => {
-			const mockPasswordHashAndSalt = {
-				passwordHash: 'hashedPassword',
-				passwordSalt: 'randomSalt'
-			}
+			await UserAccountQueries.insertUserAccount('userId', 'hashedPassword', 'randomSalt', 'fullname');
 
-			jest.spyOn(userAccountQueries, '_userExistsById').mockResolvedValue(false);
-			jest.spyOn(userAccountQueries, '_createHashAndSalt').mockResolvedValue(mockPasswordHashAndSalt);
-			jest.spyOn(userAccountQueries, 'getUserByUserId').mockResolvedValue(null);
-
-			await userAccountQueries.createUserAccount('userId', 'password', 'fullname');
-
-			const lastQueryCallArgs = pool.query.mock.calls.pop();
+			const lastQueryCallArgs = mockPool.query.mock.calls.pop();
 
 			expect(lastQueryCallArgs[0]).toMatch('NSERT INTO user_account');
-			expect(lastQueryCallArgs[1]).toEqual(expect.arrayContaining(['userId', 'hashedPassword', 'randomSalt', 'fullname']));
+			expect(lastQueryCallArgs[1]).toEqual(expect.arrayContaining(['hashedPassword', 'randomSalt']));
 		});
 
 		it('should create a non-admin account', async () => {
-			const mockPasswordHashAndSalt = {
-				passwordHash: 'hashedPassword',
-				passwordSalt: 'randomSalt'
-			}
+			await UserAccountQueries.insertUserAccount('userId', 'hashedPassword', 'randomSalt', 'fullname');
 
-			jest.spyOn(userAccountQueries, '_userExistsById').mockResolvedValue(false);
-			jest.spyOn(userAccountQueries, '_createHashAndSalt').mockResolvedValue(mockPasswordHashAndSalt);
-			jest.spyOn(userAccountQueries, 'getUserByUserId').mockResolvedValue(null);
-
-			await userAccountQueries.createUserAccount('userId', 'password', 'fullname');
-
-			const lastQueryCallArgs = pool.query.mock.calls.pop();
+			const lastQueryCallArgs = mockPool.query.mock.calls.pop();
 
 			expect(lastQueryCallArgs[0]).toContain('NSERT INTO user_account (user_account_id, password_hash, password_salt, full_name, is_admin)');
 			expect(lastQueryCallArgs[0]).toContain('VALUES ($1, $2, $3, $4, false)');

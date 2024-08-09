@@ -2,10 +2,10 @@ const passport = require('passport');
 const BasicStrategyModified = require('./BasicStrategyModified');
 const crypto = require('crypto')
 const {iterations, keylen, digest} = require('../config/cryptoConfig');
-const userAccountQueries = require("../queries/userAccountQueries");
+const UserAccountServices = require("../services/UserAccountServices");
 
 passport.use(new BasicStrategyModified((username, password, done) => {
-	userAccountQueries.getUserByUserId(username).then(user => {
+	UserAccountServices.getUserByUserId(username).then(user => {
 		if (!user) {
 			return done(null, false);
 		}

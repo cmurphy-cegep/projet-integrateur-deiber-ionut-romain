@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const userAccountQueries = require('../queries/userAccountQueries');
+const UserAccountServices = require('../services/UserAccountServices');
 const HttpError = require("../error/HttpError");
 
-router.post('/', (req, res, next) => {
+router.post('/', async (req, res, next) => {
 		const userId = req.body.username;
 		const password = req.body.password;
 		const fullname = req.body.fullname;
@@ -20,22 +20,24 @@ router.post('/', (req, res, next) => {
 			return next(new HttpError(400, 'Le champ fullname est requis'));
 		}
 
-		userAccountQueries.createUserAccount(userId, password, fullname)
-			.then(response => {
-				if (response) {
-					const userDetails = {
-						userId: response.userId,
-						fullname: response.fullname,
-						isAdmin: response.isAdmin
-					};
+		try {
+			const user = await UserAccountServices.getUserByUserId(userId);
+			if (user) {
+				return next(new HttpError(409, 'Le username n\'est pas disponible'));
+			}
 
-					res.json(userDetails);
-				} else {
-					return next(new HttpError(409, 'Le username n\'est pas disponible'));
-				}
-			}).catch(err => {
+			const response = await UserAccountServices.createUserAccount(userId, password, fullname);
+			if (response) {
+				const userDetails = {
+					userId: response.userId,
+					fullname: response.fullname,
+					isAdmin: response.isAdmin
+				};
+				res.json(userDetails);
+			}
+		} catch (err) {
 			return next(err);
-		});
+		}
 	}
 );
 
