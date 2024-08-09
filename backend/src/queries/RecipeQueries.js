@@ -153,6 +153,18 @@ class RecipeQueries {
 		}
 	}
 
+	static async updateRecipeImage(recipeId, imageBuffer, imageContentType) {
+		const result = await pool.query(
+			`UPDATE recipe
+             SET image_content      = $2,
+                 image_content_type = $3
+             WHERE recipe_id = $1`,
+			[recipeId, imageBuffer, imageContentType]
+		);
+
+		return result.rowCount > 0;
+	}
+
 }
 
 module.exports = RecipeQueries;

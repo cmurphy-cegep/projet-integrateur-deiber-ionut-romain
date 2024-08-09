@@ -138,6 +138,15 @@ class RecipeServices {
 		await RecipeQueries.updateRecipe(recipe);
 		return this.getDetailedRecipeById(recipe.id);
 	}
+
+	static async updateRecipeImage(recipeId, imageBuffer, imageContentType) {
+		const isUpdated = await RecipeQueries.updateRecipeImage(recipeId, imageBuffer, imageContentType);
+		if (!isUpdated) {
+			throw new HttpError(500, "Erreur lors de la mise-à-jour de l'image");
+		}
+
+		return await this.getRecipeImageContent(recipeId);
+	}
 }
 
 module.exports = RecipeServices;

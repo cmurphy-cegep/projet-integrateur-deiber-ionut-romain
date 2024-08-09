@@ -144,7 +144,10 @@ router.post('/:id/image',
 			// dans req.file.mimetype:
 			await RecipeServices.updateRecipeImage(id, req.file.buffer, req.file.mimetype);
 
-			res.json("");
+			res.json({
+				status: 200,
+				message: "Image mise-à-jour avec succès"
+			});
 		} catch (err) {
 			next(err);
 		}
