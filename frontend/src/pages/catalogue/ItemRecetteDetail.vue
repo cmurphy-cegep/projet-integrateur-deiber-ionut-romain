@@ -18,7 +18,7 @@
 				<div class="recipe-ingredients-title">Ingrédients</div>
 				<ul>
 					<li v-for="ingredient in recipe.ingredients" :key="ingredient.name">
-						{{ ingredient.quantity }} {{ ingredient.unit }} {{ ingredient.name }}
+						{{ formatQuantity(ingredient.quantity) }} {{ ingredient.unit }} {{ ingredient.name }}
 					</li>
 				</ul>
 			</div>
@@ -68,6 +68,16 @@ export default {
 				this.loading = true;
 			});
 		},
+		formatQuantity(quantity) {
+			if (quantity === null) {
+				return '';
+			}
+			const num = Number(quantity);
+			if (Number.isInteger(num)) {
+				return num;
+			}
+			return num.toString().replace(/(\.\d*[1-9])0+$|\.0*$/, '$1');
+		}
 	},
 	mounted() {
 		this.refreshRecipe(this.id);
