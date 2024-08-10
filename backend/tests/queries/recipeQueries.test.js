@@ -126,7 +126,7 @@ describe('Test recipes queries', () => {
 		});
 	});
 
-	it('getRecipeIngredientsByRecipeId should return recipe ingredients with valid recipe id', async () => {
+	it('getRecipeIngredients should return recipe ingredients with valid recipe id', async () => {
 		const recipeId = 'validId';
 		const mockResult = {
 			rows: [
@@ -167,7 +167,7 @@ describe('Test recipes queries', () => {
 		expect(result).toEqual(expectResult);
 	});
 
-	it('getRecipeStepsByRecipeId should return recipe steps with valid recipe id', async () => {
+	it('getRecipeSteps should return recipe steps with valid recipe id', async () => {
 		const recipeId = 'validId';
 		const mockResult = {
 			rows: [
