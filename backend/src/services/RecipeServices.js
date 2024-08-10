@@ -16,11 +16,11 @@ class RecipeServices {
 			}
 		}
 
-		if (recipe.cooking_time !== '' && !Number.isInteger(recipe.cooking_time)) {
+		if (recipe.cooking_time && !Number.isInteger(recipe.cooking_time)) {
 			throw new HttpError(400, 'Le temps de cuisson doit être un nombre entier');
 		}
 
-		if (recipe.servings !== '' && !Number.isInteger(recipe.servings)) {
+		if (recipe.servings && !Number.isInteger(recipe.servings)) {
 			throw new HttpError(400, 'Le nombre de portions doit être un nombre entier');
 		}
 
@@ -36,7 +36,7 @@ class RecipeServices {
 				throw new HttpError(400, 'Le nom de l\'ingrédient est requis');
 			}
 
-			if (ingredient.quantity !== '' && isNaN(ingredient.quantity)) {
+			if (ingredient.quantity && isNaN(ingredient.quantity)) {
 				throw new HttpError(400, 'La quantité de l\'ingrédient doit être un nombre');
 			}
 		}
@@ -122,8 +122,8 @@ class RecipeServices {
 	static async getDetailedRecipeById(recipeId) {
 		let recipe = await this.getRecipeById(recipeId);
 		if (recipe) {
-			recipe.ingredients = await RecipeQueries.getRecipeIngredientsByRecipeId(recipeId);
-			recipe.steps = await RecipeQueries.getRecipeStepsByRecipeId(recipeId);
+			recipe.ingredients = await RecipeQueries.getRecipeIngredients(recipeId);
+			recipe.steps = await RecipeQueries.getRecipeSteps(recipeId);
 			return recipe;
 		}
 		return undefined;

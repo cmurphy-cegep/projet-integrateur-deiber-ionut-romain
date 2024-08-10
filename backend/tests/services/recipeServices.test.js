@@ -2,6 +2,7 @@ const RecipeServices = require('../../src/services/RecipeServices');
 
 jest.mock('../../src/queries/RecipeQueries');
 const mockRecipeQueries = require('../../src/queries/RecipeQueries');
+const HttpError = require("../../src/error/HttpError");
 
 describe('Test recipe services', () => {
 	it('getAllRecipes should return a list of recipes', async () => {
@@ -112,8 +113,8 @@ describe('Test recipe services', () => {
 			];
 
 			jest.spyOn(RecipeServices, 'getRecipeById').mockResolvedValue(mockGetRecipeById);
-			mockRecipeQueries.getRecipeIngredientsByRecipeId.mockResolvedValue(mockGetRecipeIngredientsByRecipeId);
-			mockRecipeQueries.getRecipeStepsByRecipeId.mockResolvedValue(mockGetRecipeStepsRecipeById);
+			mockRecipeQueries.getRecipeIngredients.mockResolvedValue(mockGetRecipeIngredientsByRecipeId);
+			mockRecipeQueries.getRecipeSteps.mockResolvedValue(mockGetRecipeStepsRecipeById);
 
 			const expectedDetailedRecipe = {
 				id: recipeId,
@@ -172,6 +173,367 @@ describe('Test recipe services', () => {
 			const detailedRecipe = await RecipeServices.getRecipeImageContent("invalidId");
 
 			expect(detailedRecipe).toBeUndefined();
+		});
+	});
+
+	describe('createRecipe', () => {
+		let recipe;
+
+		beforeEach(() => {
+			recipe = {
+				id: 'recipeId',
+				name: 'Test Recipe',
+				description: 'Test Description',
+				preparation_time: 10,
+				cooking_time: 20,
+				servings: 4,
+				ingredients: [
+					{index: 1, name: 'Ingredient 1', quantity: '2', unit: 'ml'},
+					{index: 2, name: 'Ingredient 2', quantity: '1', unit: 'g'}
+				],
+				steps: [
+					{index: 1, description: 'Step 1 description'},
+					{index: 2, description: 'Step 2 description'}
+				]
+			};
+		});
+
+		it('should throw an error if name is undefined', async () => {
+			recipe.name = undefined;
+
+			const expectedError = new HttpError(400, "Le nom est requis");
+
+			await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if name is undefined', async () => {
+			recipe.description = undefined;
+
+			const expectedError = new HttpError(400, "La description est requise");
+
+			await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if preparation_time is not an integer', async () => {
+			recipe.preparation_time = 1.5;
+
+			const expectedError = new HttpError(400, "Le temps de préparation doit être un nombre entier");
+
+			await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if cooking_time is not an integer', async () => {
+			recipe.cooking_time = 1.5;
+
+			const expectedError = new HttpError(400, "Le temps de cuisson doit être un nombre entier");
+
+			await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if servings is not an integer', async () => {
+			recipe.servings = 1.5;
+
+			const expectedError = new HttpError(400, "Le nombre de portions doit être un nombre entier");
+
+			await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if no ingredient', async () => {
+			recipe.ingredients = [];
+
+			const expectedError = new HttpError(400, "Les ingrédients sont requis");
+
+			await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if ingredient index is undefined', async () => {
+			recipe.ingredients.at(0).index = undefined;
+
+			const expectedError = new HttpError(400, "Le numéro de l\'ingrédient est requis");
+
+			await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if ingredient index is not an integer', async () => {
+			recipe.ingredients.at(0).index = 1.5;
+
+			const expectedError = new HttpError(400, "Le numéro de l\'ingrédient est requis");
+
+			await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if ingredient name is undefined', async () => {
+			recipe.ingredients.at(0).name = undefined;
+
+			const expectedError = new HttpError(400, "Le nom de l\'ingrédient est requis");
+
+			await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if servings is not an integer', async () => {
+			recipe.ingredients.at(0).quantity = "not a number";
+
+			const expectedError = new HttpError(400, "La quantité de l\'ingrédient doit être un nombre");
+
+			await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if no step', async () => {
+			recipe.steps = [];
+
+			const expectedError = new HttpError(400, "Les étapes sont requises");
+
+			await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if step index is undefined', async () => {
+			recipe.steps.at(0).index = undefined;
+
+			const expectedError = new HttpError(400, "Le numéro de l\'étape est requis");
+
+			await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if step index is not an integer', async () => {
+			recipe.steps.at(0).index = 1.5;
+
+			const expectedError = new HttpError(400, "Le numéro de l\'étape est requis");
+
+			await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if step description is undefined', async () => {
+			recipe.steps.at(0).description = undefined;
+
+			const expectedError = new HttpError(400, "La description de l\'étape est requise");
+
+			await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should return inserted recipe', async () => {
+			const mockDetailedRecipe = {
+				id: 'recipeId',
+				name: 'Test Recipe',
+				description: 'Test Description',
+				preparation_time: 10,
+				cooking_time: 20,
+				servings: 4,
+				ingredients: [
+					{index: 1, name: 'Ingredient 1', quantity: '2', unit: 'ml'},
+					{index: 2, name: 'Ingredient 2', quantity: '1', unit: 'g'}
+				],
+				steps: [
+					{index: 1, description: 'Step 1 description'},
+					{index: 2, description: 'Step 2 description'}
+				]
+			};
+
+			const expectedDetailedRecipe = mockDetailedRecipe;
+
+			jest.spyOn(RecipeServices, 'getDetailedRecipeById').mockResolvedValue(mockDetailedRecipe);
+
+			const detailedRecipe = await RecipeServices.createRecipe(recipe);
+
+			expect(mockRecipeQueries.createRecipe).toHaveBeenCalled();
+			expect(detailedRecipe).toEqual(expectedDetailedRecipe);
+		});
+	});
+
+	describe('updateRecipe', () => {
+		let recipe;
+
+		beforeEach(() => {
+			recipe = {
+				id: 'recipeId',
+				name: 'Test Recipe',
+				description: 'Test Description',
+				preparation_time: 10,
+				cooking_time: 20,
+				servings: 4,
+				ingredients: [
+					{index: 1, name: 'Ingredient 1', quantity: '2', unit: 'ml'},
+					{index: 2, name: 'Ingredient 2', quantity: '1', unit: 'g'}
+				],
+				steps: [
+					{index: 1, description: 'Step 1 description'},
+					{index: 2, description: 'Step 2 description'}
+				]
+			};
+		});
+
+		it('should throw an error if name is undefined', async () => {
+			recipe.name = undefined;
+
+			const expectedError = new HttpError(400, "Le nom est requis");
+
+			await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if name is undefined', async () => {
+			recipe.description = undefined;
+
+			const expectedError = new HttpError(400, "La description est requise");
+
+			await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if preparation_time is not an integer', async () => {
+			recipe.preparation_time = 1.5;
+
+			const expectedError = new HttpError(400, "Le temps de préparation doit être un nombre entier");
+
+			await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if cooking_time is not an integer', async () => {
+			recipe.cooking_time = 1.5;
+
+			const expectedError = new HttpError(400, "Le temps de cuisson doit être un nombre entier");
+
+			await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if servings is not an integer', async () => {
+			recipe.servings = 1.5;
+
+			const expectedError = new HttpError(400, "Le nombre de portions doit être un nombre entier");
+
+			await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if no ingredient', async () => {
+			recipe.ingredients = [];
+
+			const expectedError = new HttpError(400, "Les ingrédients sont requis");
+
+			await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if ingredient index is undefined', async () => {
+			recipe.ingredients.at(0).index = undefined;
+
+			const expectedError = new HttpError(400, "Le numéro de l\'ingrédient est requis");
+
+			await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if ingredient index is not an integer', async () => {
+			recipe.ingredients.at(0).index = 1.5;
+
+			const expectedError = new HttpError(400, "Le numéro de l\'ingrédient est requis");
+
+			await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if ingredient name is undefined', async () => {
+			recipe.ingredients.at(0).name = undefined;
+
+			const expectedError = new HttpError(400, "Le nom de l\'ingrédient est requis");
+
+			await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if servings is not an integer', async () => {
+			recipe.ingredients.at(0).quantity = "not a number";
+
+			const expectedError = new HttpError(400, "La quantité de l\'ingrédient doit être un nombre");
+
+			await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if no step', async () => {
+			recipe.steps = [];
+
+			const expectedError = new HttpError(400, "Les étapes sont requises");
+
+			await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if step index is undefined', async () => {
+			recipe.steps.at(0).index = undefined;
+
+			const expectedError = new HttpError(400, "Le numéro de l\'étape est requis");
+
+			await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if step index is not an integer', async () => {
+			recipe.steps.at(0).index = 1.5;
+
+			const expectedError = new HttpError(400, "Le numéro de l\'étape est requis");
+
+			await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should throw an error if step description is undefined', async () => {
+			recipe.steps.at(0).description = undefined;
+
+			const expectedError = new HttpError(400, "La description de l\'étape est requise");
+
+			await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
+		});
+
+		it('should return inserted recipe', async () => {
+			const mockDetailedRecipe = {
+				id: 'recipeId',
+				name: 'Test Recipe',
+				description: 'Test Description',
+				preparation_time: 10,
+				cooking_time: 20,
+				servings: 4,
+				ingredients: [
+					{index: 1, name: 'Ingredient 1', quantity: '2', unit: 'ml'},
+					{index: 2, name: 'Ingredient 2', quantity: '1', unit: 'g'}
+				],
+				steps: [
+					{index: 1, description: 'Step 1 description'},
+					{index: 2, description: 'Step 2 description'}
+				]
+			};
+
+			const expectedDetailedRecipe = mockDetailedRecipe;
+
+			jest.spyOn(RecipeServices, 'getDetailedRecipeById').mockResolvedValue(mockDetailedRecipe);
+
+			const detailedRecipe = await RecipeServices.updateRecipe(recipe);
+
+			expect(mockRecipeQueries.updateRecipe).toHaveBeenCalled();
+			expect(detailedRecipe).toEqual(expectedDetailedRecipe);
+		});
+	});
+
+	it('deleteRecipe should throw an error when no recipe is deleted', async () => {
+		mockRecipeQueries.deleteRecipe.mockResolvedValue(false);
+
+		const expectedError = new HttpError(500, "Erreur lors de la suppression de la recette");
+
+		await expect(RecipeServices.deleteRecipe('recipeId')).rejects.toThrow(expectedError);
+	});
+
+	describe('updateRecipeImage', () => {
+		it('should throw an error when image not updated', async () => {
+			mockRecipeQueries.updateRecipeImage.mockResolvedValue(false);
+
+			const expectedError = new HttpError(500, "Erreur lors de la mise-à-jour de l'image");
+
+			await expect(RecipeServices.updateRecipeImage('recipeId')).rejects.toThrow(expectedError);
+		});
+
+		it('updateRecipeImage should return updated image', async () => {
+			const mockImageDetails = {
+				imageContent: "image content",
+				imageContentType: "image content type"
+			}
+
+			const expectedImageDetails = mockImageDetails;
+
+			mockRecipeQueries.updateRecipeImage.mockResolvedValue(true);
+
+			jest.spyOn(RecipeServices, 'getRecipeImageContent').mockResolvedValue(mockImageDetails);
+
+			const imageDetails = await RecipeServices.updateRecipeImage("recipeId", "imageBuffer", "imageContentType")
+
+			expect(imageDetails).toEqual(expectedImageDetails);
 		});
 	});
 });

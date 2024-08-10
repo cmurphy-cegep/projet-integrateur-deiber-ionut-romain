@@ -2,6 +2,10 @@ const RecipeQueries = require('../../src/queries/RecipeQueries.js');
 
 jest.mock('../../src/queries/dbPool');
 const mockPool = require('../../src/queries/dbPool');
+const mockClient = {
+	query: jest.fn(),
+	release: jest.fn()
+};
 
 describe('Test recipes queries', () => {
 	it('getAllRecipes should return a list of recipes', async () => {
@@ -122,27 +126,10 @@ describe('Test recipes queries', () => {
 		});
 	});
 
-	describe('getRecipeIngredientsByRecipeId', () => {
-		it('should return recipe ingredients with valid recipe id', async () => {
-			const recipeId = 'validId';
-			const mockResult = {
-				rows: [
-					{
-						index: 1,
-						name: 'Ingredient 1',
-						quantity: 100,
-						unit: 'g'
-					},
-					{
-						index: 2,
-						name: 'Ingredient 2',
-						quantity: 200,
-						unit: 'ml'
-					}
-				]
-			};
-
-			const expectResult = [
+	it('getRecipeIngredients should return recipe ingredients with valid recipe id', async () => {
+		const recipeId = 'validId';
+		const mockResult = {
+			rows: [
 				{
 					index: 1,
 					name: 'Ingredient 1',
@@ -155,41 +142,35 @@ describe('Test recipes queries', () => {
 					quantity: 200,
 					unit: 'ml'
 				}
-			];
+			]
+		};
 
-			mockPool.query.mockResolvedValue(mockResult);
+		const expectResult = [
+			{
+				index: 1,
+				name: 'Ingredient 1',
+				quantity: 100,
+				unit: 'g'
+			},
+			{
+				index: 2,
+				name: 'Ingredient 2',
+				quantity: 200,
+				unit: 'ml'
+			}
+		];
 
-			const result = await RecipeQueries.getRecipeIngredientsByRecipeId(recipeId);
+		mockPool.query.mockResolvedValue(mockResult);
 
-			expect(result).toEqual(expectResult);
-		});
+		const result = await RecipeQueries.getRecipeIngredients(recipeId);
 
-		it('should return an empty array if recipe id not found', async () => {
-			mockPool.query.mockResolvedValue({rows: []});
-
-			const result = await RecipeQueries.getRecipeIngredientsByRecipeId("invalidId");
-
-			expect(result).toEqual([]);
-		});
+		expect(result).toEqual(expectResult);
 	});
 
-	describe('getRecipeStepsByRecipeId', () => {
-		it('should return recipe steps with valid recipe id', async () => {
-			const recipeId = 'validId';
-			const mockResult = {
-				rows: [
-					{
-						index: 1,
-						description: 'Step 1'
-					},
-					{
-						index: 2,
-						description: 'Step 2'
-					}
-				]
-			};
-
-			const expectResult = [
+	it('getRecipeSteps should return recipe steps with valid recipe id', async () => {
+		const recipeId = 'validId';
+		const mockResult = {
+			rows: [
 				{
 					index: 1,
 					description: 'Step 1'
@@ -198,21 +179,151 @@ describe('Test recipes queries', () => {
 					index: 2,
 					description: 'Step 2'
 				}
-			];
+			]
+		};
 
-			mockPool.query.mockResolvedValue(mockResult);
+		const expectResult = [
+			{
+				index: 1,
+				description: 'Step 1'
+			},
+			{
+				index: 2,
+				description: 'Step 2'
+			}
+		];
 
-			const result = await RecipeQueries.getRecipeStepsByRecipeId(recipeId);
+		mockPool.query.mockResolvedValue(mockResult);
 
-			expect(result).toEqual(expectResult);
+		const result = await RecipeQueries.getRecipeSteps(recipeId);
+
+		expect(result).toEqual(expectResult);
+	});
+
+	describe('createRecipe', () => {
+		const recipe = {
+			id: 'recipeId',
+			name: 'Test Recipe',
+			description: 'Test Description',
+			preparation_time: 10,
+			cooking_time: 20,
+			servings: 4,
+			ingredients: [
+				{index: 1, name: 'Ingredient 1', quantity: '2', unit: 'ml'},
+				{index: 2, name: 'Ingredient 2', quantity: '1', unit: 'g'}
+			],
+			steps: [
+				{index: 1, description: 'Step 1 description'},
+				{index: 2, description: 'Step 2 description'}
+			]
+		};
+
+		it('should call queries functions, commit the transaction and release client', async () => {
+			mockPool.connect.mockResolvedValue(mockClient);
+			jest.spyOn(RecipeQueries, '_insertRecipeDescription');
+			jest.spyOn(RecipeQueries, '_insertRecipeIngredients');
+			jest.spyOn(RecipeQueries, '_insertRecipeSteps');
+
+
+			await RecipeQueries.createRecipe(recipe);
+
+			expect(mockClient.query).toHaveBeenCalledWith('BEGIN');
+			expect(RecipeQueries._insertRecipeDescription).toHaveBeenCalled();
+			expect(RecipeQueries._insertRecipeIngredients).toHaveBeenCalled();
+			expect(RecipeQueries._insertRecipeSteps).toHaveBeenCalled();
+			expect(mockClient.query).toHaveBeenCalledWith('COMMIT');
+			expect(mockClient.release).toHaveBeenCalled();
 		});
 
-		it('should return an empty array if recipe id not found', async () => {
-			mockPool.query.mockResolvedValue({rows: []});
+		it('should roll back the transaction if an error occurs', async () => {
+			jest.spyOn(RecipeQueries, '_insertRecipeDescription').mockRejectedValue(new Error('Test error'));
 
-			const result = await RecipeQueries.getRecipeStepsByRecipeId("invalidId");
+			await expect(RecipeQueries.createRecipe(recipe)).rejects.toThrow('Test error');
+			expect(mockClient.query).toHaveBeenCalledWith('ROLLBACK');
+			expect(mockClient.release).toHaveBeenCalled();
+		});
+	});
 
-			expect(result).toEqual([]);
+	describe('updateRecipe', () => {
+		const recipe = {
+			id: 'recipeId',
+			name: 'Test Recipe',
+			description: 'Test Description',
+			preparation_time: 10,
+			cooking_time: 20,
+			servings: 4,
+			ingredients: [
+				{index: 1, name: 'Ingredient 1', quantity: '2', unit: 'ml'},
+				{index: 2, name: 'Ingredient 2', quantity: '1', unit: 'g'}
+			],
+			steps: [
+				{index: 1, description: 'Step 1 description'},
+				{index: 2, description: 'Step 2 description'}
+			]
+		};
+
+		it('should call queries functions, commit the transaction and release client', async () => {
+			mockPool.connect.mockResolvedValue(mockClient);
+			jest.spyOn(RecipeQueries, '_editRecipeDescription');
+			jest.spyOn(RecipeQueries, '_deleteRecipeIngredients');
+			jest.spyOn(RecipeQueries, '_insertRecipeIngredients');
+			jest.spyOn(RecipeQueries, '_deleteRecipeSteps');
+			jest.spyOn(RecipeQueries, '_insertRecipeSteps');
+
+			await RecipeQueries.updateRecipe(recipe);
+
+			expect(mockClient.query).toHaveBeenCalledWith('BEGIN');
+			expect(mockClient.query).toHaveBeenCalledWith('COMMIT');
+			expect(RecipeQueries._editRecipeDescription).toHaveBeenCalled();
+			expect(RecipeQueries._deleteRecipeIngredients).toHaveBeenCalled();
+			expect(RecipeQueries._insertRecipeIngredients).toHaveBeenCalled();
+			expect(RecipeQueries._deleteRecipeSteps).toHaveBeenCalled();
+			expect(RecipeQueries._insertRecipeSteps).toHaveBeenCalled();
+			expect(mockClient.release).toHaveBeenCalled();
+		});
+
+		it('should roll back the transaction if an error occurs', async () => {
+			jest.spyOn(RecipeQueries, '_editRecipeDescription').mockRejectedValue(new Error('Test error'));
+
+			await expect(RecipeQueries._editRecipeDescription(recipe)).rejects.toThrow('Test error');
+			expect(mockClient.query).toHaveBeenCalledWith('ROLLBACK');
+			expect(mockClient.release).toHaveBeenCalled();
+		});
+	});
+
+	describe('deleteRecipe', () => {
+		it('should return true when a recipe is deleted', async () => {
+			mockPool.query.mockResolvedValue({rowCount: 1});
+
+			const result = await RecipeQueries.deleteRecipe('validId');
+
+			expect(result).toBeTruthy();
+		});
+
+		it('should return false when delete recipe fails', async () => {
+			mockPool.query.mockResolvedValue({rowCount: 0});
+
+			const result = await RecipeQueries.deleteRecipe('invalidId');
+
+			expect(result).toBeFalsy();
+		});
+	});
+
+	describe('updateRecipeImage', () => {
+		it('should return true when image is updated', async () => {
+			mockPool.query.mockResolvedValue({rowCount: 1});
+
+			const result = await RecipeQueries.updateRecipeImage('recipeId');
+
+			expect(result).toBeTruthy();
+		});
+
+		it('should return false when image is not updated', async () => {
+			mockPool.query.mockResolvedValue({rowCount: 0});
+
+			const result = await RecipeQueries.updateRecipeImage('recipeId');
+
+			expect(result).toBeFalsy();
 		});
 	});
 });

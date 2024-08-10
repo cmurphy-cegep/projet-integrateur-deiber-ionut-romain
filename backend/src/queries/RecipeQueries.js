@@ -1,7 +1,7 @@
 const pool = require('../queries/dbPool');
 
 class RecipeQueries {
-	static async _deleteIngredientsByRecipeId(recipeId, client) {
+	static async _deleteRecipeIngredients(recipeId, client) {
 		await client.query(
 			`DELETE
              FROM ingredient
@@ -10,7 +10,7 @@ class RecipeQueries {
 		);
 	}
 
-	static async _deleteStepsByRecipeId(recipeId, client) {
+	static async _deleteRecipeSteps(recipeId, client) {
 		await client.query(
 			`DELETE
              FROM step
@@ -119,7 +119,7 @@ class RecipeQueries {
 		return result.rows[0];
 	}
 
-	static async getRecipeIngredientsByRecipeId(recipeId) {
+	static async getRecipeIngredients(recipeId) {
 		const result = await pool.query(
 			`SELECT index, name, quantity, unit
              FROM ingredient
@@ -130,7 +130,7 @@ class RecipeQueries {
 		return result.rows;
 	}
 
-	static async getRecipeStepsByRecipeId(recipeId) {
+	static async getRecipeSteps(recipeId) {
 		const result = await pool.query(
 			`SELECT index, description
              FROM step
@@ -149,10 +149,10 @@ class RecipeQueries {
 
 			await this._editRecipeDescription(recipe, client);
 
-			await this._deleteIngredientsByRecipeId(recipe.id, client);
+			await this._deleteRecipeIngredients(recipe.id, client);
 			await this._insertRecipeIngredients(recipe, client);
 
-			await this._deleteStepsByRecipeId(recipe.id, client);
+			await this._deleteRecipeSteps(recipe.id, client);
 			await this._insertRecipeSteps(recipe, client);
 
 			await client.query('COMMIT');

@@ -1,7 +1,7 @@
 const passport = require('passport');
 const BasicStrategyModified = require('./BasicStrategyModified');
 const crypto = require('crypto')
-const {iterations, keylen, digest} = require('../config/cryptoConfig');
+const {iterations, keylen, digest} = require('./cryptoConfig');
 const UserAccountServices = require("../services/UserAccountServices");
 
 passport.use(new BasicStrategyModified((username, password, done) => {
