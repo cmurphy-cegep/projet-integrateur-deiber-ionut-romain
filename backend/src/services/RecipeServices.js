@@ -2,6 +2,13 @@ const HttpError = require("../error/HttpError");
 const RecipeQueries = require('../queries/RecipeQueries.js');
 
 class RecipeServices {
+	static _addPropertiesToComment(comment, userId, recipeId) {
+		comment.text = "" + comment.text;
+		comment.publicationDate = new Date().toISOString();
+		comment.userId = "" + userId;
+		comment.recipeId = "" + recipeId;
+	}
+
 	static _checkRecipeProperties(recipe) {
 		if (!recipe.name) {
 			throw new HttpError(400, 'Le nom est requis');
@@ -102,11 +109,14 @@ class RecipeServices {
 
 	static async _getRecipeComment(commentId) {
 		const result = await RecipeQueries.getRecipeComment(commentId);
-		return {
-			text: result.text,
-			publicationDate: result.publication_date,
-			fullname: result.full_name
+		if (result) {
+			return {
+				text: result.text,
+				publicationDate: result.publication_date,
+				fullname: result.full_name
+			}
 		}
+		return undefined;
 	}
 
 	static async createRecipe(recipe) {
@@ -121,10 +131,7 @@ class RecipeServices {
 			throw new HttpError(400, 'Le texte est requis');
 		}
 
-		comment.text = "" + comment.text;
-		comment.publicationDate = new Date().toISOString();
-		comment.userId = "" + userId;
-		comment.recipeId = "" + recipeId;
+		this._addPropertiesToComment(comment, userId, recipeId);
 
 		const commentId = await RecipeQueries.insertRecipeComment(comment);
 		if (!commentId) {
