@@ -326,4 +326,97 @@ describe('Test recipes queries', () => {
 			expect(result).toBeFalsy();
 		});
 	});
+
+	describe('getRecipeComment', () => {
+		it('should return comment details with valid comment id', async () => {
+			const commenteId = 'validId';
+			const mockResult = {
+				rows: [{
+					text: 'Test Comment',
+					publication_date: '2024-08-10 18:30:00',
+					full_name: 'user fullname'
+				}]
+			};
+
+			const expectResult = {
+				text: 'Test Comment',
+				publication_date: '2024-08-10 18:30:00',
+				full_name: 'user fullname'
+			};
+
+			mockPool.query.mockResolvedValue(mockResult);
+
+			const result = await RecipeQueries.getRecipeComment(commenteId);
+
+			expect(result).toEqual(expectResult);
+		});
+
+		it('should return "undefined" if comment id not found', async () => {
+			mockPool.query.mockResolvedValue({rows: []});
+
+			const result = await RecipeQueries.getRecipeComment("invalidId");
+
+			expect(result).toBeUndefined();
+		});
+	});
+
+	it('getRecipeIngredients should return recipe ingredients with valid recipe id', async () => {
+		const recipeId = 'validId';
+		const mockResult = {
+			rows: [
+				{
+					text: 'Test Comment 1',
+					publication_date: '2024-08-10 18:30:00',
+					full_name: 'user fullname'
+				},
+				{
+					text: 'Test Comment 2',
+					publication_date: '2024-08-10 18:30:00',
+					full_name: 'user fullname'
+				}
+			]
+		};
+
+		const expectResult = [
+			{
+				text: 'Test Comment 1',
+				publication_date: '2024-08-10 18:30:00',
+				full_name: 'user fullname'
+			},
+			{
+				text: 'Test Comment 2',
+				publication_date: '2024-08-10 18:30:00',
+				full_name: 'user fullname'
+			}
+		];
+
+		mockPool.query.mockResolvedValue(mockResult);
+
+		const result = await RecipeQueries.getRecipeComments(recipeId);
+
+		expect(result).toEqual(expectResult);
+	});
+
+	it('insertRecipeComment should return commentID', async () => {
+		const commentId = 'validId';
+		const comment = {
+			text: 'Test Comment',
+			publicationDate: '2024-08-10 18:30:00',
+			userId: 'userId',
+			recipeId: 'recipeId'
+		}
+		const mockResult = {
+			rows: [
+				{
+					comment_id: commentId
+				},
+			]
+		};
+
+		mockPool.query.mockResolvedValue(mockResult);
+
+		const result = await RecipeQueries.insertRecipeComment(comment);
+
+		expect(result).toEqual(commentId);
+	});
 });
