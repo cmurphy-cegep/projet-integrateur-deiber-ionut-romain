@@ -96,10 +96,6 @@ router.put('/:id',
 		}
 
 		const id = req.params.id;
-		if (!id || id === '') {
-			return next(new HttpError(400, 'Le paramètre id est requis'));
-		}
-
 		if (id !== req.body.id) {
 			return next(new HttpError(400, `Le paramètre spécifie l'id ${id} alors que la recette fournie a l'id ${req.body.id}`));
 		}
@@ -126,10 +122,6 @@ router.delete('/:id',
 		}
 
 		const id = req.params.id;
-		if (!id || id === '') {
-			return next(new HttpError(400, 'Le paramètre id est requis'));
-		}
-
 
 		try {
 			const recipe = await RecipeServices.getRecipeById(id);
@@ -159,9 +151,6 @@ router.post('/:id/image',
 		}
 
 		const id = req.params.id;
-		if (!id || id === '') {
-			return next(new HttpError(400, 'Le paramètre id est requis'));
-		}
 
 		try {
 			const recipe = await RecipeServices.getRecipeById(id);

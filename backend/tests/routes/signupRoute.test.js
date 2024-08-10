@@ -5,64 +5,66 @@ jest.mock('../../src/services/UserAccountServices');
 const mockUserAccountServices = require('../../src/services/UserAccountServices');
 
 describe('Test signup route', () => {
-	it('with undefined username should return code 400', async () => {
-		const bodyReq = {
-			username: undefined,
+	let user;
+
+	beforeEach(() => {
+		user = {
+			username: 'userId',
 			password: 'password',
 			fullname: 'fullname'
 		};
+	});
+
+	it('with undefined username should return code 400', async () => {
+		user.username = undefined;
 
 		const response = await request(app)
 			.post('/signup')
-			.send(bodyReq)
+			.send(user)
 			.expect(400)
 
 		expect(response.body.message).toEqual('L\'identifiant est requis');
 	});
 
 	it('with undefined password should return code 400', async () => {
-		const bodyReq = {
-			username: 'userId',
-			password: undefined,
-			fullname: 'fullname'
-		};
+		user.password = undefined;
 
 		const response = await request(app)
 			.post('/signup')
-			.send(bodyReq)
+			.send(user)
 			.expect(400)
 
 		expect(response.body.message).toEqual('Le mot de passe est requis');
 	});
 
 	it('with undefined fullname should return code 400', async () => {
-		const bodyReq = {
-			username: 'userId',
-			password: 'password',
-			fullname: undefined
-		};
+		user.fullname = undefined;
+
 		const response = await request(app)
 			.post('/signup')
-			.send(bodyReq)
+			.send(user)
 			.expect(400)
 
 		expect(response.body.message).toEqual('Le nom complet est requis');
 	});
 
-	it('with successful signup should return user information in json with code 200', async () => {
-		const userId = 'userId';
-		const password = 'motdepasse';
-		const fullname = 'fullname';
+	it('should throw an error with forbidden character in userId', async () => {
+		user.username = 'username%';
 
-		const bodyReq = {
-			username: userId,
-			password: password,
-			fullname: fullname
-		};
+		const expectedMessageError = 'L\'identifiant contient des caractères interdits';
 
+		const response = await request(app)
+			.post('/signup')
+			.send(user)
+			.expect(400)
+
+		expect(response.body.message).toEqual(expectedMessageError);
+	});
+
+	it('with successful signup should return user information in json with code 201', async () => {
 		const mockUserDetails = {
-			userId: userId,
-			fullname: fullname,
+			userId: 'userId',
+			fullname: 'fullname',
 			isAdmin: false
 		};
 		const expectUserDetails = mockUserDetails;
@@ -72,7 +74,7 @@ describe('Test signup route', () => {
 
 		const response = await request(app)
 			.post('/signup')
-			.send(bodyReq)
+			.send(user)
 			.expect('Content-Type', /json/)
 			.expect(201)
 
@@ -80,35 +82,23 @@ describe('Test signup route', () => {
 	});
 
 	it('with unavailable username should return code 409', async () => {
-		const bodyReq = {
-			username: 'userId',
-			password: 'password',
-			fullname: 'fullname'
-		};
-
 		mockUserAccountServices.getUserByUserId.mockResolvedValue({});
 
 		const response = await request(app)
 			.post('/signup')
-			.send(bodyReq)
+			.send(user)
 			.expect(409)
 
 		expect(response.body.message).toEqual('L\'identifiant n\'est pas disponible');
 	});
 
 	it('should return code 500 if query fails', async () => {
-		const bodyReq = {
-			username: 'userId',
-			password: 'password',
-			fullname: 'fullname'
-		};
-
 		mockUserAccountServices.getUserByUserId.mockResolvedValue(undefined);
 		mockUserAccountServices.createUserAccount.mockRejectedValue(new Error('Database query failed'));
 
 		await request(app)
 			.post('/signup')
-			.send(bodyReq)
+			.send(user)
 			.expect(500);
 	});
 });
