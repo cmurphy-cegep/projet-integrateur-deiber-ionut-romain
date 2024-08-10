@@ -109,6 +109,18 @@ class RecipeQueries {
 		return result.rows[0];
 	}
 
+	static async getRecipeComments(recipeId) {
+		const result = await pool.query(
+			`SELECT c.text, c.publication_date, u.full_name
+             FROM comment c
+                      JOIN user_account u ON u.user_account_id = c.user_account_id
+             WHERE recipe_id = $1
+             ORDER BY c.publication_date DESC`,
+			[recipeId]
+		);
+		return result.rows;
+	}
+
 	static async getRecipeImageContent(recipeId) {
 		const result = await pool.query(
 			`SELECT image_content, image_content_type

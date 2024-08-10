@@ -124,6 +124,7 @@ class RecipeServices {
 		if (recipe) {
 			recipe.ingredients = await RecipeQueries.getRecipeIngredients(recipeId);
 			recipe.steps = await RecipeQueries.getRecipeSteps(recipeId);
+			recipe.comments = await RecipeQueries.getRecipeComments(recipeId);
 			return recipe;
 		}
 		return undefined;
