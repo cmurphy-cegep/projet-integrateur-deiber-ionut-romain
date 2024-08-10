@@ -172,7 +172,7 @@ describe('Test recipes routes', () => {
 
 			const response = await request(app)
 				.post('/recipes/')
-				.auth('noAdmin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.send(recipe)
 				.expect(403)
 
@@ -186,7 +186,7 @@ describe('Test recipes routes', () => {
 
 			const response = await request(app)
 				.post('/recipes/')
-				.auth('admin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.send(recipe)
 				.expect(400)
 
@@ -200,7 +200,7 @@ describe('Test recipes routes', () => {
 
 			const response = await request(app)
 				.post('/recipes/')
-				.auth('admin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.send(recipe)
 				.expect(400)
 
@@ -214,7 +214,7 @@ describe('Test recipes routes', () => {
 
 			const response = await request(app)
 				.post('/recipes/')
-				.auth('admin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.send(recipe)
 				.expect(400)
 
@@ -227,7 +227,7 @@ describe('Test recipes routes', () => {
 
 			const response = await request(app)
 				.post('/recipes/')
-				.auth('admin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.send(recipe)
 				.expect(201)
 
@@ -238,7 +238,7 @@ describe('Test recipes routes', () => {
 			mockRecipeServices.getRecipeById.mockRejectedValue(new Error('Database query failed'));
 			await request(app)
 				.post('/recipes/')
-				.auth('admin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.send(recipe)
 				.expect(500);
 		});
@@ -284,7 +284,7 @@ describe('Test recipes routes', () => {
 
 			const response = await request(app)
 				.put('/recipes/recipeId')
-				.auth('noAdmin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.send(recipe)
 				.expect(403)
 
@@ -299,7 +299,7 @@ describe('Test recipes routes', () => {
 
 			const response = await request(app)
 				.put('/recipes/recipeId')
-				.auth('admin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.send(recipe)
 				.expect(400)
 
@@ -313,7 +313,7 @@ describe('Test recipes routes', () => {
 
 			const response = await request(app)
 				.put('/recipes/recipeId')
-				.auth('admin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.send(recipe)
 				.expect(404)
 
@@ -326,7 +326,7 @@ describe('Test recipes routes', () => {
 
 			const response = await request(app)
 				.put('/recipes/recipeId')
-				.auth('admin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.send(recipe)
 				.expect(200)
 
@@ -337,7 +337,7 @@ describe('Test recipes routes', () => {
 			mockRecipeServices.getRecipeById.mockRejectedValue(new Error('Database query failed'));
 			await request(app)
 				.put('/recipes/recipeId')
-				.auth('admin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.send(recipe)
 				.expect(500);
 		});
@@ -365,7 +365,7 @@ describe('Test recipes routes', () => {
 
 			const response = await request(app)
 				.delete('/recipes/recipeId')
-				.auth('noAdmin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.expect(403)
 
 			expect(response.body.message).toEqual(expectedMessageError);
@@ -378,7 +378,7 @@ describe('Test recipes routes', () => {
 
 			const response = await request(app)
 				.delete('/recipes/recipeId')
-				.auth('admin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.expect(404)
 
 			expect(response.body.message).toEqual(expectedMessageError);
@@ -391,7 +391,7 @@ describe('Test recipes routes', () => {
 
 			const response = await request(app)
 				.delete('/recipes/recipeId')
-				.auth('admin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.expect(200)
 
 			expect(response.body.message).toEqual(expectedMessage);
@@ -402,7 +402,7 @@ describe('Test recipes routes', () => {
 
 			await request(app)
 				.delete('/recipes/recipeId')
-				.auth('admin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.expect(500);
 		});
 	});
@@ -429,7 +429,7 @@ describe('Test recipes routes', () => {
 
 			const response = await request(app)
 				.post('/recipes/recipeId/image')
-				.auth('noAdmin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.attach('recipe-image', Buffer.from('image content'), 'image.jpg')
 				.expect(403);
 
@@ -443,7 +443,7 @@ describe('Test recipes routes', () => {
 
 			const response = await request(app)
 				.post('/recipes/recipeId/image')
-				.auth('admin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.attach('recipe-image', Buffer.from('image content'), 'image.jpg')
 				.expect(404);
 
@@ -457,7 +457,7 @@ describe('Test recipes routes', () => {
 
 			const response = await request(app)
 				.post('/recipes/recipeId/image')
-				.auth('admin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.attach('recipe-image', Buffer.from('image content'), 'image.jpg')
 				.expect(200);
 
@@ -469,8 +469,73 @@ describe('Test recipes routes', () => {
 
 			await request(app)
 				.post('/recipes/recipeId/image')
-				.auth('admin', 'topsecret')
+				.auth('userId', 'topsecret')
 				.attach('recipe-image', Buffer.from('image content'), 'image.jpg')
+				.expect(500);
+		});
+	});
+
+	describe('POST /recipes/:id/comment', () => {
+		let mockUserDetails;
+		let comment
+
+		beforeEach(() => {
+			mockUserDetails = {
+				userId: 'userId',
+				passwordHash: 'UeexcyA2hWKIZejQoV2ajaqhdvxqyZHXGmfRzg3TwJLhhmiBVGzYh8bUkKCsWJZ4E9oFmuQwEHYBI63pQK47Vw==',
+				passwordSalt: 'HLq2XxQQdDT/Fj0pRI3JNA==',
+				fullname: 'fullname',
+				isAdmin: false
+			};
+
+			mockUserAccountServices.getUserByUserId.mockResolvedValue(mockUserDetails);
+
+			comment = {
+				text: "Text Comment"
+			}
+		});
+
+		it('should throw an error with code 404 if recipe does not exist', async () => {
+			const expectedMessageError = 'L\'id recipeId ne correspond à aucune recette existante';
+
+			mockRecipeServices.getRecipeById.mockResolvedValue(false);
+
+			const response = await request(app)
+				.post('/recipes/recipeId/comment')
+				.auth('userId', 'topsecret')
+				.send(comment)
+				.expect(404);
+
+			expect(response.body.message).toEqual(expectedMessageError);
+		});
+
+		it('should successfully create the comment and return code 201 with comment', async () => {
+			const mockComment = {
+				text: 'Test Comment',
+				publicationDate: '2024-08-10 18:30:00',
+				fullname: 'user fullname'
+			};
+			const expectedComment = mockComment;
+
+			mockRecipeServices.getRecipeById.mockResolvedValue(true);
+			mockRecipeServices.createRecipeComment.mockResolvedValue(mockComment);
+
+			const response = await request(app)
+				.post('/recipes/recipeId/comment')
+				.auth('userId', 'topsecret')
+				.send(comment)
+				.expect(201);
+
+			expect(response.body).toEqual(expectedComment);
+		});
+
+		it('should return code 500 if query fails', async () => {
+			mockRecipeServices.getRecipeById.mockRejectedValue(new Error('Database query failed'));
+
+			await request(app)
+				.post('/recipes/recipeId/comment')
+				.auth('userId', 'topsecret')
+				.send(comment)
 				.expect(500);
 		});
 	});

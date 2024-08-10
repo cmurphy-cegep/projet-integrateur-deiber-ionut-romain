@@ -109,6 +109,29 @@ class RecipeQueries {
 		return result.rows[0];
 	}
 
+	static async getRecipeComment(commentId) {
+		const result = await pool.query(
+			`SELECT c.text, TO_CHAR(c.publication_date, 'YYYY-MM-DD HH24:MI:SS') AS publication_date, u.full_name
+             FROM comment c
+                      JOIN user_account u ON u.user_account_id = c.user_account_id
+             WHERE c.comment_id = $1`,
+			[commentId]
+		);
+		return result.rows[0];
+	}
+
+	static async getRecipeComments(recipeId) {
+		const result = await pool.query(
+			`SELECT c.text, TO_CHAR(publication_date, 'YYYY-MM-DD HH24:MI:SS') AS publication_date, u.full_name
+             FROM comment c
+                      JOIN user_account u ON u.user_account_id = c.user_account_id
+             WHERE recipe_id = $1
+             ORDER BY publication_date DESC`,
+			[recipeId]
+		);
+		return result.rows;
+	}
+
 	static async getRecipeImageContent(recipeId) {
 		const result = await pool.query(
 			`SELECT image_content, image_content_type
@@ -139,6 +162,17 @@ class RecipeQueries {
 			[recipeId]
 		);
 		return result.rows;
+	}
+
+	static async insertRecipeComment(comment) {
+		const result = await pool.query(
+			`INSERT INTO comment (text, publication_date, user_account_id, recipe_id)
+             VALUES ($1, $2, $3, $4)
+             RETURNING comment_id`,
+			[comment.text, comment.publicationDate, comment.userId, comment.recipeId]
+		);
+
+		return result.rows[0].comment_id;
 	}
 
 	static async updateRecipe(recipe) {
@@ -175,7 +209,6 @@ class RecipeQueries {
 
 		return result.rowCount > 0;
 	}
-
 }
 
 module.exports = RecipeQueries;

@@ -42,6 +42,9 @@ VALUES ('admin', 'Administrateur', true,
         'HLq2XxQQdDT/Fj0pRI3JNA=='), -- mot de passe: topsecret
        ('josbleau', 'Jos Bleau', false,
         '8/WC2DkPRMcQlH7Rx/RWuzog7SyaV1cUFmnPXi4cmOTG4GAX/rdzX9LwqiculzIjc4eF+mVnxups26ftgZcRAw==',
+        '8lqjhHBk0EsaaMObpXkfQQ=='), -- mot de passe: 12345
+       ('tomcruise', 'Tom Cruise', false,
+        '8/WC2DkPRMcQlH7Rx/RWuzog7SyaV1cUFmnPXi4cmOTG4GAX/rdzX9LwqiculzIjc4eF+mVnxups26ftgZcRAw==',
         '8lqjhHBk0EsaaMObpXkfQQ==') -- mot de passe: 12345
 ;
 INSERT INTO recipe (recipe_id, name, description, preparation_time, cooking_time, servings, image_content,
@@ -164,3 +167,22 @@ VALUES (1, 'Préchauffer le barbecue à puissance élevée. Huiler la grille.',
        (5,
         'Dans des assiettes creuses, répartir les légumes, le tofu et la moitié du fromage en grains. Arroser de la sauce. Garnir du reste du fromage et parsemer du persil. Servir aussitôt.',
         'poutine_au_tofu_a_la_plaque_sauce_aux_poivrons');
+
+INSERT INTO comment (text, publication_date, recipe_id, user_account_id)
+VALUES ('Mon pixar préféré !', '2024-08-10 14:30:00', 'ratatouille', 'josbleau'),
+       ('Merci pour cette recette qui me rappelle celle de ma tendre mère.', '2024-08-12 10:22:13', 'ratatouille',
+        'tomcruise'),
+       ('Vive le Quebec !', '2024-08-10 14:30:00', 'poutine_au_tofu_a_la_plaque_sauce_aux_poivrons', 'josbleau'),
+       ('Délicieux et facile à préparer!', '2024-08-15 09:00:00', 'burger_saumon_sauce_barbecue_poivrons_grilles',
+        'josbleau'),
+       ('Une recette parfaite pour les soirées d''été.', '2024-08-16 12:45:00',
+        'burger_saumon_sauce_barbecue_poivrons_grilles', 'tomcruise'),
+       ('Le saumon était parfaitement cuit.', '2024-08-19 11:15:00', 'saumon_teriyaki_au_four_a_pizza', 'tomcruise'),
+       ('Une recette simple mais savoureuse.', '2024-08-20 16:50:00', 'saumon_teriyaki_au_four_a_pizza', 'josbleau'),
+       ('La sauce aux poivrons est incroyable!', '2024-08-21 10:05:00',
+        'poutine_au_tofu_a_la_plaque_sauce_aux_poivrons', 'josbleau'),
+       ('Une poutine originale et délicieuse.', '2024-08-22 19:40:00', 'poutine_au_tofu_a_la_plaque_sauce_aux_poivrons',
+        'tomcruise'),
+       ('Comment éditer mon commentaire précédent ?!! Après reflexion, je préfère Wall-E !!', '2024-08-25 14:30:00',
+        'ratatouille',
+        'josbleau')

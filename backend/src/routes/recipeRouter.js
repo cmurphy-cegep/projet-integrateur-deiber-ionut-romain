@@ -172,4 +172,25 @@ router.post('/:id/image',
 		}
 	});
 
+router.post('/:id/comment',
+	passport.authenticate('basic', {session: false}),
+	async (req, res, next) => {
+
+		const recipeId = req.params.id;
+		const userId = req.user.userId;
+
+		try {
+			const recipe = await RecipeServices.getRecipeById(recipeId);
+			if (!recipe) {
+				return next(new HttpError(404, `L'id ${recipeId} ne correspond à aucune recette existante`));
+			}
+
+			const result = await RecipeServices.createRecipeComment(recipeId, userId, req.body);
+
+			res.status(201).json(result);
+		} catch (err) {
+			next(err);
+		}
+	});
+
 module.exports = router;
