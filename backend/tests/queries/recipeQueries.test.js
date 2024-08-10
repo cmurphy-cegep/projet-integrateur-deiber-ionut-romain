@@ -31,7 +31,7 @@ describe('Test recipes queries', () => {
 				]
 			};
 
-			const expectResult = [
+			const expectedResult = [
 				{
 					recipe_id: 1,
 					name: 'Recipe 1',
@@ -54,7 +54,7 @@ describe('Test recipes queries', () => {
 
 			const result = await RecipeQueries.getAllRecipes();
 
-			expect(result).toEqual(expectResult);
+			expect(result).toEqual(expectedResult);
 		});
 
 		describe('getRecipeById', () => {
@@ -71,7 +71,7 @@ describe('Test recipes queries', () => {
 					}]
 				};
 
-				const expectResult = {
+				const expectedResult = {
 					recipe_id: recipeId,
 					name: 'Test Recipe',
 					description: 'Test Description',
@@ -84,7 +84,7 @@ describe('Test recipes queries', () => {
 
 				const result = await RecipeQueries.getRecipeById(recipeId);
 
-				expect(result).toEqual(expectResult);
+				expect(result).toEqual(expectedResult);
 			});
 
 			it('should return "undefined" if recipe id not found', async () => {
@@ -115,7 +115,7 @@ describe('Test recipes queries', () => {
 				]
 			};
 
-			const expectResult = [
+			const expectedResult = [
 				{
 					index: 1,
 					name: 'Ingredient 1',
@@ -134,7 +134,7 @@ describe('Test recipes queries', () => {
 
 			const result = await RecipeQueries.getRecipeIngredients(recipeId);
 
-			expect(result).toEqual(expectResult);
+			expect(result).toEqual(expectedResult);
 		});
 
 		it('getRecipeSteps should return recipe steps with valid recipe id', async () => {
@@ -152,7 +152,7 @@ describe('Test recipes queries', () => {
 				]
 			};
 
-			const expectResult = [
+			const expectedResult = [
 				{
 					index: 1,
 					description: 'Step 1'
@@ -167,7 +167,7 @@ describe('Test recipes queries', () => {
 
 			const result = await RecipeQueries.getRecipeSteps(recipeId);
 
-			expect(result).toEqual(expectResult);
+			expect(result).toEqual(expectedResult);
 		});
 
 		describe('createRecipe', () => {
@@ -291,7 +291,7 @@ describe('Test recipes queries', () => {
 					}]
 				};
 
-				const expectResult = {
+				const expectedResult = {
 					image_content: 'imageContent',
 					image_content_type: 'image/jpeg'
 				};
@@ -300,7 +300,7 @@ describe('Test recipes queries', () => {
 
 				const result = await RecipeQueries.getRecipeImageContent(recipeId);
 
-				expect(result).toEqual(expectResult);
+				expect(result).toEqual(expectedResult);
 			});
 
 			it('should return "undefined" if recipe id not found', async () => {
@@ -343,7 +343,7 @@ describe('Test recipes queries', () => {
 					}]
 				};
 
-				const expectResult = {
+				const expectedResult = {
 					text: 'Test Comment',
 					publication_date: '2024-08-10 18:30:00',
 					full_name: 'user fullname'
@@ -353,7 +353,7 @@ describe('Test recipes queries', () => {
 
 				const result = await RecipeQueries.getRecipeComment(commenteId);
 
-				expect(result).toEqual(expectResult);
+				expect(result).toEqual(expectedResult);
 			});
 
 			it('should return "undefined" if comment id not found', async () => {
@@ -382,7 +382,7 @@ describe('Test recipes queries', () => {
 				]
 			};
 
-			const expectResult = [
+			const expectedResult = [
 				{
 					text: 'Test Comment 1',
 					publication_date: '2024-08-10 18:30:00',
@@ -399,7 +399,7 @@ describe('Test recipes queries', () => {
 
 			const result = await RecipeQueries.getRecipeComments(recipeId);
 
-			expect(result).toEqual(expectResult);
+			expect(result).toEqual(expectedResult);
 		});
 
 		it('insertRecipeComment should return commentID', async () => {
