@@ -153,6 +153,16 @@ class RecipeQueries {
 		return result.rows;
 	}
 
+	static async getRecipeRatings(recipeId) {
+		const result = await pool.query(
+			`SELECT rating
+             FROM rating
+             WHERE recipe_id = $1`,
+			[recipeId]
+		);
+		return result.rows;
+	}
+
 	static async getRecipeSteps(recipeId) {
 		const result = await pool.query(
 			`SELECT index, description

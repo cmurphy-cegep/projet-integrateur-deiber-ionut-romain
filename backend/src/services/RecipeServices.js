@@ -107,6 +107,22 @@ class RecipeServices {
 		return `/recipes/${recipeId}/image`;
 	}
 
+	static _getRatingsStats(ratings) {
+		const ratingCount = ratings.length;
+		let total = 0;
+
+		ratings.forEach(rating => {
+			total += rating.rating;
+		});
+
+		const average = ratingCount > 0 ? total / ratingCount : undefined;
+
+		return {
+			ratingAverage: average,
+			ratingCount: ratingCount
+		};
+	}
+
 	static async _getRecipeComment(commentId) {
 		const result = await RecipeQueries.getRecipeComment(commentId);
 		if (result) {
@@ -117,6 +133,15 @@ class RecipeServices {
 			}
 		}
 		return undefined;
+	}
+
+	static async _getRecipeComments(recipeId) {
+		const results = await RecipeQueries.getRecipeComments(recipeId);
+		return results.map(result => ({
+			text: result.text,
+			publicationDate: result.publication_date,
+			fullname: result.full_name
+		}));
 	}
 
 	static async createRecipe(recipe) {
@@ -158,7 +183,11 @@ class RecipeServices {
 		if (recipe) {
 			recipe.ingredients = await RecipeQueries.getRecipeIngredients(recipeId);
 			recipe.steps = await RecipeQueries.getRecipeSteps(recipeId);
-			recipe.comments = await RecipeQueries.getRecipeComments(recipeId);
+			recipe.comments = await this._getRecipeComments(recipeId);
+
+			const ratings = await RecipeQueries.getRecipeRatings(recipeId);
+			recipe.ratings = this._getRatingsStats(ratings);
+
 			return recipe;
 		}
 		return undefined;
