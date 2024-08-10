@@ -52,10 +52,10 @@ CREATE INDEX idx_step_recipe_id ON step (recipe_id);
 CREATE TABLE comment
 (
     comment_id       serial PRIMARY KEY,
-    text             text                     NOT NULL,
-    publication_date timestamp with time zone NOT NULL,
-    recipe_id        text                     NOT NULL REFERENCES recipe (recipe_id) ON DELETE CASCADE,
-    user_account_id  text                     NOT NULL REFERENCES user_account (user_account_id) ON DELETE NO ACTION
+    text             text      NOT NULL,
+    publication_date timestamp NOT NULL,
+    recipe_id        text      NOT NULL REFERENCES recipe (recipe_id) ON DELETE CASCADE,
+    user_account_id  text      NOT NULL REFERENCES user_account (user_account_id) ON DELETE NO ACTION
 );
 
 CREATE INDEX idx_comment_recipe_id ON comment (recipe_id);

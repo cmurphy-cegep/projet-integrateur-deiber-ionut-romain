@@ -100,6 +100,15 @@ class RecipeServices {
 		return `/recipes/${recipeId}/image`;
 	}
 
+	static async _getRecipeComment(commentId) {
+		const result = await RecipeQueries.getRecipeComment(commentId);
+		return {
+			text: result.text,
+			publicationDate: result.publication_date,
+			fullname: result.full_name
+		}
+	}
+
 	static async createRecipe(recipe) {
 		this._checkRecipeProperties(recipe);
 		this._convertRecipePropertiesToString(recipe);
@@ -107,10 +116,28 @@ class RecipeServices {
 		return this.getDetailedRecipeById(recipe.id);
 	}
 
+	static async createRecipeComment(recipeId, userId, comment) {
+		if (!comment.text) {
+			throw new HttpError(400, 'Le texte est requis');
+		}
+
+		comment.text = "" + comment.text;
+		comment.publicationDate = new Date().toISOString();
+		comment.userId = "" + userId;
+		comment.recipeId = "" + recipeId;
+
+		const commentId = await RecipeQueries.insertRecipeComment(comment);
+		if (!commentId) {
+			throw new Error("Erreur lors de la création du commentaire");
+		}
+
+		return this._getRecipeComment(commentId);
+	}
+
 	static async deleteRecipe(recipeId) {
 		const isDeleted = await RecipeQueries.deleteRecipe(recipeId);
 		if (!isDeleted) {
-			throw new HttpError(500, "Erreur lors de la suppression de la recette");
+			throw new Error("Erreur lors de la suppression de la recette");
 		}
 	}
 
@@ -161,7 +188,7 @@ class RecipeServices {
 	static async updateRecipeImage(recipeId, imageBuffer, imageContentType) {
 		const isUpdated = await RecipeQueries.updateRecipeImage(recipeId, imageBuffer, imageContentType);
 		if (!isUpdated) {
-			throw new HttpError(500, "Erreur lors de la mise-à-jour de l'image");
+			throw new Error("Erreur lors de la mise-à-jour de l'image");
 		}
 
 		return await this.getRecipeImageContent(recipeId);
