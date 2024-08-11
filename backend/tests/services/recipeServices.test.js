@@ -95,7 +95,7 @@ describe('Test recipe services', () => {
 		describe('getDetailedRecipeById', () => {
 			it('should return a detailed recipe with valid id', async () => {
 				const recipeId = "validId";
-				const mockGetRecipeById = {
+				const mockRecipe = {
 					id: recipeId,
 					name: 'Test Recipe',
 					description: 'Test Description',
@@ -104,18 +104,36 @@ describe('Test recipe services', () => {
 					servings: 4,
 					image: `/recipes/${recipeId}/image`
 				};
-				const mockGetRecipeIngredientsByRecipeId = [
+				const mockIngredients = [
 					{index: 1, name: 'Ingredient 1', quantity: '2', unit: 'ml'},
 					{index: 2, name: 'Ingredient 2', quantity: '1', unit: 'g'}
 				];
-				const mockGetRecipeStepsRecipeById = [
+				const mockSteps = [
 					{index: 1, description: 'Step 1 description'},
 					{index: 2, description: 'Step 2 description'}
 				];
+				const mockComments = [
+					{
+						text: 'Text Comment',
+						publicationDate: '2024-08-10 18:30:00',
+						fullname: 'user fullname'
+					},
+					{
+						text: 'Text Comment',
+						publicationDate: '2024-08-10 18:30:00',
+						fullname: 'user fullname'
+					}
+				];
+				const mockRatingsStats = {
+					ratingAverage: 2.5,
+					ratingCount: 2
+				};
 
-				jest.spyOn(RecipeServices, 'getRecipeById').mockResolvedValue(mockGetRecipeById);
-				mockRecipeQueries.getRecipeIngredients.mockResolvedValue(mockGetRecipeIngredientsByRecipeId);
-				mockRecipeQueries.getRecipeSteps.mockResolvedValue(mockGetRecipeStepsRecipeById);
+				jest.spyOn(RecipeServices, 'getRecipeById').mockResolvedValue(mockRecipe);
+				mockRecipeQueries.getRecipeIngredients.mockResolvedValue(mockIngredients);
+				mockRecipeQueries.getRecipeSteps.mockResolvedValue(mockSteps);
+				jest.spyOn(RecipeServices, '_getRecipeComments').mockResolvedValue(mockComments);
+				jest.spyOn(RecipeServices, '_getRatingsStats').mockReturnValue(mockRatingsStats);
 
 				const expectedDetailedRecipe = {
 					id: recipeId,
@@ -132,7 +150,23 @@ describe('Test recipe services', () => {
 					steps: [
 						{index: 1, description: 'Step 1 description'},
 						{index: 2, description: 'Step 2 description'}
-					]
+					],
+					comments: [
+						{
+							text: 'Text Comment',
+							publicationDate: '2024-08-10 18:30:00',
+							fullname: 'user fullname'
+						},
+						{
+							text: 'Text Comment',
+							publicationDate: '2024-08-10 18:30:00',
+							fullname: 'user fullname'
+						}
+					],
+					ratings: {
+						ratingAverage: 2.5,
+						ratingCount: 2
+					}
 				};
 
 				const detailedRecipe = await RecipeServices.getDetailedRecipeById(recipeId);
@@ -546,7 +580,7 @@ describe('Test recipe services', () => {
 			it('should return a comment', async () => {
 				const recipeId = "validId";
 				const mockComment = {
-					text: 'Test Comment',
+					text: 'Text Comment',
 					publication_date: '2024-08-10 18:30:00',
 					full_name: 'user fullname'
 				};
@@ -554,7 +588,7 @@ describe('Test recipe services', () => {
 				mockRecipeQueries.getRecipeComment.mockResolvedValue(mockComment);
 
 				const expectedComment = {
-					text: 'Test Comment',
+					text: 'Text Comment',
 					publicationDate: '2024-08-10 18:30:00',
 					fullname: 'user fullname'
 				}
@@ -571,6 +605,42 @@ describe('Test recipe services', () => {
 
 				expect(comment).toBeUndefined();
 			});
+		});
+
+		it('_getRecipeComments should return comments', async () => {
+			const recipeId = "validId";
+
+			const mockComments = [
+				{
+					text: 'Text Comment 1',
+					publication_date: '2024-08-10 18:30:00',
+					full_name: 'user fullname'
+				},
+				{
+					text: 'Text Comment 2',
+					publication_date: '2024-09-10 10:13:00',
+					full_name: 'user fullname'
+				}
+			];
+
+			const expectedComments = [
+				{
+					text: 'Text Comment 1',
+					publicationDate: '2024-08-10 18:30:00',
+					fullname: 'user fullname'
+				},
+				{
+					text: 'Text Comment 2',
+					publicationDate: '2024-09-10 10:13:00',
+					fullname: 'user fullname'
+				}
+			];
+
+			mockRecipeQueries.getRecipeComments.mockResolvedValue(mockComments);
+
+			const comments = await RecipeServices._getRecipeComments(recipeId);
+
+			expect(comments).toEqual(expectedComments);
 		});
 
 		it('_addPropertiesToComment should add properties to comment', async () => {
@@ -619,7 +689,7 @@ describe('Test recipe services', () => {
 				};
 
 				const mockComment = {
-					text: 'Test Comment',
+					text: 'Text Comment',
 					publicationDate: '2024-08-10 18:30:00',
 					fullname: 'user fullname'
 				}
@@ -633,6 +703,32 @@ describe('Test recipe services', () => {
 				const resultComment = await RecipeServices.createRecipeComment('commentId', 'userId', comment);
 
 				expect(resultComment).toEqual(expectedComment);
+			});
+		});
+	});
+
+	describe('Rating', () => {
+		describe('_getRatingsStats', () => {
+			it('should return ratings stats with average if ratings', async () => {
+				const ratings = [{rating: 2}, {rating: 3}];
+				const expectedRatingsStats = {
+					ratingAverage: 2.5,
+					ratingCount: 2
+				}
+				const ratingsStats = await RecipeServices._getRatingsStats(ratings);
+
+				expect(ratingsStats).toEqual(expectedRatingsStats);
+			});
+
+			it('should return ratings stats with undefined average if no ratings', async () => {
+				const ratings = [];
+				const expectedRatingsStats = {
+					ratingAverage: undefined,
+					ratingCount: 0
+				}
+				const ratingsStats = await RecipeServices._getRatingsStats(ratings);
+
+				expect(ratingsStats).toEqual(expectedRatingsStats);
 			});
 		});
 	});
