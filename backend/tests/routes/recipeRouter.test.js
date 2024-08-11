@@ -535,4 +535,133 @@ describe('Test recipes routes', () => {
 				.expect(500);
 		});
 	});
+
+	describe('POST /recipes/:id/ratings', () => {
+		let mockUserDetails;
+		let rating
+
+		beforeEach(() => {
+			mockUserDetails = {
+				userId: 'userId',
+				passwordHash: 'UeexcyA2hWKIZejQoV2ajaqhdvxqyZHXGmfRzg3TwJLhhmiBVGzYh8bUkKCsWJZ4E9oFmuQwEHYBI63pQK47Vw==',
+				passwordSalt: 'HLq2XxQQdDT/Fj0pRI3JNA==',
+				fullname: 'fullname',
+				isAdmin: false
+			};
+
+			mockUserAccountServices.getUserByUserId.mockResolvedValue(mockUserDetails);
+
+			rating = {rating: 3}
+		});
+
+		it('should throw an error with code 404 if recipe does not exist', async () => {
+			const expectedMessageError = 'L\'id recipeId ne correspond à aucune recette existante';
+
+			mockRecipeServices.getRecipeById.mockResolvedValue(false);
+
+			const response = await request(app)
+				.post('/recipes/recipeId/ratings')
+				.auth('userId', 'topsecret')
+				.send(rating)
+				.expect(404);
+
+			expect(response.body.message).toEqual(expectedMessageError);
+		});
+
+		it('should successfully add or update the rating and return code 200 with comment', async () => {
+			const mockRating = {rating: 3};
+			const expectedRating = mockRating;
+
+			mockRecipeServices.getRecipeById.mockResolvedValue(true);
+			mockRecipeServices.addOrUpdateRecipeRating.mockResolvedValue(mockRating);
+
+			const response = await request(app)
+				.post('/recipes/recipeId/ratings')
+				.auth('userId', 'topsecret')
+				.send(rating)
+				.expect(200);
+
+			expect(response.body).toEqual(expectedRating);
+		});
+
+		it('should return code 500 if query fails', async () => {
+			mockRecipeServices.getRecipeById.mockRejectedValue(new Error('Database query failed'));
+
+			await request(app)
+				.post('/recipes/recipeId/ratings')
+				.auth('userId', 'topsecret')
+				.send(rating)
+				.expect(500);
+		});
+	});
+
+	describe('GET /recipes/:id/ratings/user-rating', () => {
+		let mockUserDetails;
+		let rating
+
+		beforeEach(() => {
+			mockUserDetails = {
+				userId: 'userId',
+				passwordHash: 'UeexcyA2hWKIZejQoV2ajaqhdvxqyZHXGmfRzg3TwJLhhmiBVGzYh8bUkKCsWJZ4E9oFmuQwEHYBI63pQK47Vw==',
+				passwordSalt: 'HLq2XxQQdDT/Fj0pRI3JNA==',
+				fullname: 'fullname',
+				isAdmin: false
+			};
+
+			mockUserAccountServices.getUserByUserId.mockResolvedValue(mockUserDetails);
+
+			rating = {rating: 3}
+		});
+
+		it('should throw an error with code 404 if recipe does not exist', async () => {
+			const expectedMessageError = 'L\'id recipeId ne correspond à aucune recette existante';
+
+			mockRecipeServices.getRecipeById.mockResolvedValue(false);
+
+			const response = await request(app)
+				.get('/recipes/recipeId/ratings/user-rating')
+				.auth('userId', 'topsecret')
+				.expect(404);
+
+			expect(response.body.message).toEqual(expectedMessageError);
+		});
+
+		it('should return a rating in json with code 200', async () => {
+			const mockRating = {rating: 3};
+
+			mockRecipeServices.getRecipeById.mockResolvedValue(true);
+			mockRecipeServices.getUserRatingForRecipe.mockResolvedValue(mockRating);
+
+			const response = await request(app)
+				.get('/recipes/recipeId/ratings/user-rating')
+				.auth('userId', 'topsecret')
+				.expect('Content-Type', /json/)
+				.expect(200)
+
+			expect(response.body).toEqual(mockRating);
+		});
+
+		it('throws error with code 404 if user rating not found for this recipe', async () => {
+			const expectedMessageError = 'Aucune note correspondante pour l\'utilisateur userId et la recette recipeId';
+
+			mockRecipeServices.getRecipeById.mockResolvedValue(true);
+			mockRecipeServices.getUserRatingForRecipe.mockResolvedValue(undefined);
+
+			const response = await request(app)
+				.get('/recipes/recipeId/ratings/user-rating')
+				.auth('userId', 'topsecret')
+				.expect(404)
+
+			expect(response.body.message).toEqual(expectedMessageError);
+		});
+
+		it('should return code 500 if query fails', async () => {
+			mockRecipeServices.getRecipeById.mockRejectedValue(new Error('Database query failed'));
+
+			await request(app)
+				.get('/recipes/recipeId/ratings/user-rating')
+				.auth('userId', 'topsecret')
+				.expect(500)
+		});
+	});
 });
