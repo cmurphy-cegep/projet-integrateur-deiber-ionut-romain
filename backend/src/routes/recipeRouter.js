@@ -172,7 +172,7 @@ router.post('/:id/image',
 		}
 	});
 
-router.post('/:id/comment',
+router.post('/:id/comments',
 	passport.authenticate('basic', {session: false}),
 	async (req, res, next) => {
 

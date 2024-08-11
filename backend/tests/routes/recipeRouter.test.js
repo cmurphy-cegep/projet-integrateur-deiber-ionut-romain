@@ -475,7 +475,7 @@ describe('Test recipes routes', () => {
 		});
 	});
 
-	describe('POST /recipes/:id/comment', () => {
+	describe('POST /recipes/:id/comments', () => {
 		let mockUserDetails;
 		let comment
 
@@ -501,7 +501,7 @@ describe('Test recipes routes', () => {
 			mockRecipeServices.getRecipeById.mockResolvedValue(false);
 
 			const response = await request(app)
-				.post('/recipes/recipeId/comment')
+				.post('/recipes/recipeId/comments')
 				.auth('userId', 'topsecret')
 				.send(comment)
 				.expect(404);
@@ -521,7 +521,7 @@ describe('Test recipes routes', () => {
 			mockRecipeServices.createRecipeComment.mockResolvedValue(mockComment);
 
 			const response = await request(app)
-				.post('/recipes/recipeId/comment')
+				.post('/recipes/recipeId/comments')
 				.auth('userId', 'topsecret')
 				.send(comment)
 				.expect(201);
@@ -533,7 +533,7 @@ describe('Test recipes routes', () => {
 			mockRecipeServices.getRecipeById.mockRejectedValue(new Error('Database query failed'));
 
 			await request(app)
-				.post('/recipes/recipeId/comment')
+				.post('/recipes/recipeId/comments')
 				.auth('userId', 'topsecret')
 				.send(comment)
 				.expect(500);
