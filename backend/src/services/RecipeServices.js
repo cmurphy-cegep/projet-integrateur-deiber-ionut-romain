@@ -103,6 +103,14 @@ class RecipeServices {
 		};
 	}
 
+	static async _createRating(recipeId, userId, rating) {
+		const createdRating = await RecipeQueries.insertRecipeRating(recipeId, userId, rating);
+		if (!createdRating) {
+			throw new Error("Erreur lors de la création de la note");
+		}
+		return this.getUserRatingForRecipe(recipeId, userId);
+	}
+
 	static _getImagePathForRecipeId(recipeId) {
 		return `/recipes/${recipeId}/image`;
 	}
@@ -142,6 +150,27 @@ class RecipeServices {
 			publicationDate: result.publication_date,
 			fullname: result.full_name
 		}));
+	}
+
+	static async _updateRating(recipeId, userId, rating) {
+		const isUpdated = await RecipeQueries.updateRecipeRating(recipeId, userId, rating);
+		if (!isUpdated) {
+			throw new Error("Erreur lors de la mise-à-jour de la note");
+		}
+		return this.getUserRatingForRecipe(recipeId, userId);
+	}
+
+	static async addOrUpdateRecipeRating(recipeId, userId, rating) {
+		if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+			throw new HttpError(400, 'La note doit être un nombre entier compris entre 1 et 5');
+		}
+
+		const existingRating = await RecipeQueries.getUserRatingForRecipe(recipeId, userId);
+		if (existingRating) {
+			return await this._updateRating(recipeId, userId, rating);
+		} else {
+			return await this._createRating(recipeId, userId, rating);
+		}
 	}
 
 	static async createRecipe(recipe) {
@@ -212,6 +241,11 @@ class RecipeServices {
 			};
 		}
 		return undefined;
+	}
+
+	static async getUserRatingForRecipe(recipeId, userId) {
+		const result = await RecipeQueries.getUserRatingForRecipe(recipeId, userId);
+		return result;
 	}
 
 	static async updateRecipe(recipe) {

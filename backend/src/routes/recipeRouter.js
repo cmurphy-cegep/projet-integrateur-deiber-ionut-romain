@@ -131,10 +131,7 @@ router.delete('/:id',
 
 			await RecipeServices.deleteRecipe(id);
 
-			res.json({
-				status: 200,
-				message: "Recette supprimée avec succès"
-			});
+			res.json({});
 		} catch (err) {
 			next(err);
 		}
@@ -163,10 +160,7 @@ router.post('/:id/image',
 			// dans req.file.mimetype:
 			await RecipeServices.updateRecipeImage(id, req.file.buffer, req.file.mimetype);
 
-			res.json({
-				status: 200,
-				message: "Image mise-à-jour avec succès"
-			});
+			res.json("");
 		} catch (err) {
 			next(err);
 		}
@@ -188,6 +182,51 @@ router.post('/:id/comments',
 			const result = await RecipeServices.createRecipeComment(recipeId, userId, req.body);
 
 			res.status(201).json(result);
+		} catch (err) {
+			next(err);
+		}
+	});
+
+router.post('/:id/ratings',
+	passport.authenticate('basic', {session: false}),
+	async (req, res, next) => {
+
+		const recipeId = req.params.id;
+		const userId = req.user.userId;
+
+		try {
+			const recipe = await RecipeServices.getRecipeById(recipeId);
+			if (!recipe) {
+				return next(new HttpError(404, `L'id ${recipeId} ne correspond à aucune recette existante`));
+			}
+
+			const result = await RecipeServices.addOrUpdateRecipeRating(recipeId, userId, req.body.rating);
+
+			res.json(result);
+		} catch (err) {
+			next(err);
+		}
+	});
+
+router.get('/:id/ratings/user-rating',
+	passport.authenticate('basic', {session: false}),
+	async (req, res, next) => {
+
+		const recipeId = req.params.id;
+		const userId = req.user.userId;
+
+		try {
+			const recipe = await RecipeServices.getRecipeById(recipeId);
+			if (!recipe) {
+				return next(new HttpError(404, `L'id ${recipeId} ne correspond à aucune recette existante`));
+			}
+
+			const result = await RecipeServices.getUserRatingForRecipe(recipeId, userId);
+			if (result) {
+				res.json(result);
+			} else {
+				return next(new HttpError(404, `Aucune note trouvée pour cet utilisateur et cette recette`));
+			}
 		} catch (err) {
 			next(err);
 		}

@@ -384,9 +384,7 @@ describe('Test recipes routes', () => {
 			expect(response.body.message).toEqual(expectedMessageError);
 		});
 
-		it('with successful update should return code 200', async () => {
-			const expectedMessage = 'Recette supprimée avec succès';
-
+		it('with successful delete should return code 200', async () => {
 			mockRecipeServices.getRecipeById.mockResolvedValue(true);
 
 			const response = await request(app)
@@ -394,7 +392,7 @@ describe('Test recipes routes', () => {
 				.auth('userId', 'topsecret')
 				.expect(200)
 
-			expect(response.body.message).toEqual(expectedMessage);
+			expect(response.body).toEqual({});
 		});
 
 		it('should return code 500 if query fails', async () => {
@@ -451,8 +449,6 @@ describe('Test recipes routes', () => {
 		});
 
 		it('should successfully update the image and return code 200', async () => {
-			const expectedMessage = 'Image mise-à-jour avec succès';
-
 			mockRecipeServices.getRecipeById.mockResolvedValue(true);
 
 			const response = await request(app)
@@ -461,7 +457,7 @@ describe('Test recipes routes', () => {
 				.attach('recipe-image', Buffer.from('image content'), 'image.jpg')
 				.expect(200);
 
-			expect(response.body.message).toEqual(expectedMessage);
+			expect(response.body).toEqual("");
 		});
 
 		it('should return code 500 if query fails', async () => {
