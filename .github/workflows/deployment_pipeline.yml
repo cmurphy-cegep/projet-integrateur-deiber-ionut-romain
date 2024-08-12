@@ -40,6 +40,8 @@ jobs:
           node-version: '20'
 
       - name: Set up database
+        env:
+          PGPASSWORD: postgres
         run: |
           psql -h $DB_HOST -U $DB_USER -d $DB_DATABASE -f ./database/03_recettesrodrigo_ddl.sql
           psql -h $DB_HOST -U $DB_USER -d $DB_DATABASE -f ./database/04_insert_donnees.sql
