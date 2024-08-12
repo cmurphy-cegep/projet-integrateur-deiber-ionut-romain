@@ -38,6 +38,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
+        if: ${{ matrix.environment != 'database' }}
         working-directory: ./${{ matrix.environment }}
         run: npm install
 
