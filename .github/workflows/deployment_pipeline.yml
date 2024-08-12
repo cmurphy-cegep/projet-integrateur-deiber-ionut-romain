@@ -11,6 +11,15 @@ jobs:
   deployment_pipeline:
     runs-on: ubuntu-latest
 
+    env:
+      POSTGRES_DB: ${{ matrix.database-name }}
+      POSTGRES_USER: ${{ matrix.database-user }}
+      POSTGRES_PASSWORD: ${{ matrix.database-password }}
+      DB_USER: ${{ matrix.database-user }}
+      DB_PASSWORD: ${{ matrix.database-password }}
+      DB_HOST: ${{ matrix.database-host }}
+      DB_PORT: ${{ matrix.database-port }}
+
     strategy:
       matrix:
         environment: [ 'backend', 'frontend' ]
@@ -28,10 +37,6 @@ jobs:
     services:
       postgres:
         image: postgres:latest
-        env:
-          POSTGRES_DB: ${{ matrix.database-name }}
-          POSTGRES_USER: ${{ matrix.database-user }}
-          POSTGRES_PASSWORD: ${{ matrix.database-password }}
         ports:
           - 5432:5432
         options: >-
@@ -54,26 +59,13 @@ jobs:
         if: ${{ matrix.environment == 'backend' }}
         env:
           PGPASSWORD: ${{ matrix.database-password }}
-          DB_USER: ${{ matrix.database-user }}
-          DB_PASSWORD: ${{ matrix.database-password }}
-          DB_HOST: ${{ matrix.database-host }}
-          DB_PORT: ${{ matrix.database-port }}
-          POSTGRES_DB: ${{ matrix.database-name }}
         run: |
           psql -h DB_HOST -U DB_USER -d $POSTGRES_DB -f ./database/03_recettesrodrigo_ddl.sql
           psql -h DB_HOST -U DB_USER -d $POSTGRES_DB -f ./database/04_insert_donnees.sql
 
-
       - name: Run tests
         working-directory: ./${{ matrix.environment }}
         run: npm run test
-        env:
-          PGPASSWORD: ${{ matrix.database-password }}
-          DB_USER: ${{ matrix.database-user }}
-          DB_PASSWORD: ${{ matrix.database-password }}
-          DB_HOST: ${{ matrix.database-host }}
-          DB_PORT: ${{ matrix.database-port }}
-          POSTGRES_DB: ${{ matrix.database-name }}
 
       - name: Build frontend application
         if: ${{ matrix.environment == 'frontend' }}
