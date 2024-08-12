@@ -53,14 +53,15 @@ jobs:
       - name: Set up database
         if: ${{ matrix.environment == 'backend' }}
         env:
+          PGPASSWORD: ${{ matrix.database-password }}
           DATABASE_USER: ${{ matrix.database-user }}
           DATABASE_PASSWORD: ${{ matrix.database-password }}
           DATABASE_HOST: ${{ matrix.database-host }}
           DATABASE_PORT: ${{ matrix.database-port }}
           POSTGRES_DB: ${{ matrix.database-name }}
         run: |
-          PGPASSWORD=$DATABASE_PASSWORD psql -h $DATABASE_HOST -U $DATABASE_USER -d $POSTGRES_DB -f ./database/03_recettesrodrigo_ddl.sql
-          PGPASSWORD=$DATABASE_PASSWORD psql -h $DATABASE_HOST -U $DATABASE_USER -d $POSTGRES_DB -f ./database/04_insert_donnees.sql
+          psql -h $DATABASE_HOST -U $DATABASE_USER -d $POSTGRES_DB -f ./database/03_recettesrodrigo_ddl.sql
+          psql -h $DATABASE_HOST -U $DATABASE_USER -d $POSTGRES_DB -f ./database/04_insert_donnees.sql
 
 
       - name: Run tests
