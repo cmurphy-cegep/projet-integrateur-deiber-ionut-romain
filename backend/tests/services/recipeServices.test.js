@@ -670,7 +670,7 @@ describe('Test recipe services', () => {
 				await expect(RecipeServices.createRecipeComment('recipeId', 'userId', comment)).rejects.toThrow(expectedError);
 			});
 
-			it('createRecipeComment should throw an error if query fails', async () => {
+			it('should throw an error if query fails', async () => {
 				const comment = {
 					text: 'Text Comment'
 				};
@@ -729,6 +729,123 @@ describe('Test recipe services', () => {
 				const ratingsStats = await RecipeServices._getRatingsStats(ratings);
 
 				expect(ratingsStats).toEqual(expectedRatingsStats);
+			});
+		});
+
+		it('getUserRatingForRecipe should return user rating for a recipe', async () => {
+			const mockUserRating = {rating: 3};
+
+			mockRecipeQueries.getUserRatingForRecipe.mockResolvedValue(mockUserRating);
+
+			const expectedUserRating = mockUserRating;
+
+			const userRating = await RecipeServices.getUserRatingForRecipe('recipeId', 'userId');
+
+			expect(userRating).toEqual(expectedUserRating);
+		});
+
+		describe('_createUserRating', () => {
+			const rating = {rating: 3};
+
+			it('should throw an error if query fails', async () => {
+				const expectedError = new Error("Erreur lors de la création de la note");
+
+				mockRecipeQueries.insertRecipeRating.mockResolvedValue(undefined);
+
+				await expect(RecipeServices._createRating('recipeId', 'userId', rating)).rejects.toThrow(expectedError);
+			});
+
+			it('should return the inserted rating', async () => {
+				const mockUserRating = {rating: 3};
+				const expectedUserRating = mockUserRating;
+
+				mockRecipeQueries.insertRecipeRating.mockResolvedValue(mockUserRating);
+				mockRecipeQueries.getUserRatingForRecipe.mockResolvedValue(mockUserRating);
+
+				const resultUserRating = await RecipeServices._createRating('commentId', 'userId', rating);
+
+				expect(resultUserRating).toEqual(expectedUserRating);
+			});
+		});
+
+		describe('_updateRating', () => {
+			const rating = {rating: 3};
+
+			it('should throw an error if query fails', async () => {
+				const expectedError = new Error("Erreur lors de la mise-à-jour de la note");
+
+				mockRecipeQueries.updateRecipeRating.mockResolvedValue(undefined);
+
+				await expect(RecipeServices._updateRating('recipeId', 'userId', rating)).rejects.toThrow(expectedError);
+			});
+
+			it('should return the updated rating', async () => {
+				const mockUserRating = {rating: 3};
+				const expectedUserRating = mockUserRating;
+
+				mockRecipeQueries.updateRecipeRating.mockResolvedValue(mockUserRating);
+				mockRecipeQueries.getUserRatingForRecipe.mockResolvedValue(mockUserRating);
+
+				const resultUserRating = await RecipeServices._updateRating('commentId', 'userId', rating);
+
+				expect(resultUserRating).toEqual(expectedUserRating);
+			});
+		});
+
+		describe('addOrUpdateRecipeRating', () => {
+			it('should throw an error if rating is not an integer', async () => {
+				const rating = 'not an integer';
+
+				const expectedError = new HttpError(400, "La note doit être un nombre entier compris entre 1" +
+					" et 5");
+
+				await expect(RecipeServices.addOrUpdateRecipeRating('recipeId', 'userId', rating)).rejects.toThrow(expectedError);
+			});
+
+			it('should throw an error if rating is less than 1', async () => {
+				const rating = 0;
+
+				const expectedError = new HttpError(400, "La note doit être un nombre entier compris entre 1" +
+					" et 5");
+
+				await expect(RecipeServices.addOrUpdateRecipeRating('recipeId', 'userId', rating)).rejects.toThrow(expectedError);
+			});
+
+			it('should throw an error if rating is more than 5', async () => {
+				const rating = 6;
+
+				const expectedError = new HttpError(400, "La note doit être un nombre entier compris entre 1" +
+					" et 5");
+
+				await expect(RecipeServices.addOrUpdateRecipeRating('recipeId', 'userId', rating)).rejects.toThrow(expectedError);
+			});
+
+			it('should update rating if already exists', async () => {
+				const rating = 3;
+				const mockUserRating = {rating: rating};
+				const expectedUserRating = mockUserRating;
+
+				mockRecipeQueries.getUserRatingForRecipe.mockResolvedValue(mockUserRating);
+				jest.spyOn(RecipeServices, '_updateRating').mockResolvedValue(mockUserRating);
+
+				const userRating = await RecipeServices.addOrUpdateRecipeRating('recipeId', 'userId', rating);
+
+				expect(RecipeServices._updateRating).toHaveBeenCalled();
+				expect(userRating).toEqual(expectedUserRating);
+			});
+
+			it('should create rating if not already exists', async () => {
+				const rating = 3;
+				const mockUserRating = {rating: rating};
+				const expectedUserRating = mockUserRating;
+
+				mockRecipeQueries.getUserRatingForRecipe.mockResolvedValue(undefined);
+				jest.spyOn(RecipeServices, '_createRating').mockResolvedValue(mockUserRating);
+
+				const userRating = await RecipeServices.addOrUpdateRecipeRating('recipeId', 'userId', rating);
+
+				expect(RecipeServices._createRating).toHaveBeenCalled();
+				expect(userRating).toEqual(expectedUserRating);
 			});
 		});
 	});
