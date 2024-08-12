@@ -55,16 +55,19 @@ jobs:
         env:
           POSTGRES_DB: ${{ matrix.database-name }}
           PGPASSWORD: ${{ matrix.database-password }}
-          DB_USER: ${{ matrix.database-user }}
-          DB_PASSWORD: ${{ matrix.database-password }}
           DB_HOST: ${{ matrix.database-host }}
-          DB_PORT: ${{ matrix.database-port }}
         run: |
-          psql -h $DB_HOST -U $DB_USER -d $POSTGRES_DB -f ./database/03_recettesrodrigo_ddl.sql
-          psql -h $DB_HOST -U $DB_USER -d $POSTGRES_DB -f ./database/04_insert_donnees.sql
+          psql -h $DB_HOST  -d $POSTGRES_DB -f ./database/03_recettesrodrigo_ddl.sql
+          psql -h $DB_HOST  -d $POSTGRES_DB -f ./database/04_insert_donnees.sql
 
       - name: Run tests
         working-directory: ./${{ matrix.environment }}
+        env:
+          DB_HOST: ${{ matrix.database-host }}
+          DB_PORT: ${{ matrix.database-port }}
+          DB_DATABASE: ${{ matrix.database-name }}
+          DB_USER: ${{ matrix.database-user }}
+          DB_PASSWORD: ${{ matrix.database-password }}
         run: npm run test
 
       - name: Build frontend application
