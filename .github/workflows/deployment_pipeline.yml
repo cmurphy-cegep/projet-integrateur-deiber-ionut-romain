@@ -64,11 +64,16 @@ jobs:
           DB_DATABASE: recettesrodrigo
           DB_USER: postgres
           DB_PASSWORD: postgres
-        run: npm run start
+        run: npm run start &
 
       - name: Install frontend dependencies
         working-directory: ./frontend
         run: npm install
+
+      - name: Wait for backend to be ready
+        run: |
+          echo "Waiting for backend to be ready..."
+          until curl -s http://localhost:4000/health; do sleep 5; done
 
       - name: Run frontend tests
         working-directory: ./frontend
