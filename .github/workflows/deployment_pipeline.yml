@@ -30,7 +30,7 @@ jobs:
 
     strategy:
       matrix:
-        environment: [ 'backend', 'frontend' ]
+        environment: [ 'backend', 'frontend','database' ]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -42,12 +42,13 @@ jobs:
         run: npm install
 
       - name: Set up database
+        working-directory: ./${{ matrix.environment }}
         run: |
-          psql -h localhost -U postgres -d recettesrodrigo -f database/01_creer_bd.sql
-          psql -h localhost -U postgres -d recettesrodrigo -f database/02_creer_user.sql
-          psql -h localhost -U postgres -d recettesrodrigo -f database/03_recettesrodrigo_ddl.sql
-          psql -h localhost -U postgres -d recettesrodrigo -f database/04_insert_donnees.sql
-          psql -h localhost -U postgres -d recettesrodrigo -f database/05_grant_backend_user.sql
+          psql -h localhost -U postgres -d recettesrodrigo -f 01_creer_bd.sql
+          psql -h localhost -U postgres -d recettesrodrigo -f 02_creer_user.sql
+          psql -h localhost -U postgres -d recettesrodrigo -f 03_recettesrodrigo_ddl.sql
+          psql -h localhost -U postgres -d recettesrodrigo -f 04_insert_donnees.sql
+          psql -h localhost -U postgres -d recettesrodrigo -f 05_grant_backend_user.sql
         env:
           PGPASSWORD: postgres
           DB_USER: ${{ secrets.DB_USER }}
