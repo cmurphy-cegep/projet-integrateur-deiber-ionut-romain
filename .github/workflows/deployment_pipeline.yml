@@ -11,13 +11,20 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: recettesrodrigo
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+
     services:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_DB: recettesrodrigo
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ${{ env.DB_DATABASE }}
+          POSTGRES_USER: ${{ env.DB_USER }}
+          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
         ports:
           - 5432:5432
         options: >-
@@ -33,11 +40,6 @@ jobs:
           node-version: '20'
 
       - name: Set up database
-        env:
-          DB_HOST: 127.0.0.1
-          DB_DATABASE: recettesrodrigo
-          DB_USER: postgres
-          PGPASSWORD: postgres
         run: |
           psql -h $DB_HOST -U $DB_USER -d $DB_DATABASE -f ./database/03_recettesrodrigo_ddl.sql
           psql -h $DB_HOST -U $DB_USER -d $DB_DATABASE -f ./database/04_insert_donnees.sql
@@ -48,22 +50,10 @@ jobs:
 
       - name: Run backend tests
         working-directory: ./backend
-        env:
-          DB_HOST: 127.0.0.1
-          DB_PORT: 5432
-          DB_DATABASE: recettesrodrigo
-          DB_USER: postgres
-          DB_PASSWORD: postgres
         run: npm run test
 
       - name: Start backend
         working-directory: ./backend
-        env:
-          DB_HOST: 127.0.0.1
-          DB_PORT: 5432
-          DB_DATABASE: recettesrodrigo
-          DB_USER: postgres
-          DB_PASSWORD: postgres
         run: npm run start &
 
       - name: Install frontend dependencies
