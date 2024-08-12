@@ -11,65 +11,57 @@ jobs:
   deployment_pipeline:
     runs-on: ubuntu-latest
 
-    container: node:20-bullseye-slim
+    strategy:
+      matrix:
+        environment: [ 'backend', 'frontend' ]
+        database-name:
+          - recettesrodrigo
+        database-password:
+          - postgres
+        database-user:
+          - postgres
+        database-host:
+          - 127.0.0.1
+        database-port:
+          - 5432
 
     services:
       postgres:
-        image: postgres
-
+        image: postgres:latest
         env:
-          POSTGRES_PASSWORD: postgres
-
+          POSTGRES_DB: ${{ matrix.database-name }}
+          POSTGRES_USER: ${{ matrix.database-user }}
+          POSTGRES_PASSWORD: ${{ matrix.database-password }}
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        ports:
-          - 5432:5432
 
-    strategy:
-      matrix:
-        environment: [ 'backend', 'frontend','database' ]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install PostgreSQL client
-        if: ${{ matrix.environment == 'database' }}
-        run: apt-get update && apt-get install -y postgresql-client
-
-      - name: Wait for PostgreSQL
-        if: ${{ matrix.environment == 'database' }}
-        run: |
-          until pg_isready -h localhost -p 5432; do
-            echo "Waiting for PostgreSQL to be ready..."
-            sleep 1
-          done
-
-      - name: Set up database
-        if: ${{ matrix.environment == 'database' }}
-        working-directory: ./${{ matrix.environment }}
-        run: |
-          psql -h localhost -U postgres -d recettesrodrigo -f 01_creer_bd.sql
-          psql -h localhost -U postgres -d recettesrodrigo -f 02_creer_user.sql
-          psql -h localhost -U postgres -d recettesrodrigo -f 03_recettesrodrigo_ddl.sql
-          psql -h localhost -U postgres -d recettesrodrigo -f 04_insert_donnees.sql
-          psql -h localhost -U postgres -d recettesrodrigo -f 05_grant_backend_user.sql
-        env:
-          PGPASSWORD: postgres
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_HOST: localhost
-          DB_DATABASE: recettesrodrigo
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_PORT: 5432
-
       - name: Install dependencies
-        if: ${{ matrix.environment != 'database' }}
         working-directory: ./${{ matrix.environment }}
         run: npm install
+
+      - name: Set up database
+        if: ${{ matrix.environment == 'backend' }}
+        env:
+          DATABASE_USER: ${{ matrix.database-user }}
+          DATABASE_PASSWORD: ${{ matrix.database-password }}
+          DATABASE_HOST: ${{ matrix.database-host }}
+          DATABASE_PORT: ${{ matrix.database-port }}
+          POSTGRES_DB: ${{ matrix.database-name }}
+        run: |
+          psql -h $DATABASE_HOST -U $DATABASE_USER -d $POSTGRES_DB -f 03_recettesrodrigo_ddl.sql
+          psql -h $DATABASE_HOST -U $DATABASE_USER -d $POSTGRES_DB -f 04_insert_donnees.sql
+
 
       - name: Run tests
         working-directory: ./${{ matrix.environment }}
