@@ -54,7 +54,7 @@ jobs:
         if: ${{ matrix.environment == 'backend' }}
         env:
           POSTGRES_DB: ${{ matrix.database-name }}
-          POSTGRES_PASSWORD: ${{ matrix.database-password }}
+          PGPASSWORD: ${{ matrix.database-password }}
           DB_USER: ${{ matrix.database-user }}
           DB_PASSWORD: ${{ matrix.database-password }}
           DB_HOST: ${{ matrix.database-host }}
