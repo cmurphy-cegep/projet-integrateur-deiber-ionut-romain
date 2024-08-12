@@ -66,7 +66,7 @@ CREATE TABLE rating
 (
     recipe_id       text    NOT NULL REFERENCES recipe (recipe_id) ON DELETE CASCADE,
     user_account_id text    NOT NULL REFERENCES user_account (user_account_id) ON DELETE NO ACTION,
-    note            integer NOT NULL
+    rating          integer NOT NULL
 );
 
 CREATE INDEX idx_rating_recipe_id ON rating (recipe_id);

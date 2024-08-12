@@ -10,6 +10,24 @@ on:
 jobs:
   deployment_pipeline:
     runs-on: ubuntu-latest
+
+    container: node:10.18-jessie
+
+    services:
+      postgres:
+        image: postgres
+
+        env:
+          POSTGRES_PASSWORD: postgres
+
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     strategy:
       matrix:
         environment: [ 'backend', 'frontend' ]
@@ -22,6 +40,21 @@ jobs:
       - name: Install dependencies
         working-directory: ./${{ matrix.environment }}
         run: npm install
+
+      - name: Set up database
+        run: |
+          psql -h localhost -U postgres -d recettesrodrigo -f database/01_creer_bd.sql
+          psql -h localhost -U postgres -d recettesrodrigo -f database/02_creer_user.sql
+          psql -h localhost -U postgres -d recettesrodrigo -f database/03_recettesrodrigo_ddl.sql
+          psql -h localhost -U postgres -d recettesrodrigo -f database/04_insert_donnees.sql
+          psql -h localhost -U postgres -d recettesrodrigo -f database/05_grant_backend_user.sql
+        env:
+          PGPASSWORD: postgres
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_HOST: localhost
+          DB_DATABASE: recettesrodrigo
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_PORT: 5432
 
       - name: Run tests
         working-directory: ./${{ matrix.environment }}
