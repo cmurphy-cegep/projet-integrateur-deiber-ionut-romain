@@ -11,7 +11,7 @@ jobs:
   deployment_pipeline:
     runs-on: ubuntu-latest
 
-    container: node:10.18-jessie
+    container: node:20-bullseye-slim
 
     services:
       postgres:
