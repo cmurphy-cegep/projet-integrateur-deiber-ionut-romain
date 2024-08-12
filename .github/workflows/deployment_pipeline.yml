@@ -37,10 +37,9 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
-        if: ${{ matrix.environment != 'database' }}
-        working-directory: ./${{ matrix.environment }}
-        run: npm install
+      - name: Install PostgreSQL client
+        if: ${{ matrix.environment == 'database' }}
+        run: apt-get update && apt-get install -y postgresql-client
 
       - name: Set up database
         if: ${{ matrix.environment == 'database' }}
@@ -58,6 +57,11 @@ jobs:
           DB_DATABASE: recettesrodrigo
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_PORT: 5432
+
+      - name: Install dependencies
+        if: ${{ matrix.environment != 'database' }}
+        working-directory: ./${{ matrix.environment }}
+        run: npm install
 
       - name: Run tests
         working-directory: ./${{ matrix.environment }}
