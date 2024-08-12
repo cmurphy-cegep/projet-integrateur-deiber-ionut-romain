@@ -42,6 +42,7 @@ jobs:
         run: npm install
 
       - name: Set up database
+        if: ${{ matrix.environment == 'database' }}
         working-directory: ./${{ matrix.environment }}
         run: |
           psql -h localhost -U postgres -d recettesrodrigo -f 01_creer_bd.sql
