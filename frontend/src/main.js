@@ -4,6 +4,7 @@ import App from './App.vue';
 import CatalogueRecettes from './pages/catalogue/CatalogueRecettes.vue';
 import ItemRecetteDetail from './pages/catalogue/ItemRecetteDetail.vue';
 import FormulaireLogin from './pages/FormulaireLogin.vue';
+import Register from './pages/Register.vue';
 
 const app = createApp(App);
 
@@ -13,7 +14,8 @@ const router = createRouter({
 	routes: [
 		{ path: '', component: CatalogueRecettes },
 		{ path: '/recipes/:id', component: ItemRecetteDetail, props: true },
-		{ path: '/login', component: FormulaireLogin }
+		{ path: '/login', component: FormulaireLogin },
+		{path: '/register', component: Register}
 	]
 });
 
