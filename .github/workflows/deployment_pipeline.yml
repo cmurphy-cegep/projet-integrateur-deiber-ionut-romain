@@ -8,59 +8,69 @@ on:
       - main
 
 jobs:
-  deployment_pipeline:
+  deploy:
     runs-on: ubuntu-latest
 
-    container: node:10.18-jessie
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: recettesrodrigo
+      DB_USER: postgres
+      DB_PASSWORD: postgres
 
     services:
       postgres:
-        image: postgres
-
+        image: postgres:latest
         env:
-          POSTGRES_PASSWORD: postgres
-
+          POSTGRES_DB: ${{ env.DB_DATABASE }}
+          POSTGRES_USER: ${{ env.DB_USER }}
+          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        ports:
-          - 5432:5432
 
-    strategy:
-      matrix:
-        environment: [ 'backend', 'frontend' ]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install dependencies
-        working-directory: ./${{ matrix.environment }}
+      - name: Set up database
+        env:
+          PGPASSWORD: ${{ env.DB_PASSWORD }}
+        run: |
+          psql -h $DB_HOST -U $DB_USER -d $DB_DATABASE -f ./database/03_recettesrodrigo_ddl.sql
+          psql -h $DB_HOST -U $DB_USER -d $DB_DATABASE -f ./database/04_insert_donnees.sql
+
+      - name: Install backend dependencies
+        working-directory: ./backend
         run: npm install
 
-      - name: Set up database
-        run: |
-          psql -h localhost -U postgres -d recettesrodrigo -f database/01_creer_bd.sql
-          psql -h localhost -U postgres -d recettesrodrigo -f database/02_creer_user.sql
-          psql -h localhost -U postgres -d recettesrodrigo -f database/03_recettesrodrigo_ddl.sql
-          psql -h localhost -U postgres -d recettesrodrigo -f database/04_insert_donnees.sql
-          psql -h localhost -U postgres -d recettesrodrigo -f database/05_grant_backend_user.sql
-        env:
-          PGPASSWORD: postgres
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_HOST: localhost
-          DB_DATABASE: recettesrodrigo
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_PORT: 5432
+      - name: Run backend tests
+        working-directory: ./backend
+        run: npm run test
 
-      - name: Run tests
-        working-directory: ./${{ matrix.environment }}
+      - name: Start backend
+        working-directory: ./backend
+        run: npm run start &
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm install
+
+      - name: Wait for backend to be ready
+        run: |
+          echo "Waiting for backend to be ready..."
+          until curl -s http://localhost:3000/health; do sleep 5; done
+
+      - name: Run frontend tests
+        working-directory: ./frontend
         run: npm run test
 
       - name: Build frontend application
-        if: ${{ matrix.environment == 'frontend' }}
-        working-directory: ./${{ matrix.environment }}
+        working-directory: ./frontend
         run: npm run build
