@@ -779,7 +779,7 @@ describe('Test recipe services', () => {
 				await expect(RecipeServices._updateRating('recipeId', 'userId', rating)).rejects.toThrow(expectedError);
 			});
 
-			it('should return the inserted rating', async () => {
+			it('should return the updated rating', async () => {
 				const mockUserRating = {rating: 3};
 				const expectedUserRating = mockUserRating;
 
