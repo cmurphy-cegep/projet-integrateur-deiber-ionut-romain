@@ -72,8 +72,8 @@ class RecipeServices {
 		if (recipe.cooking_time) {
 			recipe.cooking_time = "" + recipe.cooking_time;
 		}
-		if (recipe.serving) {
-			recipe.serving = "" + recipe.servings;
+		if (recipe.servings) {
+			recipe.servings = "" + recipe.servings;
 		}
 		for (let ingredient of recipe.ingredients) {
 			ingredient.index = "" + ingredient.index;
