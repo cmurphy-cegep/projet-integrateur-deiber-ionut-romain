@@ -15,6 +15,10 @@ app.use('/recipes', recipeRouter);
 app.use('/login', loginRoute);
 app.use('/signup', signupRoute);
 
+app.get('/health', (req, res) => {
+	res.status(200).send('OK');
+});
+
 app.use(errorMiddleware);
 
 module.exports = app;
