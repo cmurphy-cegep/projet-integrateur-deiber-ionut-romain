@@ -28,6 +28,7 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
+
 export default {
 	setup() {
 		const credentials = ref({ username: '', password: '', confirmPassword: '', fullName: '' });
