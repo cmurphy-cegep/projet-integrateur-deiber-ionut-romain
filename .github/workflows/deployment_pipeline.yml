@@ -11,15 +11,6 @@ jobs:
   deployment_pipeline:
     runs-on: ubuntu-latest
 
-    env:
-      POSTGRES_DB: ${{ matrix.database-name }}
-      POSTGRES_USER: ${{ matrix.database-user }}
-      POSTGRES_PASSWORD: ${{ matrix.database-password }}
-      DB_USER: ${{ matrix.database-user }}
-      DB_PASSWORD: ${{ matrix.database-password }}
-      DB_HOST: ${{ matrix.database-host }}
-      DB_PORT: ${{ matrix.database-port }}
-
     strategy:
       matrix:
         environment: [ 'backend', 'frontend' ]
@@ -33,6 +24,15 @@ jobs:
           - 127.0.0.1
         database-port:
           - 5432
+
+    env:
+      POSTGRES_DB: ${{ matrix.database-name }}
+      POSTGRES_USER: ${{ matrix.database-user }}
+      POSTGRES_PASSWORD: ${{ matrix.database-password }}
+      DB_USER: ${{ matrix.database-user }}
+      DB_PASSWORD: ${{ matrix.database-password }}
+      DB_HOST: ${{ matrix.database-host }}
+      DB_PORT: ${{ matrix.database-port }}
 
     services:
       postgres:
