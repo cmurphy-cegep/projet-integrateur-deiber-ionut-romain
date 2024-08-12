@@ -37,6 +37,10 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install PostgreSQL client
+        if: ${{ matrix.environment == 'database' }}
+        run: apt-get update && apt-get install -y postgresql-client
+
       - name: Wait for PostgreSQL
         if: ${{ matrix.environment == 'database' }}
         run: |
