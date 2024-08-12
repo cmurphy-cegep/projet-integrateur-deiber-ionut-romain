@@ -153,6 +153,16 @@ class RecipeQueries {
 		return result.rows;
 	}
 
+	static async getRecipeRatings(recipeId) {
+		const result = await pool.query(
+			`SELECT rating
+             FROM rating
+             WHERE recipe_id = $1`,
+			[recipeId]
+		);
+		return result.rows;
+	}
+
 	static async getRecipeSteps(recipeId) {
 		const result = await pool.query(
 			`SELECT index, description
@@ -164,6 +174,17 @@ class RecipeQueries {
 		return result.rows;
 	}
 
+	static async getUserRatingForRecipe(recipeId, userId) {
+		const result = await pool.query(
+			`SELECT rating
+             FROM rating
+             WHERE recipe_id = $1
+               AND user_account_id = $2`,
+			[recipeId, userId]
+		);
+		return result.rows[0];
+	}
+
 	static async insertRecipeComment(comment) {
 		const result = await pool.query(
 			`INSERT INTO comment (text, publication_date, user_account_id, recipe_id)
@@ -173,6 +194,17 @@ class RecipeQueries {
 		);
 
 		return result.rows[0].comment_id;
+	}
+
+	static async insertRecipeRating(recipeId, userId, rating) {
+		const result = await pool.query(
+			`INSERT INTO rating (user_account_id, recipe_id, rating)
+             VALUES ($1, $2, $3)
+             RETURNING rating`,
+			[userId, recipeId, rating]
+		);
+
+		return result.rows[0].rating;
 	}
 
 	static async updateRecipe(recipe) {
@@ -205,6 +237,18 @@ class RecipeQueries {
                  image_content_type = $3
              WHERE recipe_id = $1`,
 			[recipeId, imageBuffer, imageContentType]
+		);
+
+		return result.rowCount > 0;
+	}
+
+	static async updateRecipeRating(recipeId, userId, rating) {
+		const result = await pool.query(
+			`UPDATE rating
+             SET rating = $3
+             WHERE recipe_id = $1
+               AND user_account_id = $2`,
+			[recipeId, userId, rating]
 		);
 
 		return result.rowCount > 0;

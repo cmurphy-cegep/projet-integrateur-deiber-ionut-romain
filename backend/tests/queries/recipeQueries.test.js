@@ -255,7 +255,7 @@ describe('Test recipes queries', () => {
 			it('should roll back the transaction if an error occurs', async () => {
 				jest.spyOn(RecipeQueries, '_editRecipeDescription').mockRejectedValue(new Error('Test error'));
 
-				await expect(RecipeQueries._editRecipeDescription(recipe)).rejects.toThrow('Test error');
+				await expect(RecipeQueries.updateRecipe(recipe)).rejects.toThrow('Test error');
 				expect(mockClient.query).toHaveBeenCalledWith('ROLLBACK');
 				expect(mockClient.release).toHaveBeenCalled();
 			});
@@ -423,6 +423,76 @@ describe('Test recipes queries', () => {
 			const result = await RecipeQueries.insertRecipeComment(comment);
 
 			expect(result).toEqual(commentId);
+		});
+	});
+
+	describe('Rating', () => {
+		describe('getUserRatingForRecipe', () => {
+			it('should return user rating if exists', async () => {
+				const mockResult = {
+					rows: [{
+						rating: 3
+					}]
+				};
+				const expectedResult = {
+					rating: 3
+				};
+
+				mockPool.query.mockResolvedValue(mockResult);
+
+				const result = await RecipeQueries.getUserRatingForRecipe('recipeId', 'userId');
+
+				expect(result).toEqual(expectedResult);
+			});
+
+			it('should return "undefined" if comment id not found', async () => {
+				mockPool.query.mockResolvedValue({rows: []});
+
+				const result = await RecipeQueries.getUserRatingForRecipe('recipeId', 'userId');
+
+				expect(result).toBeUndefined();
+			});
+		});
+
+		it('getRecipeRatings should return recipe ratings', async () => {
+			const mockResult = {rows: [{rating: 2}, {rating: 3}]};
+
+			const expectedResult = [{rating: 2}, {rating: 3}];
+
+			mockPool.query.mockResolvedValue(mockResult);
+
+			const result = await RecipeQueries.getRecipeRatings('recipeId');
+
+			expect(result).toEqual(expectedResult);
+		});
+
+		it('insertRecipeRating should return rating', async () => {
+			const mockResult = {rows: [{rating: 3}]};
+			const expectedResult = 3;
+
+			mockPool.query.mockResolvedValue(mockResult);
+
+			const result = await RecipeQueries.insertRecipeRating('recipeId', 'userId', 3);
+
+			expect(result).toEqual(expectedResult);
+		});
+
+		describe('updateRecipeRating', () => {
+			it('should return true when a rating is updated', async () => {
+				mockPool.query.mockResolvedValue({rowCount: 1});
+
+				const result = await RecipeQueries.updateRecipeRating('validId');
+
+				expect(result).toBeTruthy();
+			});
+
+			it('should return false when rating update fails', async () => {
+				mockPool.query.mockResolvedValue({rowCount: 0});
+
+				const result = await RecipeQueries.updateRecipeRating('invalidId');
+
+				expect(result).toBeFalsy();
+			});
 		});
 	});
 });
