@@ -23,7 +23,7 @@ describe('Test signup route', () => {
 			.send(user)
 			.expect(400)
 
-		expect(response.body.message).toEqual('L\'identifiant est requis');
+		expect(response.body.message).toEqual(`L'identifiant est requis`);
 	});
 
 	it('with undefined password should return code 400', async () => {
@@ -51,7 +51,7 @@ describe('Test signup route', () => {
 	it('should throw an error with forbidden character in userId', async () => {
 		user.username = 'username%';
 
-		const expectedMessageError = 'L\'identifiant contient des caractères interdits';
+		const expectedMessageError = `L'identifiant contient des caractères interdits`;
 
 		const response = await request(app)
 			.post('/signup')
@@ -89,7 +89,7 @@ describe('Test signup route', () => {
 			.send(user)
 			.expect(409)
 
-		expect(response.body.message).toEqual('L\'identifiant n\'est pas disponible');
+		expect(response.body.message).toEqual(`L'identifiant n'est pas disponible`);
 	});
 
 	it('should return code 500 if query fails', async () => {

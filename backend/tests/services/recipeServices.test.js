@@ -256,7 +256,7 @@ describe('Test recipe services', () => {
 			it('should throw an error if ingredient index is undefined', async () => {
 				recipe.ingredients.at(0).index = undefined;
 
-				const expectedError = new HttpError(400, "Le numéro de l\'ingrédient est requis");
+				const expectedError = new HttpError(400, `Le numéro de l'ingrédient est requis`);
 
 				await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
 			});
@@ -264,7 +264,7 @@ describe('Test recipe services', () => {
 			it('should throw an error if ingredient index is not an integer', async () => {
 				recipe.ingredients.at(0).index = 1.5;
 
-				const expectedError = new HttpError(400, "Le numéro de l\'ingrédient est requis");
+				const expectedError = new HttpError(400, `Le numéro de l'ingrédient est requis`);
 
 				await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
 			});
@@ -272,7 +272,7 @@ describe('Test recipe services', () => {
 			it('should throw an error if ingredient name is undefined', async () => {
 				recipe.ingredients.at(0).name = undefined;
 
-				const expectedError = new HttpError(400, "Le nom de l\'ingrédient est requis");
+				const expectedError = new HttpError(400, `Le nom de l'ingrédient est requis`);
 
 				await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
 			});
@@ -280,7 +280,7 @@ describe('Test recipe services', () => {
 			it('should throw an error if servings is not an integer', async () => {
 				recipe.ingredients.at(0).quantity = "not a number";
 
-				const expectedError = new HttpError(400, "La quantité de l\'ingrédient doit être un nombre");
+				const expectedError = new HttpError(400, `La quantité de l'ingrédient doit être un nombre`);
 
 				await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
 			});
@@ -296,7 +296,7 @@ describe('Test recipe services', () => {
 			it('should throw an error if step index is undefined', async () => {
 				recipe.steps.at(0).index = undefined;
 
-				const expectedError = new HttpError(400, "Le numéro de l\'étape est requis");
+				const expectedError = new HttpError(400, `Le numéro de l'étape est requis`);
 
 				await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
 			});
@@ -304,7 +304,7 @@ describe('Test recipe services', () => {
 			it('should throw an error if step index is not an integer', async () => {
 				recipe.steps.at(0).index = 1.5;
 
-				const expectedError = new HttpError(400, "Le numéro de l\'étape est requis");
+				const expectedError = new HttpError(400, `Le numéro de l'étape est requis`);
 
 				await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
 			});
@@ -312,7 +312,7 @@ describe('Test recipe services', () => {
 			it('should throw an error if step description is undefined', async () => {
 				recipe.steps.at(0).description = undefined;
 
-				const expectedError = new HttpError(400, "La description de l\'étape est requise");
+				const expectedError = new HttpError(400, `La description de l'étape est requise`);
 
 				await expect(RecipeServices.createRecipe(recipe)).rejects.toThrow(expectedError);
 			});
@@ -419,7 +419,7 @@ describe('Test recipe services', () => {
 			it('should throw an error if ingredient index is undefined', async () => {
 				recipe.ingredients.at(0).index = undefined;
 
-				const expectedError = new HttpError(400, "Le numéro de l\'ingrédient est requis");
+				const expectedError = new HttpError(400, `Le numéro de l'ingrédient est requis`);
 
 				await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
 			});
@@ -427,7 +427,7 @@ describe('Test recipe services', () => {
 			it('should throw an error if ingredient index is not an integer', async () => {
 				recipe.ingredients.at(0).index = 1.5;
 
-				const expectedError = new HttpError(400, "Le numéro de l\'ingrédient est requis");
+				const expectedError = new HttpError(400, `Le numéro de l'ingrédient est requis`);
 
 				await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
 			});
@@ -435,7 +435,7 @@ describe('Test recipe services', () => {
 			it('should throw an error if ingredient name is undefined', async () => {
 				recipe.ingredients.at(0).name = undefined;
 
-				const expectedError = new HttpError(400, "Le nom de l\'ingrédient est requis");
+				const expectedError = new HttpError(400, `Le nom de l'ingrédient est requis`);
 
 				await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
 			});
@@ -443,7 +443,7 @@ describe('Test recipe services', () => {
 			it('should throw an error if servings is not an integer', async () => {
 				recipe.ingredients.at(0).quantity = "not a number";
 
-				const expectedError = new HttpError(400, "La quantité de l\'ingrédient doit être un nombre");
+				const expectedError = new HttpError(400, `La quantité de l'ingrédient doit être un nombre`);
 
 				await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
 			});
@@ -459,7 +459,7 @@ describe('Test recipe services', () => {
 			it('should throw an error if step index is undefined', async () => {
 				recipe.steps.at(0).index = undefined;
 
-				const expectedError = new HttpError(400, "Le numéro de l\'étape est requis");
+				const expectedError = new HttpError(400, `Le numéro de l'étape est requis`);
 
 				await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
 			});
@@ -467,7 +467,7 @@ describe('Test recipe services', () => {
 			it('should throw an error if step index is not an integer', async () => {
 				recipe.steps.at(0).index = 1.5;
 
-				const expectedError = new HttpError(400, "Le numéro de l\'étape est requis");
+				const expectedError = new HttpError(400, `Le numéro de l'étape est requis`);
 
 				await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
 			});
@@ -475,7 +475,7 @@ describe('Test recipe services', () => {
 			it('should throw an error if step description is undefined', async () => {
 				recipe.steps.at(0).description = undefined;
 
-				const expectedError = new HttpError(400, "La description de l\'étape est requise");
+				const expectedError = new HttpError(400, `La description de l'étape est requise`);
 
 				await expect(RecipeServices.updateRecipe(recipe)).rejects.toThrow(expectedError);
 			});
