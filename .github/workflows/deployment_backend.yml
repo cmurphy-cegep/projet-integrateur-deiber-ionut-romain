@@ -64,7 +64,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: backend/coverage/lcov.info
-          parallel: true
+          parallel: false
 
       - name: Start backend
         working-directory: ./backend
