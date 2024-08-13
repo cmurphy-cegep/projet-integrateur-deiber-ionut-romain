@@ -3,8 +3,10 @@
 		<h2>Les Recettes</h2>
 		<div id="recipe-list">
 			<LoadingSpinner :error="loadError" :loading="loading"/>
-			<ItemRecetteDescription v-for="recipe in recipes" v-if="!loading" :id="recipe.id" :key="recipe.id"
-									:description="recipe.description" :image="recipe.image" :name="recipe.name"/>
+			<div v-if="!loading">
+				<ItemRecetteDescription v-for="recipe in recipes" :id="recipe.id" :key="recipe.id"
+										:description="recipe.description" :image="recipe.image" :name="recipe.name"/>
+			</div>
 		</div>
 	</div>
 </template>
@@ -24,7 +26,6 @@ export default {
 			recipes: [],
 			loading: true,
 			loadError: false
-
 		}
 	},
 	mounted() {
@@ -39,7 +40,6 @@ export default {
 		});
 	}
 }
-
 </script>
 
 <style scoped>
