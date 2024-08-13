@@ -3,7 +3,7 @@ const {iterations, keylen, digest} = require('../auth/cryptoConfig');
 const UserAccountQueries = require("../queries/UserAccountQueries");
 
 class UserAccountServices {
-	static async _createHashAndSalt(password) {
+	static _createHashAndSalt(password) {
 		const saltBuf = crypto.randomBytes(16);
 		const salt = saltBuf.toString("base64");
 		const derivedKey = crypto.pbkdf2Sync(password, salt, iterations, keylen, digest);

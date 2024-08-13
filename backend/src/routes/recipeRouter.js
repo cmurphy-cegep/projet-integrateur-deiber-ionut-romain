@@ -141,7 +141,7 @@ router.post('/:id/image',
 	passport.authenticate('basic', {session: false}),
 	// Fonction middleware de multer pour gérer l'upload d'un fichier dans ce endpoint.
 	// Cet appel de middleware doit venir après celui de l'authentification.
-	upload.single('recipe-image'), // doit correspondre à l'id du champ dans le formulaire html
+	upload.single('recipe-image'), // Doit correspondre à l'id du champ dans le formulaire html
 	async (req, res, next) => {
 		if (!req.user.isAdmin) {
 			return next(new HttpError(403, `Vous n'avez pas les permissions`));

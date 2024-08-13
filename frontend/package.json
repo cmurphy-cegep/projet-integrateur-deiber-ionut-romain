@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "echo \"tests à définir\"",
+    "test": "echo \"tests cypress à définir\"",
     "eslint": "eslint"
   },
   "dependencies": {

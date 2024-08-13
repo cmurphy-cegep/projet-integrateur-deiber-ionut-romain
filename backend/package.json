@@ -7,7 +7,7 @@
     "dev": "nodemon ./bin/www",
     "test": "jest --config ./config/jest.config.js",
     "test-coverage": "jest --coverage --config ./config/jest.config.js",
-    "eslint": "eslint"
+    "eslint": "eslint --config ./config/eslint.config.mjs"
   },
   "author": "",
   "license": "ISC",

@@ -17,7 +17,6 @@ export default [
 	{
 		rules: {
 			"max-lines": "error",
-			"max-lines-per-function": "error",
 			"no-var": "error",
 			"eqeqeq": "error",
 			"no-shadow": "error",

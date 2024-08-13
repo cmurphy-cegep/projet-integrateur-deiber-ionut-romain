@@ -1,10 +1,10 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import { createApp } from 'vue';
+import {createRouter, createWebHistory} from 'vue-router';
+import {createApp} from 'vue';
 import App from './App.vue';
 import CatalogueRecettes from './pages/catalogue/CatalogueRecettes.vue';
 import ItemRecetteDetail from './pages/catalogue/ItemRecetteDetail.vue';
 import FormulaireLogin from './pages/FormulaireLogin.vue';
-import Register from './pages/Register.vue';
+import Register from './pages/FormulaireSignup.vue';
 
 const app = createApp(App);
 
@@ -12,9 +12,9 @@ const app = createApp(App);
 const router = createRouter({
 	history: createWebHistory(),
 	routes: [
-		{ path: '', component: CatalogueRecettes },
-		{ path: '/recipes/:id', component: ItemRecetteDetail, props: true },
-		{ path: '/login', component: FormulaireLogin },
+		{path: '', component: CatalogueRecettes},
+		{path: '/recipes/:id', component: ItemRecetteDetail, props: true},
+		{path: '/login', component: FormulaireLogin},
 		{path: '/register', component: Register}
 	]
 });
