@@ -62,16 +62,16 @@ router.post('/',
 	passport.authenticate('basic', {session: false}),
 	async (req, res, next) => {
 		if (!req.user.isAdmin) {
-			return next(new HttpError(403, 'Vous n\'avez pas les permissions'));
+			return next(new HttpError(403, `Vous n'avez pas les permissions`));
 		}
 
 		const id = req.body.id;
 		if (!id || id === '') {
-			return next(new HttpError(400, 'L\'identifiant est requis'));
+			return next(new HttpError(400, `L'identifiant est requis`));
 		}
 
 		if (!isValidIdSyntax(id)) {
-			return next(new HttpError(400, 'L\'identifiant contient des caractères interdits'));
+			return next(new HttpError(400, `L'identifiant contient des caractères interdits`));
 		}
 
 		try {
@@ -92,7 +92,7 @@ router.put('/:id',
 	passport.authenticate('basic', {session: false}),
 	async (req, res, next) => {
 		if (!req.user.isAdmin) {
-			return next(new HttpError(403, 'Vous n\'avez pas les permissions'));
+			return next(new HttpError(403, `Vous n'avez pas les permissions`));
 		}
 
 		const id = req.params.id;
@@ -118,7 +118,7 @@ router.delete('/:id',
 	passport.authenticate('basic', {session: false}),
 	async (req, res, next) => {
 		if (!req.user.isAdmin) {
-			return next(new HttpError(403, 'Vous n\'avez pas les permissions'));
+			return next(new HttpError(403, `Vous n'avez pas les permissions`));
 		}
 
 		const id = req.params.id;
@@ -144,7 +144,7 @@ router.post('/:id/image',
 	upload.single('recipe-image'), // doit correspondre à l'id du champ dans le formulaire html
 	async (req, res, next) => {
 		if (!req.user.isAdmin) {
-			return next(new HttpError(403, 'Vous n\'avez pas les permissions'));
+			return next(new HttpError(403, `Vous n'avez pas les permissions`));
 		}
 
 		const id = req.params.id;
@@ -225,7 +225,7 @@ router.get('/:id/ratings/user-rating',
 			if (result) {
 				res.json(result);
 			} else {
-				return next(new HttpError(404, `Aucune note correspondante pour l\'utilisateur ${userId} et la recette ${recipeId}`));
+				return next(new HttpError(404, `Aucune note correspondante pour l'utilisateur ${userId} et la recette ${recipeId}`));
 			}
 		} catch (err) {
 			next(err);

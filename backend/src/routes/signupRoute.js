@@ -10,11 +10,11 @@ router.post('/', async (req, res, next) => {
 		const fullname = req.body.fullname;
 
 		if (!userId || userId === '') {
-			return next(new HttpError(400, 'L\'identifiant est requis'));
+			return next(new HttpError(400, `L'identifiant est requis`));
 		}
 
 		if (!isValidIdSyntax(userId)) {
-			return next(new HttpError(400, 'L\'identifiant contient des caractères interdits'));
+			return next(new HttpError(400, `L'identifiant contient des caractères interdits`));
 		}
 
 		if (!password || password === '') {
@@ -28,7 +28,7 @@ router.post('/', async (req, res, next) => {
 		try {
 			const user = await UserAccountServices.getUserByUserId(userId);
 			if (user) {
-				return next(new HttpError(409, 'L\'identifiant n\'est pas disponible'));
+				return next(new HttpError(409, `L'identifiant n'est pas disponible`));
 			}
 
 			const response = await UserAccountServices.createUserAccount(userId, password, fullname);
