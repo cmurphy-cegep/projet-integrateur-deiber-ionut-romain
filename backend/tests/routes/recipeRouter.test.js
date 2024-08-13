@@ -166,7 +166,7 @@ describe('Test recipes routes', () => {
 		});
 
 		it('should throw an error with code 403 if user is not admin', async () => {
-			const expectedMessageError = 'Vous n\'avez pas les permissions';
+			const expectedMessageError = `Vous n'avez pas les permissions`;
 
 			mockUserDetails.isAdmin = false;
 
@@ -180,7 +180,7 @@ describe('Test recipes routes', () => {
 		});
 
 		it('should throw an error with code 400 if no recipeId', async () => {
-			const expectedMessageError = 'L\'identifiant est requis';
+			const expectedMessageError = `L'identifiant est requis`;
 
 			recipe.id = undefined;
 
@@ -194,7 +194,7 @@ describe('Test recipes routes', () => {
 		});
 
 		it('should throw an error with forbidden character in recipeId', async () => {
-			const expectedMessageError = 'L\'identifiant contient des caractères interdits';
+			const expectedMessageError = `L'identifiant contient des caractères interdits`;
 
 			recipe.id = 'ma recette';
 
@@ -208,7 +208,7 @@ describe('Test recipes routes', () => {
 		});
 
 		it('should throw an error recipeId already exists', async () => {
-			const expectedMessageError = 'Une recette avec l\'id recipeId existe déjà';
+			const expectedMessageError = `Une recette avec l'id recipeId existe déjà`;
 
 			mockRecipeServices.getRecipeById.mockResolvedValue(true);
 
@@ -278,7 +278,7 @@ describe('Test recipes routes', () => {
 		});
 
 		it('should throw an error with code 403 if user is not admin', async () => {
-			const expectedMessageError = 'Vous n\'avez pas les permissions';
+			const expectedMessageError = `Vous n'avez pas les permissions`;
 
 			mockUserDetails.isAdmin = false;
 
@@ -292,7 +292,7 @@ describe('Test recipes routes', () => {
 		});
 
 		it('should throw an error with code 400 if parameter recipeId do not match body recipeId', async () => {
-			const expectedMessageError = 'Le paramètre spécifie l\'id recipeId alors que la recette fournie a l\'id' +
+			const expectedMessageError = `Le paramètre spécifie l'id recipeId alors que la recette fournie a l'id` +
 				' wrongRecipeId';
 
 			recipe.id = 'wrongRecipeId'
@@ -307,7 +307,7 @@ describe('Test recipes routes', () => {
 		});
 
 		it('should throw an error recipeId do not exist', async () => {
-			const expectedMessageError = 'L\'id recipeId ne correspond à aucune recette existante';
+			const expectedMessageError = `L'id recipeId ne correspond à aucune recette existante`;
 
 			mockRecipeServices.getRecipeById.mockResolvedValue(false);
 
@@ -359,7 +359,7 @@ describe('Test recipes routes', () => {
 		});
 
 		it('should throw an error with code 403 if user is not admin', async () => {
-			const expectedMessageError = 'Vous n\'avez pas les permissions';
+			const expectedMessageError = `Vous n'avez pas les permissions`;
 
 			mockUserDetails.isAdmin = false;
 
@@ -372,7 +372,7 @@ describe('Test recipes routes', () => {
 		});
 
 		it('should throw an error recipeId do not exist', async () => {
-			const expectedMessageError = 'L\'id recipeId ne correspond à aucune recette existante';
+			const expectedMessageError = `L'id recipeId ne correspond à aucune recette existante`;
 
 			mockRecipeServices.getRecipeById.mockResolvedValue(false);
 
@@ -421,7 +421,7 @@ describe('Test recipes routes', () => {
 		});
 
 		it('should throw an error with code 403 if user is not admin', async () => {
-			const expectedMessageError = 'Vous n\'avez pas les permissions';
+			const expectedMessageError = `Vous n'avez pas les permissions`;
 
 			mockUserDetails.isAdmin = false;
 
@@ -435,7 +435,7 @@ describe('Test recipes routes', () => {
 		});
 
 		it('should throw an error with code 404 if recipe does not exist', async () => {
-			const expectedMessageError = 'L\'id recipeId ne correspond à aucune recette existante';
+			const expectedMessageError = `L'id recipeId ne correspond à aucune recette existante`;
 
 			mockRecipeServices.getRecipeById.mockResolvedValue(false);
 
@@ -492,7 +492,7 @@ describe('Test recipes routes', () => {
 		});
 
 		it('should throw an error with code 404 if recipe does not exist', async () => {
-			const expectedMessageError = 'L\'id recipeId ne correspond à aucune recette existante';
+			const expectedMessageError = `L'id recipeId ne correspond à aucune recette existante`;
 
 			mockRecipeServices.getRecipeById.mockResolvedValue(false);
 
@@ -555,7 +555,7 @@ describe('Test recipes routes', () => {
 		});
 
 		it('should throw an error with code 404 if recipe does not exist', async () => {
-			const expectedMessageError = 'L\'id recipeId ne correspond à aucune recette existante';
+			const expectedMessageError = `L'id recipeId ne correspond à aucune recette existante`;
 
 			mockRecipeServices.getRecipeById.mockResolvedValue(false);
 
@@ -614,7 +614,7 @@ describe('Test recipes routes', () => {
 		});
 
 		it('should throw an error with code 404 if recipe does not exist', async () => {
-			const expectedMessageError = 'L\'id recipeId ne correspond à aucune recette existante';
+			const expectedMessageError = `L'id recipeId ne correspond à aucune recette existante`;
 
 			mockRecipeServices.getRecipeById.mockResolvedValue(false);
 
@@ -642,7 +642,7 @@ describe('Test recipes routes', () => {
 		});
 
 		it('throws error with code 404 if user rating not found for this recipe', async () => {
-			const expectedMessageError = 'Aucune note correspondante pour l\'utilisateur userId et la recette recipeId';
+			const expectedMessageError = `Aucune note correspondante pour l'utilisateur userId et la recette recipeId`;
 
 			mockRecipeServices.getRecipeById.mockResolvedValue(true);
 			mockRecipeServices.getUserRatingForRecipe.mockResolvedValue(undefined);
