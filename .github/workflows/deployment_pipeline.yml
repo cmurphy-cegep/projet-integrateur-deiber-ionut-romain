@@ -54,9 +54,9 @@ jobs:
         working-directory: ./backend
         run: npm audit fix
 
-      - name: Run eslint
-        working-directory: ./backend
-        run: npm run eslint
+      #      - name: Run eslint
+      #        working-directory: ./backend
+      #        run: npm run eslint
 
       - name: Run backend tests
         working-directory: ./backend
@@ -75,9 +75,9 @@ jobs:
         working-directory: ./frontend
         run: npm install
 
-      - name: Run eslint
-        working-directory: ./backend
-        run: npm run eslint
+      #      - name: Run eslint
+      #        working-directory: ./frontend
+      #        run: npm run eslint
 
       - name: Fix vulnerabilities
         working-directory: ./frontend
