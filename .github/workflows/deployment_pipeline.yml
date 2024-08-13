@@ -60,7 +60,12 @@ jobs:
 
       - name: Run backend tests
         working-directory: ./backend
-        run: npm run test
+        run: npm run test-coverage
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Start backend
         working-directory: ./backend

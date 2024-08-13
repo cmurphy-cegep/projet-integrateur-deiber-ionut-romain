@@ -6,6 +6,7 @@
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
     "test": "jest --config ./config/jest.config.js",
+    "test-coverage": "jest --coverage ./config/jest.config.js",
     "eslint": "eslint"
   },
   "author": "",
