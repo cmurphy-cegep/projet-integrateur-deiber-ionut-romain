@@ -59,6 +59,9 @@ jobs:
         working-directory: ./backend
         run: npm run test-coverage
 
+      - name: Verify lcov file
+        run: cat backend/coverage/lcov.info
+
       - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
