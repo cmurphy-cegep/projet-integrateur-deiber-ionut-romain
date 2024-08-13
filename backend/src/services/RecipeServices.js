@@ -37,14 +37,14 @@ class RecipeServices {
 
 		for (const ingredient of recipe.ingredients) {
 			if (!ingredient.index || !Number.isInteger(ingredient.index)) {
-				throw new HttpError(400, 'Le numéro de l\'ingrédient est requis');
+				throw new HttpError(400, `Le numéro de l'ingrédient est requis`);
 			}
 			if (!ingredient.name) {
-				throw new HttpError(400, 'Le nom de l\'ingrédient est requis');
+				throw new HttpError(400, `Le nom de l'ingrédient est requis`);
 			}
 
 			if (ingredient.quantity && isNaN(ingredient.quantity)) {
-				throw new HttpError(400, 'La quantité de l\'ingrédient doit être un nombre');
+				throw new HttpError(400, `La quantité de l'ingrédient doit être un nombre`);
 			}
 		}
 
@@ -54,10 +54,10 @@ class RecipeServices {
 
 		for (const step of recipe.steps) {
 			if (!step.index || !Number.isInteger(step.index)) {
-				throw new HttpError(400, 'Le numéro de l\'étape est requis');
+				throw new HttpError(400, `Le numéro de l'étape est requis`);
 			}
 			if (!step.description) {
-				throw new HttpError(400, 'La description de l\'étape est requise');
+				throw new HttpError(400, `La description de l'étape est requise`);
 			}
 		}
 	}
