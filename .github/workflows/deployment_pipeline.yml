@@ -76,9 +76,9 @@ jobs:
         working-directory: ./frontend
         run: npm install
 
-      #      - name: Run eslint
-      #        working-directory: ./frontend
-      #        run: npm run eslint
+      - name: Run eslint
+        working-directory: ./frontend
+        run: npm run eslint
 
       - name: Fix vulnerabilities
         working-directory: ./frontend

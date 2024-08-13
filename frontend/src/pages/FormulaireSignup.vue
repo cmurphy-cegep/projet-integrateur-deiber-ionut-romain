@@ -28,7 +28,6 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
-
 export default {
 	setup() {
 		const credentials = ref({ username: '', password: '', confirmPassword: '', fullName: '' });
@@ -65,8 +64,8 @@ export default {
 
 				if (!response.ok) {
 					const errorData = await response.json();
-					const errorMessage = errorData.message || 'Une erreur est survenue lors de la création du compte.';
-					throw new Error(errorMessage);
+					const apiErrorMessage = errorData.message || 'Une erreur est survenue lors de la création du compte.';
+					throw new Error(apiErrorMessage);
 				}
 
 				const responseData = await response.json();
