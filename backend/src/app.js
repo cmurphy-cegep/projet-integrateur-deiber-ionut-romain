@@ -1,5 +1,4 @@
 const express = require('express');
-const logger = require('morgan');
 const errorMiddleware = require('./error/errorMiddleware');
 
 const recipeRouter = require('./routes/recipeRouter');
@@ -8,7 +7,6 @@ const signupRoute = require('./routes/signupRoute');
 
 const app = express();
 
-app.use(logger('dev'));
 app.use(express.json());
 
 app.use('/recipes', recipeRouter);
