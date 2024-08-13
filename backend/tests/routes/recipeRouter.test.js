@@ -597,7 +597,6 @@ describe('Test recipes routes', () => {
 
 	describe('GET /recipes/:id/ratings/user-rating', () => {
 		let mockUserDetails;
-		let rating
 
 		beforeEach(() => {
 			mockUserDetails = {
@@ -609,8 +608,6 @@ describe('Test recipes routes', () => {
 			};
 
 			mockUserAccountServices.getUserByUserId.mockResolvedValue(mockUserDetails);
-
-			rating = {rating: 3}
 		});
 
 		it('should throw an error with code 404 if recipe does not exist', async () => {

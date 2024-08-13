@@ -3,9 +3,6 @@ on:
   push:
     branches:
       - "**"
-  pull_request:
-    branches:
-      - main
 
 jobs:
   deploy:
@@ -50,9 +47,23 @@ jobs:
         working-directory: ./backend
         run: npm install
 
+      - name: Fix vulnerabilities
+        working-directory: ./backend
+        run: npm audit fix
+
+      - name: Run eslint
+        working-directory: ./backend
+        run: npm run eslint
+
       - name: Run backend tests
         working-directory: ./backend
-        run: npm run test
+        run: npm run test-coverage
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: backend/coverage/lcov.info
 
       - name: Start backend
         working-directory: ./backend
@@ -61,6 +72,14 @@ jobs:
       - name: Install frontend dependencies
         working-directory: ./frontend
         run: npm install
+
+      #      - name: Run eslint
+      #        working-directory: ./frontend
+      #        run: npm run eslint
+
+      - name: Fix vulnerabilities
+        working-directory: ./frontend
+        run: npm audit fix
 
       - name: Wait for backend to be ready
         run: |

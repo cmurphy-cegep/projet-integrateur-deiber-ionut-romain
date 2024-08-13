@@ -9,7 +9,7 @@ class RecipeServices {
 		comment.recipeId = "" + recipeId;
 	}
 
-	static _checkRecipeProperties(recipe) {
+	static _checkRecipeDescription(recipe) {
 		if (!recipe.name) {
 			throw new HttpError(400, 'Le nom est requis');
 		}
@@ -30,7 +30,9 @@ class RecipeServices {
 		if (recipe.servings && !Number.isInteger(recipe.servings)) {
 			throw new HttpError(400, 'Le nombre de portions doit être un nombre entier');
 		}
+	}
 
+	static _checkRecipeIngredients(recipe) {
 		if (!recipe.ingredients || recipe.ingredients.length === 0) {
 			throw new HttpError(400, 'Les ingrédients sont requis');
 		}
@@ -47,7 +49,15 @@ class RecipeServices {
 				throw new HttpError(400, `La quantité de l'ingrédient doit être un nombre`);
 			}
 		}
+	}
 
+	static _checkRecipeProperties(recipe) {
+		this._checkRecipeDescription(recipe);
+		this._checkRecipeIngredients(recipe);
+		this._checkRecipeSteps(recipe);
+	}
+
+	static _checkRecipeSteps(recipe) {
 		if (!recipe.steps || recipe.steps.length === 0) {
 			throw new HttpError(400, 'Les étapes sont requises');
 		}
@@ -75,7 +85,7 @@ class RecipeServices {
 		if (recipe.servings) {
 			recipe.servings = "" + recipe.servings;
 		}
-		for (let ingredient of recipe.ingredients) {
+		for (const ingredient of recipe.ingredients) {
 			ingredient.index = "" + ingredient.index;
 			ingredient.name = "" + ingredient.name;
 			if (ingredient.quantity) {
@@ -85,7 +95,7 @@ class RecipeServices {
 				ingredient.unit = "" + ingredient.unit;
 			}
 		}
-		for (let step of recipe.steps) {
+		for (const step of recipe.steps) {
 			step.index = "" + step.index;
 			step.description = "" + step.description;
 		}
@@ -168,9 +178,8 @@ class RecipeServices {
 		const existingRating = await RecipeQueries.getUserRatingForRecipe(recipeId, userId);
 		if (existingRating) {
 			return await this._updateRating(recipeId, userId, rating);
-		} else {
-			return await this._createRating(recipeId, userId, rating);
 		}
+		return await this._createRating(recipeId, userId, rating);
 	}
 
 	static async createRecipe(recipe) {
@@ -208,7 +217,7 @@ class RecipeServices {
 	}
 
 	static async getDetailedRecipeById(recipeId) {
-		let recipe = await this.getRecipeById(recipeId);
+		const recipe = await this.getRecipeById(recipeId);
 		if (recipe) {
 			recipe.ingredients = await RecipeQueries.getRecipeIngredients(recipeId);
 			recipe.steps = await RecipeQueries.getRecipeSteps(recipeId);
