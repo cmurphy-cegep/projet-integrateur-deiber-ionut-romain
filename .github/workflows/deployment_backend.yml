@@ -64,6 +64,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           base-path: ./backend
+          path-to-lcov: ./backend/coverage/lcov.info
 
       - name: Start backend
         working-directory: ./backend
