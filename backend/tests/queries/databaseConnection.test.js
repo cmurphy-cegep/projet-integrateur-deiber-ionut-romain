@@ -7,5 +7,7 @@ describe('Postgres DB Connection', () => {
 		expect(client).toBeTruthy();
 
 		client.release();
+
+		await pool.end();
 	});
 });
