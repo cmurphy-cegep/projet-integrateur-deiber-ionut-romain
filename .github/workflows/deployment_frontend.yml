@@ -1,0 +1,31 @@
+name: Frontend Deployment Pipeline
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm install
+
+      - name: Fix vulnerabilities
+        working-directory: ./frontend
+        run: npm audit fix
+
+      - name: Run eslint
+        working-directory: ./frontend
+        run: npm run eslint
+
+      - name: Build frontend application
+        working-directory: ./frontend
+        run: npm run build
