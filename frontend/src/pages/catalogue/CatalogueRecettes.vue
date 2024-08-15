@@ -1,12 +1,10 @@
 <template>
 	<div class="container">
 		<h2>Les Recettes</h2>
-		<div id="recipe-list">
-			<LoadingSpinner :error="loadError" :loading="loading"/>
-			<div v-if="!loading">
-				<ItemRecetteDescription v-for="recipe in recipes" :id="recipe.id" :key="recipe.id"
-										:description="recipe.description" :image="recipe.image" :name="recipe.name"/>
-			</div>
+		<LoadingSpinner :error="loadError" :loading="loading"/>
+		<div v-if="!loading" id="recipe-list">
+			<ItemRecetteDescription v-for="recipe in recipes" :id="recipe.id" :key="recipe.id"
+									:description="recipe.description" :image="recipe.image" :name="recipe.name"/>
 		</div>
 	</div>
 </template>

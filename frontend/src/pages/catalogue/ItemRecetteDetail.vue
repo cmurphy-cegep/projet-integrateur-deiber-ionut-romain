@@ -30,15 +30,20 @@
 			</div>
 		</div>
 	</div>
+	<div class="recipe-row">
+		<CommentairesRecette v-if="recipe" :recipe="recipe" :comments="recipe.comments" @comment-added="refreshComments" />
+	</div>
 </template>
 
 <script>
 import {fetchRecipe} from '../../services/recipeService.js';
+import CommentairesRecette from './CommentairesRecette.vue';
 import {addApiPrefixToPath} from '../../api_utils';
+import session from '../../session';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
 
 export default {
-	components: {LoadingSpinner: LoadingSpinner},
+	components: {CommentairesRecette, LoadingSpinner},
 	props: {
 		id: String,
 		image: String
@@ -49,10 +54,10 @@ export default {
 			imageSrc: '',
 			loading: true,
 			loadError: false,
+			session: session,
 		};
 	},
 	methods: {
-
 		refreshRecipe(id) {
 			this.loading = true;
 			this.recipe = null;
@@ -62,11 +67,20 @@ export default {
 				this.imageSrc = addApiPrefixToPath(recipe.image);
 				this.loading = false;
 			}).catch(err => {
-				console.error(err);
-				this.recipe = null;
 				this.loadError = true;
-				this.loading = true;
+				this.loading = false;
 			});
+		},
+		refreshComments() {
+			fetch(`/api/recipes/${this.recipe.id}`).then(response => {
+					if (!response.ok) {
+						throw new Error(`Failed to fetch recipe details for id ${this.recipe.id}`);
+					}
+					return response.json();
+				})
+				.catch(err => {
+					console.error(err);
+				});
 		},
 		formatQuantity(quantity) {
 			if (quantity === null) {
@@ -86,8 +100,6 @@ export default {
 </script>
 
 <style scoped>
-
-
 .recipe-name {
 	text-align: center;
 	font-size: 2em;
