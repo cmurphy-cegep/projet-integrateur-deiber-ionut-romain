@@ -66,7 +66,7 @@ export default {
 				this.recipe = recipe;
 				this.imageSrc = addApiPrefixToPath(recipe.image);
 				this.loading = false;
-			}).catch(err => {
+			}).catch(() => {
 				this.loadError = true;
 				this.loading = false;
 			});

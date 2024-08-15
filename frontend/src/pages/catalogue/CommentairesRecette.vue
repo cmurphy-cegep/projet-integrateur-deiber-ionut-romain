@@ -6,7 +6,7 @@
 			<p>{{ comment.text }}</p>
 		</div>
 	</div>
-	<div class="recipe-add-comment">
+	<div v-if="session.user" class="recipe-add-comment" >
 		<h3>Ajouter un commentaire</h3>
 		<button @click="showCommentForm = !showCommentForm">
 			{{ showCommentForm ? 'Annuler' : 'Ajouter un commentaire' }}
