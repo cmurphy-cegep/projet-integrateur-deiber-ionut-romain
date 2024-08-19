@@ -36,14 +36,15 @@
 </template>
 
 <script>
-import {fetchRecipe} from '../../services/recipeService.js';
+import { fetchRecipe } from '../../services/recipeService.js';
+import { fetchComments } from '../../services/commentService.js';
 import CommentairesRecette from './CommentairesRecette.vue';
-import {addApiPrefixToPath} from '../../api_utils';
+import { addApiPrefixToPath } from '../../api_utils';
 import session from '../../session';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
 
 export default {
-	components: {CommentairesRecette, LoadingSpinner},
+	components: { CommentairesRecette, LoadingSpinner },
 	props: {
 		id: String,
 		image: String
@@ -71,16 +72,12 @@ export default {
 				this.loading = false;
 			});
 		},
-		refreshComments() {
-			fetch(`/api/recipes/${this.recipe.id}`).then(response => {
-					if (!response.ok) {
-						throw new Error(`Failed to fetch recipe details for id ${this.recipe.id}`);
-					}
-					return response.json();
-				})
-				.catch(err => {
-					console.error(err);
-				});
+		async refreshComments() {
+			try {
+				this.recipe.comments = await fetchComments(this.recipe.id);
+			} catch (error) {
+				console.error('Failed to refresh comments:', error);
+			}
 		},
 		formatQuantity(quantity) {
 			if (quantity === null) {

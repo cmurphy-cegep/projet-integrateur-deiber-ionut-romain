@@ -1,3 +1,17 @@
+const convertToRecipe = jsonRecipe => {
+    return {
+        id: jsonRecipe.id,
+        name: jsonRecipe.name,
+        description: jsonRecipe.description,
+        preparation_time: jsonRecipe.preparation_time,
+        cooking_time: jsonRecipe.cooking_time,
+        servings: jsonRecipe.servings,
+        ingredients: jsonRecipe.ingredients,
+        steps: jsonRecipe.steps,
+        image: jsonRecipe.image,
+        comments: jsonRecipe.comments
+    };
+};
 export async function postComment(comment, userId, recipeId) {
     const username = sessionStorage.getItem('username');
     const password = sessionStorage.getItem('password');
@@ -23,10 +37,12 @@ export async function postComment(comment, userId, recipeId) {
     }
 };
 export async function fetchComments(recipeId) {
-    const response = await fetch(`/api/recipes/${recipeId}/comments`);
+    const response = await fetch(`/api/recipes/${recipeId}`);
 
     if (response.ok) {
-        return await response.json();
+        const recipe = convertToRecipe(await response.json());
+        return recipe.comments;
+
     } else {
         throw new Error(`Impossible de récupérer les commentaires pour la recette ${recipeId}`);
     }
