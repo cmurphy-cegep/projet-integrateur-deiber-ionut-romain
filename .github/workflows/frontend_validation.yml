@@ -1,11 +1,15 @@
-name: Frontend Deployment Pipeline
+name: Frontend validation
 on:
   push:
-    branches:
-      - "**"
+    branches-ignore:
+      - main
+    paths:
+      - 'frontend/**'   # Déclenche uniquement si les fichiers du frontend sont modifiés
+
+  workflow_call:
 
 jobs:
-  deploy-frontend:
+  frontend_validation:
     runs-on: ubuntu-latest
 
     steps:

@@ -1,11 +1,15 @@
-name: Backend Deployment Pipeline
+name: Backend validation
 on:
   push:
-    branches:
-      - "**"
+    branches-ignore:
+      - main
+    paths:
+      - 'backend/**'   # Déclenche uniquement si les fichiers du backend sont modifiés
+
+  workflow_call:
 
 jobs:
-  deploy-backend:
+  backend_validation:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,12 +35,8 @@ jobs:
         run: npm run test-coverage
 
       - name: Coveralls
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           base-path: ./backend
           path-to-lcov: ./backend/coverage/lcov.info
-
-      - name: Start backend
-        working-directory: ./backend
-        run: npm run start &
