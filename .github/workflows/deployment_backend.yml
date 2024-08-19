@@ -1,8 +1,8 @@
 name: Backend Deployment
 on:
   push:
-    branches:
-      - "**"
+    branches-ignore:
+      - main
     paths:
       - 'backend/**'   # Déclenche uniquement si les fichiers du backend sont modifiés
 

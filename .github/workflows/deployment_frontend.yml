@@ -1,8 +1,8 @@
 name: Frontend Deployment
 on:
   push:
-    branches:
-      - "**"
+    branches-ignore:
+      - main
     paths:
       - 'frontend/**'   # Déclenche uniquement si les fichiers du frontend sont modifiés
 

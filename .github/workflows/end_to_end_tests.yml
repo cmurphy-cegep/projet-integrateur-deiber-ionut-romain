@@ -1,8 +1,8 @@
 name: End-to-End Tests
 on:
   push:
-    branches:
-      - "**"
+    branches-ignore:
+      - main
     paths:
       - 'backend/**'
       - 'frontend/**'  # Déclenche si des fichiers du backend ou du frontend sont modifiés
