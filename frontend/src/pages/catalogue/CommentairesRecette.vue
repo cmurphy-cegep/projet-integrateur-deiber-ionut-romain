@@ -37,8 +37,8 @@ export default {
 	},
 	methods: {
 		formatDate(dateString) {
-			const options = { year: 'numeric', month: 'long', day: 'numeric' };
-			return new Date(dateString).toLocaleDateString(undefined, options);
+			const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false };
+			return new Date(dateString).toLocaleDateString(undefined, options).replace(' at ', ' ');
 		},
 		async submitComment() {
 			try {
@@ -48,7 +48,7 @@ export default {
 				await postComment(this.newCommentText, this.session.user.userId, this.recipe.id);
 				this.newCommentText = '';
 				this.showCommentForm = false;
-				this.$emit('comment-added'); // Emit event to notify parent component
+				this.$emit('comment-added');
 			} catch (error) {
 				console.error(error);
 			}
