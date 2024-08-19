@@ -2,10 +2,7 @@ name: Deploy to Vercel
 
 on:
   workflow_run:
-    workflows:
-      - Backend Deployment
-      - Frontend Deployment
-      - End-to-End Tests
+    workflows: [ "Backend Deployment", "Frontend Deployment", "End-to-End Tests" ]
     types:
       - completed
     branches:
