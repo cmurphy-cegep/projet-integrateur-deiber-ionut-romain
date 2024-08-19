@@ -1,18 +1,15 @@
 name: Deploy to Vercel
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - Backend Deployment
+      - Frontend Deployment
+      - End-to-End Tests
+    types:
+      - completed
     branches:
       - main
-#  workflow_run:
-#    workflows:
-#      - deployment_backend
-#      - deployment_frontend
-#      - end_to_end_tests
-#    types:
-#      - completed
-#    branches:
-#      - main
 
 jobs:
   deploy:

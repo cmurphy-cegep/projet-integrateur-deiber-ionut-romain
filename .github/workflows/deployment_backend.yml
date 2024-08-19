@@ -1,4 +1,4 @@
-name: Backend Deployment Pipeline
+name: Backend Deployment
 on:
   push:
     branches:
