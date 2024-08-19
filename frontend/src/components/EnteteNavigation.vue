@@ -8,6 +8,9 @@
 
 			<div class="nav">
 				<span><Router-link to="/">Accueil</Router-link></span>
+				<span v-if="session.user && session.user.isAdmin"> |
+					<router-link to="/admin/new-recipe">Nouvelle recette</router-link>
+				</span>
 			</div>
 			<div class="connexion">
 				<div v-if="session.user">
