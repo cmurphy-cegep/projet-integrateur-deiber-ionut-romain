@@ -8,8 +8,8 @@ on:
       - end_to_end_tests
     types:
       - completed
-    branches:
-      - main
+#    branches:
+#      - main
 
 jobs:
   deploy:
