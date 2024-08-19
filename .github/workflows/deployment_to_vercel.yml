@@ -1,18 +1,24 @@
 name: Deploy to Vercel
 
 on:
-  workflow_run:
-    workflows: [ "Backend Deployment", "Frontend Deployment", "End-to-End Tests" ]
-    types:
-      - completed
+  push:
     branches:
       - main
 
 jobs:
+  backend:
+    uses: <owner>/<repo>/.github/workflows/deployment_backend.yml@main
+
+  frontend:
+    uses: <owner>/<repo>/.github/workflows/deployment_frontend.yml@main
+
+  ent_to_end:
+    uses: <owner>/<repo>/.github/workflows/end_to_end_tests.yml@main
+
   deploy:
     runs-on: ubuntu-latest
 
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    needs: [ backend, frontend, end_to_end ]
 
     steps:
       - name: Checkout code
@@ -20,8 +26,12 @@ jobs:
 
       - name: Deploy backend to Vercel
         # run: curl -X POST https://api.vercel.com/v1/integrations/deploy/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-        run: echo "Déploiement effectué. (À faire)"
+        run: |
+          echo "curl -X POST https://api.vercel.com/v1/integrations/deploy/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          echo "Déploiement effectué. (À faire)"
 
       - name: Deploy frontend to Vercel
         # run: curl -X POST https://api.vercel.com/v1/integrations/deploy/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-        run: echo "Déploiement effectué. (À faire)"
+        run: |
+          echo "curl -X POST https://api.vercel.com/v1/integrations/deploy/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          echo "Déploiement effectué. (À faire)"
