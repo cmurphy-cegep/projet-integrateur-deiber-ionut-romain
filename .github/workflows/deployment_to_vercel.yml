@@ -7,10 +7,10 @@ on:
 
 jobs:
   backend:
-    uses: cmurphy-cegep/projet-integrateur-deiber-ionut-romain/.github/workflows/deployment_backend.yml@main
+    uses: cmurphy-cegep/projet-integrateur-deiber-ionut-romain/.github/workflows/backend_validation.yml@main
 
   frontend:
-    uses: cmurphy-cegep/projet-integrateur-deiber-ionut-romain/.github/workflows/deployment_frontend.yml@main
+    uses: cmurphy-cegep/projet-integrateur-deiber-ionut-romain/.github/workflows/frontend_validation.yml@main
 
   end_to_end:
     uses: cmurphy-cegep/projet-integrateur-deiber-ionut-romain/.github/workflows/end_to_end_tests.yml@main
