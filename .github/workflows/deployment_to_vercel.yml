@@ -26,12 +26,8 @@ jobs:
 
       - name: Deploy backend to Vercel
         # run: curl -X POST https://api.vercel.com/v1/integrations/deploy/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-        run: |
-          echo "curl -X POST https://api.vercel.com/v1/integrations/deploy/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-          echo "Déploiement effectué. (À faire)"
+        run: echo "Déploiement effectué. (À faire)"
 
       - name: Deploy frontend to Vercel
         # run: curl -X POST https://api.vercel.com/v1/integrations/deploy/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-        run: |
-          echo "curl -X POST https://api.vercel.com/v1/integrations/deploy/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-          echo "Déploiement effectué. (À faire)"
+        run: echo "Déploiement effectué. (À faire)"
