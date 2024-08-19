@@ -9,7 +9,7 @@ on:
   workflow_call:
 
 jobs:
-  deploy-frontend:
+  frontend_validation:
     runs-on: ubuntu-latest
 
     steps:
