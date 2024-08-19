@@ -3,6 +3,10 @@ on:
   push:
     branches:
       - "**"
+    paths:
+      - 'frontend/**'   # Déclenche uniquement si les fichiers du frontend sont modifiés
+
+  workflow_call:
 
 jobs:
   deploy-frontend:

@@ -3,6 +3,10 @@ on:
   push:
     branches:
       - "**"
+    paths:
+      - 'backend/**'   # Déclenche uniquement si les fichiers du backend sont modifiés
+
+  workflow_call:
 
 jobs:
   deploy-backend:

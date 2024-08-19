@@ -3,6 +3,11 @@ on:
   push:
     branches:
       - "**"
+    paths:
+      - 'backend/**'
+      - 'frontend/**'  # Déclenche si des fichiers du backend ou du frontend sont modifiés
+
+  workflow_call:
 
 jobs:
   e2e-tests:
