@@ -8,7 +8,8 @@ const convertToRecipe = jsonRecipe => {
         servings: jsonRecipe.servings,
         ingredients: jsonRecipe.ingredients,
         steps: jsonRecipe.steps,
-        image: jsonRecipe.image
+        image: jsonRecipe.image,
+        comments: jsonRecipe.comments
     };
 };
 

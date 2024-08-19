@@ -30,15 +30,21 @@
 			</div>
 		</div>
 	</div>
+	<div class="recipe-row">
+		<CommentairesRecette v-if="recipe" :recipe="recipe" :comments="recipe.comments" @comment-added="refreshComments" />
+	</div>
 </template>
 
 <script>
-import {fetchRecipe} from '../../services/recipeService.js';
-import {addApiPrefixToPath} from '../../api_utils';
+import { fetchRecipe } from '../../services/recipeService.js';
+import { fetchComments } from '../../services/commentService.js';
+import CommentairesRecette from './CommentairesRecette.vue';
+import { addApiPrefixToPath } from '../../api_utils';
+import session from '../../session';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
 
 export default {
-	components: {LoadingSpinner: LoadingSpinner},
+	components: { CommentairesRecette, LoadingSpinner },
 	props: {
 		id: String,
 		image: String
@@ -49,10 +55,10 @@ export default {
 			imageSrc: '',
 			loading: true,
 			loadError: false,
+			session: session,
 		};
 	},
 	methods: {
-
 		refreshRecipe(id) {
 			this.loading = true;
 			this.recipe = null;
@@ -61,12 +67,17 @@ export default {
 				this.recipe = recipe;
 				this.imageSrc = addApiPrefixToPath(recipe.image);
 				this.loading = false;
-			}).catch(err => {
-				console.error(err);
-				this.recipe = null;
+			}).catch(() => {
 				this.loadError = true;
-				this.loading = true;
+				this.loading = false;
 			});
+		},
+		async refreshComments() {
+			try {
+				this.recipe.comments = await fetchComments(this.recipe.id);
+			} catch (error) {
+				console.error('Failed to refresh comments:', error);
+			}
 		},
 		formatQuantity(quantity) {
 			if (quantity === null) {
@@ -86,8 +97,6 @@ export default {
 </script>
 
 <style scoped>
-
-
 .recipe-name {
 	text-align: center;
 	font-size: 2em;
