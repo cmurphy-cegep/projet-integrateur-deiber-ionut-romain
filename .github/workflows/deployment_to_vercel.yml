@@ -6,19 +6,19 @@ on:
       - main
 
 jobs:
-  backend:
+  backend_validation:
     uses: cmurphy-cegep/projet-integrateur-deiber-ionut-romain/.github/workflows/backend_validation.yml@main
 
-  frontend:
+  frontend_validation:
     uses: cmurphy-cegep/projet-integrateur-deiber-ionut-romain/.github/workflows/frontend_validation.yml@main
 
-  end_to_end:
+  end_to_end_tests:
     uses: cmurphy-cegep/projet-integrateur-deiber-ionut-romain/.github/workflows/end_to_end_tests.yml@main
 
-  deploy:
+  deploy_to_vercel:
     runs-on: ubuntu-latest
 
-    needs: [ backend, frontend, end_to_end ]
+    needs: [ backend_validation, frontend_validation, end_to_end_tests ]
 
     steps:
       - name: Checkout code
