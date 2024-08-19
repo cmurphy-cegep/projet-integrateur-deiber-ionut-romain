@@ -11,5 +11,10 @@
       "src": "/(.*)",
       "dest": "src/app.js"
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "main": false
+    }
+  }
 }
