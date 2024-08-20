@@ -56,6 +56,7 @@
                 <table>
                     <thead>
                         <tr>
+                            <th>Index</th>
                             <th>Quantité</th>
                             <th>Unité</th>
                             <th>Ingrédient</th>
@@ -64,6 +65,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="(ingredient, index) in recipeIngredients" :key="index">
+                            <td>{{ ingredient.index }}</td>
                             <td><input type="number" step="0.01" v-model.number="ingredient.quantity"
                                     placeholder="Quantité" /></td>
                             <td><input type="text" v-model="ingredient.unit" placeholder="Unité" /></td>
@@ -130,20 +132,23 @@ export default {
     methods: {
         addIngredient() {
             this.recipeIngredients.push({
-                index: this.recipeIngredients.length + 1,
+                index: null,
                 quantity: null,
                 unit: '',
                 name: ''
             });
+            this.updateIndices();
         },
         removeIngredient(index) {
             this.recipeIngredients.splice(index, 1);
+            this.updateIndices();
         },
         moveIngredientUp(index) {
             if (index > 0) {
                 const temp = this.recipeIngredients[index];
                 this.recipeIngredients.splice(index, 1);
                 this.recipeIngredients.splice(index - 1, 0, temp);
+                this.updateIndices();
             }
         },
         moveIngredientDown(index) {
@@ -151,7 +156,13 @@ export default {
                 const temp = this.recipeIngredients[index];
                 this.recipeIngredients.splice(index, 1);
                 this.recipeIngredients.splice(index + 1, 0, temp);
+                this.updateIndices();
             }
+        },
+        updateIndices() {
+            this.recipeIngredients.forEach((ingredient, i) => {
+                ingredient.index = i + 1;
+            });
         },
         addStep() {
             this.recipeSteps.push({ description: '' });
