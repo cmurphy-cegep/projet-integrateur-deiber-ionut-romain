@@ -29,22 +29,34 @@
 				</ol>
 			</div>
 		</div>
-	</div>
-	<div class="recipe-row">
-		<CommentairesRecette v-if="recipe" :recipe="recipe" :comments="recipe.comments" @comment-added="refreshComments" />
+		<div class="recipe-row">
+			<AppreciationsRecette
+				:newRating="newRating"
+				:userRating="userRating"
+				:value="value"
+				:averageRating="averageRating"
+				:totalRatings="totalRatings"
+				@submit-rating="submitRating"
+			/>
+		</div>
+		<div class="recipe-row">
+			<CommentairesRecette v-if="recipe" :recipe="recipe" :comments="recipe.comments" @comment-added="refreshComments" />
+		</div>
 	</div>
 </template>
 
 <script>
 import { fetchRecipe } from '../../services/recipeService.js';
 import { fetchComments } from '../../services/commentService.js';
+import { fetchRatings, postRating, getUserRatingForRecipe } from '../../services/ratingService.js';
 import CommentairesRecette from './CommentairesRecette.vue';
 import { addApiPrefixToPath } from '../../api_utils';
 import session from '../../session';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
+import AppreciationsRecette from "@/pages/catalogue/AppreciationsRecette.vue";
 
 export default {
-	components: { CommentairesRecette, LoadingSpinner },
+	components: { AppreciationsRecette, CommentairesRecette, LoadingSpinner },
 	props: {
 		id: String,
 		image: String
@@ -56,27 +68,66 @@ export default {
 			loading: true,
 			loadError: false,
 			session: session,
+			averageRating: null,
+			totalRatings: null,
+			showRatingForm: false,
+			newRating: 1,
+			userRating: null,
+			value: 0,
 		};
 	},
 	methods: {
-		refreshRecipe(id) {
+		async refreshRecipe(id) {
 			this.loading = true;
 			this.recipe = null;
 
-			fetchRecipe(id).then(recipe => {
-				this.recipe = recipe;
-				this.imageSrc = addApiPrefixToPath(recipe.image);
-				this.loading = false;
-			}).catch(() => {
+			try {
+				this.recipe = await fetchRecipe(id);
+				this.imageSrc = addApiPrefixToPath(this.recipe.image);
+				await this.refreshRatings();
+				if (this.session.user && this.session.user.id) {
+					await this.fetchUserRating();
+				}
+			} catch {
 				this.loadError = true;
+			} finally {
 				this.loading = false;
-			});
+			}
 		},
 		async refreshComments() {
 			try {
 				this.recipe.comments = await fetchComments(this.recipe.id);
 			} catch (error) {
-				console.error('Failed to refresh comments:', error);
+				console.error(error);
+			}
+		},
+		async refreshRatings() {
+			try {
+				const ratings = await fetchRatings(this.recipe.id);
+				this.averageRating = ratings.ratingAverage;
+				this.totalRatings = ratings.ratingCount;
+			} catch (error) {
+				console.error(error);
+			}
+		},
+		async fetchUserRating() {
+			try {
+				if (this.session.user && this.session.user.id) {
+					const rating = await getUserRatingForRecipe(this.recipe.id);
+					this.userRating = rating ? rating.rating : null;
+					this.newRating = this.userRating || 1;
+				}
+			} catch (error) {
+				console.error(error);
+			}
+		},
+		async submitRating() {
+			try {
+				await postRating(this.newRating, this.session.user.id, this.recipe.id);
+				await this.refreshRatings();
+				this.showRatingForm = false;
+			} catch (error) {
+				console.error(error);
 			}
 		},
 		formatQuantity(quantity) {
@@ -88,12 +139,15 @@ export default {
 				return num;
 			}
 			return num.toString().replace(/(\.\d*[1-9])0+$|\.0*$/, '$1');
-		}
+		},
 	},
 	mounted() {
 		this.refreshRecipe(this.id);
+		if (this.session.user && this.session.user.id) {
+			this.fetchUserRating();
+		}
 	}
-}
+};
 </script>
 
 <style scoped>
@@ -141,5 +195,9 @@ export default {
 .recipe-ingredients-title, .recipe-steps-title {
 	font-weight: bold;
 	margin-bottom: 5px;
+}
+
+.recipe-rating {
+	margin-top: 20px;
 }
 </style>
