@@ -86,6 +86,7 @@
                 <table>
                     <thead>
                         <tr>
+                            <th>Index</th>
                             <th>Étape</th>
                             <th>Actions</th>
                         </tr>
