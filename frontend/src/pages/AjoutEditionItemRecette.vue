@@ -92,6 +92,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="(step, index) in recipeSteps" :key="index">
+                            <td>{{ step.index }}</td>
                             <td><input type="text" v-model="step.description" placeholder="Décrivez l'étape" required />
                             </td>
                             <td>
@@ -164,17 +165,28 @@ export default {
                 ingredient.index = i + 1;
             });
         },
+        updateIndicesStep() {
+            this.recipeSteps.forEach((steps, i) => {
+                steps.index = i + 1;
+            });
+        },
         addStep() {
-            this.recipeSteps.push({ description: '' });
+            this.recipeSteps.push({
+                index: null,
+                description: ''
+            });
+            this.updateIndicesStep();
         },
         removeStep(index) {
             this.recipeSteps.splice(index, 1);
+            this.updateIndicesStep();
         },
         moveStepUp(index) {
             if (index > 0) {
                 const temp = this.recipeSteps[index];
                 this.recipeSteps.splice(index, 1);
                 this.recipeSteps.splice(index - 1, 0, temp);
+                this.updateIndicesStep();
             }
         },
         moveStepDown(index) {
@@ -182,6 +194,7 @@ export default {
                 const temp = this.recipeSteps[index];
                 this.recipeSteps.splice(index, 1);
                 this.recipeSteps.splice(index + 1, 0, temp);
+                this.updateIndicesStep();
             }
         },
         async submitRecipe() {
