@@ -29,22 +29,26 @@
 				</ol>
 			</div>
 		</div>
-	</div>
-	<div class="recipe-row">
-		<CommentairesRecette v-if="recipe" :recipe="recipe" :comments="recipe.comments" @comment-added="refreshComments" />
+		<div class="recipe-row">
+			<AppreciationsRecette :recipeId="recipe.id" />
+		</div>
+		<div class="recipe-row">
+			<CommentairesRecette v-if="recipe" :recipe="recipe" :comments="recipe.comments" @comment-added="refreshComments" />
+		</div>
 	</div>
 </template>
 
 <script>
 import { fetchRecipe } from '../../services/recipeService.js';
 import { fetchComments } from '../../services/commentService.js';
-import CommentairesRecette from './CommentairesRecette.vue';
 import { addApiPrefixToPath } from '../../api_utils';
 import session from '../../session';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
+import AppreciationsRecette from "./AppreciationsRecette.vue";
+import CommentairesRecette from './CommentairesRecette.vue';
 
 export default {
-	components: { CommentairesRecette, LoadingSpinner },
+	components: { AppreciationsRecette, CommentairesRecette, LoadingSpinner },
 	props: {
 		id: String,
 		image: String
@@ -55,28 +59,31 @@ export default {
 			imageSrc: '',
 			loading: true,
 			loadError: false,
-			session: session,
+			session: session
 		};
 	},
 	methods: {
-		refreshRecipe(id) {
+		async refreshRecipe(id) {
 			this.loading = true;
 			this.recipe = null;
 
-			fetchRecipe(id).then(recipe => {
-				this.recipe = recipe;
-				this.imageSrc = addApiPrefixToPath(recipe.image);
-				this.loading = false;
-			}).catch(() => {
+			try {
+				this.recipe = await fetchRecipe(id);
+				this.imageSrc = addApiPrefixToPath(this.recipe.image);
+				if (this.session.user && this.session.user.id) {
+					await this.fetchUserRating();
+				}
+			} catch {
 				this.loadError = true;
+			} finally {
 				this.loading = false;
-			});
+			}
 		},
 		async refreshComments() {
 			try {
 				this.recipe.comments = await fetchComments(this.recipe.id);
 			} catch (error) {
-				console.error('Failed to refresh comments:', error);
+				console.error(error);
 			}
 		},
 		formatQuantity(quantity) {
@@ -88,12 +95,12 @@ export default {
 				return num;
 			}
 			return num.toString().replace(/(\.\d*[1-9])0+$|\.0*$/, '$1');
-		}
+		},
 	},
 	mounted() {
 		this.refreshRecipe(this.id);
 	}
-}
+};
 </script>
 
 <style scoped>
