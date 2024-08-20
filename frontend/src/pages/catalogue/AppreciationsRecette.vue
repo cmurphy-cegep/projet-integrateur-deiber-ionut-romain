@@ -1,7 +1,12 @@
 <template>
 	<div class="recipe-rating">
-		<div v-if="averageRating !== null">
-			<div> {{ averageRating.toFixed(1) }} <span v-html="generateStars(averageRating)"></span> ({{ totalRatings }} appréciations)</div>
+		<div>
+			<div v-if="averageRating !== null">
+				{{ averageRating.toFixed(1) }} <span v-html="generateStars(averageRating)"></span> ({{ totalRatings }} appréciations)
+			</div>
+			<div v-else>
+				Pas encore de notes
+			</div>
 		</div>
 		<div v-if="session.user">
 			<span v-if="userRating">Votre appréciation: {{ userRating }} <span v-html="generateStars(userRating)"></span></span>
@@ -32,7 +37,7 @@ export default {
 		return {
 			showRatingForm: false,
 			session: session,
-			averageRating: null,
+			averageRating: 0,
 			totalRatings: 0,
 			newRating: 1,
 			userRating: null
@@ -42,8 +47,8 @@ export default {
 		async refreshRatings() {
 			try {
 				const ratings = await fetchRatings(this.recipeId);
-				this.averageRating = ratings.ratingAverage;
-				this.totalRatings = ratings.ratingCount;
+				this.averageRating = ratings.ratingAverage || 0;
+				this.totalRatings = ratings.ratingCount || 0;
 			} catch (error) {
 				console.error(error);
 			}
@@ -79,10 +84,10 @@ export default {
 			return '★'.repeat(fullStars) + (halfStar ? '✭' : '') + '☆'.repeat(emptyStars);
 		}
 	},
-	 mounted() {
-		 this.refreshRatings();
+	mounted() {
+		this.refreshRatings();
 		if (this.session.username) {
-			 this.fetchUserRating();
+			this.fetchUserRating();
 		}
 	}
 };
