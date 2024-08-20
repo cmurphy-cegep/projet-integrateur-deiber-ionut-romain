@@ -1,12 +1,7 @@
 <template>
 	<div class="recipe-rating">
-		<div>
-			<div v-if="averageRating !== null">
-				{{ averageRating.toFixed(1) }} <span v-html="generateStars(averageRating)"></span> ({{ totalRatings }} appréciations)
-			</div>
-			<div v-else>
-				Pas encore de notes
-			</div>
+		<div v-if="averageRating !== null">
+			{{ averageRating.toFixed(1) }} <span v-html="generateStars(averageRating)"></span> ({{ totalRatings }} appréciations)
 		</div>
 		<div v-if="session.user">
 			<span v-if="userRating">Votre appréciation: {{ userRating }} <span v-html="generateStars(userRating)"></span></span>
