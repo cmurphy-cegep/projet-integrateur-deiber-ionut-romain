@@ -6,7 +6,7 @@
 			<p>{{ comment.text }}</p>
 		</div>
 	</div>
-	<div v-if="session.user" class="recipe-add-comment" >
+	<div v-if="session.user" class="recipe-add-comment">
 		<h3>Ajouter un commentaire</h3>
 		<button @click="showCommentForm = !showCommentForm">
 			{{ showCommentForm ? 'Annuler' : 'Ajouter un commentaire' }}
@@ -19,19 +19,21 @@
 </template>
 
 <script>
-import { postComment } from '../../services/commentService.js';
+import { postComment, fetchComments } from '../../services/commentService.js';
 import session from '../../session.js';
 
 export default {
 	props: {
-		recipe: Object,
-		comments: Array
+		recipeId: {
+			type: String,
+			required: true
+		}
 	},
-	emits: ['comment-added'],
 	data() {
 		return {
 			showCommentForm: false,
 			newCommentText: '',
+			comments: [],
 			session: session
 		};
 	},
@@ -45,14 +47,24 @@ export default {
 				if (!this.session.user) {
 					throw new Error('User not authenticated');
 				}
-				await postComment(this.newCommentText, this.session.user.userId, this.recipe.id);
+				await postComment(this.newCommentText, this.session.user.userId, this.recipeId);
 				this.newCommentText = '';
 				this.showCommentForm = false;
-				this.$emit('comment-added');
+				this.refreshComments();
+			} catch (error) {
+				console.error(error);
+			}
+		},
+		async refreshComments() {
+			try {
+				this.comments = await fetchComments(this.recipeId);
 			} catch (error) {
 				console.error(error);
 			}
 		}
+	},
+	mounted() {
+		this.refreshComments();
 	}
 }
 </script>

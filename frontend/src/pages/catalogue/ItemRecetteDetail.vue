@@ -33,14 +33,13 @@
 			<AppreciationsRecette :recipeId="recipe.id" />
 		</div>
 		<div class="recipe-row">
-			<CommentairesRecette v-if="recipe" :recipe="recipe" :comments="recipe.comments" @comment-added="refreshComments" />
+			<CommentairesRecette :recipeId="recipe.id" />
 		</div>
 	</div>
 </template>
 
 <script>
 import { fetchRecipe } from '../../services/recipeService.js';
-import { fetchComments } from '../../services/commentService.js';
 import { addApiPrefixToPath } from '../../api_utils';
 import session from '../../session';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
@@ -70,20 +69,10 @@ export default {
 			try {
 				this.recipe = await fetchRecipe(id);
 				this.imageSrc = addApiPrefixToPath(this.recipe.image);
-				if (this.session.user && this.session.user.id) {
-					await this.fetchUserRating();
-				}
 			} catch {
 				this.loadError = true;
 			} finally {
 				this.loading = false;
-			}
-		},
-		async refreshComments() {
-			try {
-				this.recipe.comments = await fetchComments(this.recipe.id);
-			} catch (error) {
-				console.error(error);
 			}
 		},
 		formatQuantity(quantity) {
