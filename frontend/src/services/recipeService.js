@@ -1,3 +1,5 @@
+import session from '../session';
+
 const convertToRecipe = jsonRecipe => {
     return {
         id: jsonRecipe.id,
@@ -31,3 +33,22 @@ export async function fetchRecipes() {
         throw new Error("Impossible de récupérer la liste des recettes");
     }
 };
+
+export async function createRecipe(recipe) {
+    console.log(JSON.stringify(recipe));
+    const response = await fetch(`/api/recipes`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            ...session.getAuthHeaders()
+        },
+        body: JSON.stringify(recipe)
+    });
+
+
+    if (response.ok) {
+        return convertToRecipe(await response.json());
+    } else {
+        throw new Error(`Impossible d'ajouter le produit ${recipe.id}: ${response.status}`);
+    }
+}
