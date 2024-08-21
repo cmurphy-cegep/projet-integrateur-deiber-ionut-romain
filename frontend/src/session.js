@@ -34,6 +34,7 @@ const session = reactive({
 	},
 	setCredentials(username, password) {
 		this.username = username;
+		sessionStorage.username = username;
 		this.password = password;
 		sessionStorage.password = password;
 	},

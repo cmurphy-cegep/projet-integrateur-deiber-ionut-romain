@@ -32,6 +32,12 @@
 				</ol>
 			</div>
 		</div>
+		<div class="recipe-row">
+			<AppreciationsRecette :recipeId="recipe.id" />
+		</div>
+		<div class="recipe-row">
+			<CommentairesRecette :recipeId="recipe.id" />
+		</div>
 	</div>
 </template>
 
@@ -54,24 +60,22 @@ export default {
 			imageSrc: '',
 			loading: true,
 			loadError: false,
+			session: session
 		};
 	},
 	methods: {
-
-		refreshRecipe(id) {
+		async refreshRecipe(id) {
 			this.loading = true;
 			this.recipe = null;
 
-			fetchRecipe(id).then(recipe => {
-				this.recipe = recipe;
-				this.imageSrc = addApiPrefixToPath(recipe.image);
-				this.loading = false;
-			}).catch(err => {
-				console.error(err);
-				this.recipe = null;
+			try {
+				this.recipe = await fetchRecipe(id);
+				this.imageSrc = addApiPrefixToPath(this.recipe.image);
+			} catch {
 				this.loadError = true;
-				this.loading = true;
-			});
+			} finally {
+				this.loading = false;
+			}
 		},
 		formatQuantity(quantity) {
 			if (quantity === null) {
@@ -82,12 +86,12 @@ export default {
 				return num;
 			}
 			return num.toString().replace(/(\.\d*[1-9])0+$|\.0*$/, '$1');
-		}
+		},
 	},
 	mounted() {
 		this.refreshRecipe(this.id);
 	}
-}
+};
 </script>
 
 <style scoped>

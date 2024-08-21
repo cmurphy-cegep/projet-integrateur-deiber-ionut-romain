@@ -111,7 +111,9 @@ class RecipeQueries {
 
 	static async getRecipeComment(commentId) {
 		const result = await pool.query(
-			`SELECT c.text, TO_CHAR(c.publication_date, 'YYYY-MM-DD HH24:MI:SS') AS publication_date, u.full_name
+			`SELECT c.text,
+                    TO_CHAR(publication_date AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS "UTC"') AS publication_date,
+                    u.full_name
              FROM comment c
                       JOIN user_account u ON u.user_account_id = c.user_account_id
              WHERE c.comment_id = $1`,
@@ -122,7 +124,9 @@ class RecipeQueries {
 
 	static async getRecipeComments(recipeId) {
 		const result = await pool.query(
-			`SELECT c.text, TO_CHAR(publication_date, 'YYYY-MM-DD HH24:MI:SS') AS publication_date, u.full_name
+			`SELECT c.text,
+                    TO_CHAR(publication_date AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS "UTC"') AS publication_date,
+                    u.full_name
              FROM comment c
                       JOIN user_account u ON u.user_account_id = c.user_account_id
              WHERE recipe_id = $1
