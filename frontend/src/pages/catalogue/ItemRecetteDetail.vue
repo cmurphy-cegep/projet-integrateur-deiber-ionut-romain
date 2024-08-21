@@ -55,7 +55,6 @@ export default {
 	},
 	data() {
 		return {
-			session: session,
 			recipe: null,
 			imageSrc: '',
 			loading: true,
