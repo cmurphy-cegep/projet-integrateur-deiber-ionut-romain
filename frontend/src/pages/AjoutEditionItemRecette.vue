@@ -126,7 +126,7 @@ export default {
     data() {
         return {
             session: session,
-            recipeId: this.id,
+            recipeId: this.id || "",
             recipeName: '',
             recipeTempsPreparation: 0,
             recipeTempsCuisson: 0,
@@ -134,26 +134,27 @@ export default {
             recipeDesc: '',
             recipeIngredients: [],
             recipeSteps: [],
+            edition: false
         };
     },
     methods: {
-        async loadRecipe(id) {
+        async loadRecipe() {
             try {
-                const recipe = await fetchRecipe(id);
-                this.recipeName = recipe.name;
-                this.recipeTempsPreparation = recipe.preparation_time;
-                this.recipeTempsCuisson = recipe.cooking_time;
-                this.recipePortions = recipe.servings;
-                this.recipeDesc = recipe.description;
-                this.recipeIngredients = recipe.ingredients;
-                this.recipeSteps = recipe.steps;
+                if (this.edition) {
+                    const recipe = await fetchRecipe(this.recipeId);
+                    this.recipeName = recipe.name;
+                    this.recipeTempsPreparation = recipe.preparation_time;
+                    this.recipeTempsCuisson = recipe.cooking_time;
+                    this.recipePortions = recipe.servings;
+                    this.recipeDesc = recipe.description;
+                    this.recipeIngredients = recipe.ingredients;
+                    this.recipeSteps = recipe.steps;
+                }
             } catch (err) {
                 console.error(err);
                 alert(err.message);
             }
         },
-
-        /* prueba */
         addItem(array, newItem) {
             newItem.index = array.length + 1;
             array.push(newItem);
@@ -208,14 +209,19 @@ export default {
         }
     },
     watch: {
-        recipeId(newId) {
+        id(newId) {
             if (newId) {
-                this.loadRecipe(newId);
+                this.recipeId = newId;
+                this.edition = true;
+                this.loadRecipe();
+            } else {
+                this.edition = false;
             }
         }
     },
     mounted() {
         if (this.recipeId) {
+            this.edition = true;
             this.loadRecipe();
         }
     }
