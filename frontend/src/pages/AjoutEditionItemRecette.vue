@@ -71,16 +71,18 @@
                             <td><input type="text" v-model="ingredient.unit" placeholder="Unité" /></td>
                             <td><input type="text" v-model="ingredient.name" placeholder="Ingrédient" required /></td>
                             <td>
-                                <button type="button" @click="moveIngredientUp(index)"
+                                <button type="button" @click="moveItemUp(recipeIngredients, index)"
                                     :disabled="index === 0">&uarr;</button>
-                                <button type="button" @click="moveIngredientDown(index)"
+                                <button type="button" @click="moveItemDown(recipeIngredients, index)"
                                     :disabled="index === recipeIngredients.length - 1">&darr;</button>
-                                <button type="button" @click="removeIngredient(index)">Supprimer</button>
+                                <button type="button" @click="removeItem(recipeIngredients, index)">Supprimer</button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <button type="button" @click="addIngredient">Ajouter un ingrédient</button>
+                <button type="button"
+                    @click="addItem(recipeIngredients, { index: null, quantity: null, unit: '', name: '' })">Ajouter un
+                    ingrédient</button>
             </div>
             <div class="zone-add-edit">
                 <table>
@@ -97,15 +99,17 @@
                             <td><input type="text" v-model="step.description" placeholder="Décrivez l'étape" required />
                             </td>
                             <td>
-                                <button type="button" @click="moveStepUp(index)" :disabled="index === 0">&uarr;</button>
-                                <button type="button" @click="moveStepDown(index)"
+                                <button type="button" @click="moveItemUp(recipeSteps, index)"
+                                    :disabled="index === 0">&uarr;</button>
+                                <button type="button" @click="moveItemDown(recipeSteps, index)"
                                     :disabled="index === recipeSteps.length - 1">&darr;</button>
-                                <button type="button" @click="removeStep(index)">Supprimer</button>
+                                <button type="button" @click="removeItem(recipeSteps, index)">Supprimer</button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <button type="button" @click="addStep">Ajouter une étape</button>
+                <button type="button" @click="addItem(recipeSteps, { index: null, description: '' })">Ajouter une
+                    étape</button>
             </div>
             <button type="submit">Soumettre</button>
         </form>
@@ -148,71 +152,38 @@ export default {
                 alert(err.message);
             }
         },
-        addIngredient() {
-            this.recipeIngredients.push({
-                index: null,
-                quantity: null,
-                unit: '',
-                name: ''
-            });
-            this.updateIndices();
+
+        /* prueba */
+        addItem(array, newItem) {
+            newItem.index = array.length + 1;
+            array.push(newItem);
+            this.updateIndices(array);
         },
-        removeIngredient(index) {
-            this.recipeIngredients.splice(index, 1);
-            this.updateIndices();
+
+        removeItem(array, index) {
+            array.splice(index, 1);
+            this.updateIndices(array);
         },
-        moveIngredientUp(index) {
+        moveItemUp(array, index) {
             if (index > 0) {
-                const temp = this.recipeIngredients[index];
-                this.recipeIngredients.splice(index, 1);
-                this.recipeIngredients.splice(index - 1, 0, temp);
-                this.updateIndices();
+                const temp = array[index];
+                array.splice(index, 1);
+                array.splice(index - 1, 0, temp);
+                this.updateIndices(array);
             }
         },
-        moveIngredientDown(index) {
-            if (index < this.recipeIngredients.length - 1) {
-                const temp = this.recipeIngredients[index];
-                this.recipeIngredients.splice(index, 1);
-                this.recipeIngredients.splice(index + 1, 0, temp);
-                this.updateIndices();
+        moveItemDown(array, index) {
+            if (index < array.length - 1) {
+                const temp = array[index];
+                array.splice(index, 1);
+                array.splice(index + 1, 0, temp);
+                this.updateIndices(array);
             }
         },
-        updateIndices() {
-            this.recipeIngredients.forEach((ingredient, i) => {
-                ingredient.index = i + 1;
+        updateIndices(array) {
+            array.forEach((item, i) => {
+                item.index = i + 1;
             });
-        },
-        updateIndicesStep() {
-            this.recipeSteps.forEach((steps, i) => {
-                steps.index = i + 1;
-            });
-        },
-        addStep() {
-            this.recipeSteps.push({
-                index: null,
-                description: ''
-            });
-            this.updateIndicesStep();
-        },
-        removeStep(index) {
-            this.recipeSteps.splice(index, 1);
-            this.updateIndicesStep();
-        },
-        moveStepUp(index) {
-            if (index > 0) {
-                const temp = this.recipeSteps[index];
-                this.recipeSteps.splice(index, 1);
-                this.recipeSteps.splice(index - 1, 0, temp);
-                this.updateIndicesStep();
-            }
-        },
-        moveStepDown(index) {
-            if (index < this.recipeSteps.length - 1) {
-                const temp = this.recipeSteps[index];
-                this.recipeSteps.splice(index, 1);
-                this.recipeSteps.splice(index + 1, 0, temp);
-                this.updateIndicesStep();
-            }
         },
         async submitRecipe() {
             const recipe = {
@@ -244,7 +215,9 @@ export default {
         }
     },
     mounted() {
-        this.loadRecipe(this.recipeId);
+        if (this.recipeId) {
+            this.loadRecipe();
+        }
     }
 }
 </script>
