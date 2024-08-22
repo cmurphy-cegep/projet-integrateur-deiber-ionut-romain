@@ -22,9 +22,9 @@ jobs:
         working-directory: ./backend
         run: npm install
 
-      - name: Fix vulnerabilities
+      - name: Security audit
         working-directory: ./backend
-        run: npm audit fix
+        run: npm run audit
 
       - name: Run eslint
         working-directory: ./backend
