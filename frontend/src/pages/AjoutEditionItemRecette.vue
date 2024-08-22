@@ -56,7 +56,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Index</th>
+                            <th>Nombre</th>
                             <th>Quantité</th>
                             <th>Unité</th>
                             <th>Ingrédient</th>
@@ -86,7 +86,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Index</th>
+                            <th>Nombre</th>
                             <th>Étape</th>
                             <th>Actions</th>
                         </tr>
@@ -115,13 +115,14 @@
 
 <script>
 import session from '../session';
-import { createRecipe } from '../services/recipeService.js';
+import { createRecipe, fetchRecipe } from '../services/recipeService.js';
 
 export default {
+    props: ['id'],
     data() {
         return {
             session: session,
-            recipeId: '',
+            recipeId: this.id,
             recipeName: '',
             recipeTempsPreparation: 0,
             recipeTempsCuisson: 0,
@@ -132,6 +133,21 @@ export default {
         };
     },
     methods: {
+        async loadRecipe(id) {
+            try {
+                const recipe = await fetchRecipe(id);
+                this.recipeName = recipe.name;
+                this.recipeTempsPreparation = recipe.preparation_time;
+                this.recipeTempsCuisson = recipe.cooking_time;
+                this.recipePortions = recipe.servings;
+                this.recipeDesc = recipe.description;
+                this.recipeIngredients = recipe.ingredients;
+                this.recipeSteps = recipe.steps;
+            } catch (err) {
+                console.error(err);
+                alert(err.message);
+            }
+        },
         addIngredient() {
             this.recipeIngredients.push({
                 index: null,
@@ -220,5 +236,15 @@ export default {
             }
         }
     },
+    watch: {
+        recipeId(newId) {
+            if (newId) {
+                this.loadRecipe(newId);
+            }
+        }
+    },
+    mounted() {
+        this.loadRecipe(this.recipeId);
+    }
 }
 </script>

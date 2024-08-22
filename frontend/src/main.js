@@ -17,7 +17,7 @@ const router = createRouter({
 		{ path: '/recipes/:id', component: ItemRecetteDetail, props: true },
 		{ path: '/login', component: FormulaireLogin },
 		{ path: '/register', component: Register },
-		{ path: '/admin/ajout-edition-item-recette', component: AjoutEditionItemRecette },
+		{ path: '/admin/ajout-edition-item-recette/:id?', component: AjoutEditionItemRecette, props: true },
 	]
 });
 

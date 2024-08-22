@@ -2,7 +2,8 @@
 	<LoadingSpinner :error="loadError" :loading="loading" />
 	<div v-if="recipe && !loading && !loadError" class="recipe">
 		<div class="recipe-name">{{ recipe.name }}</div>
-		<button type="button" v-if="session.user && session.user.isAdmin">Éditer</button>
+		<button type="button" v-if="session.user && session.user.isAdmin"
+			@click="$router.push({ path: `/admin/ajout-edition-item-recette/${recipe.id}` })">Éditer</button>
 		<div class="recipe-row">
 			<div class="recipe-image-container">
 				<img :src="imageSrc" alt="Recipe Image" class="recipe-image" />
