@@ -66,12 +66,12 @@ jobs:
 
       - name: Check if backend is ready
         run: |
-          echo "Check if backend is ready..."
+          echo "Check if backend is ready"
           until curl -s http://localhost:3000/health; do sleep 5; done
 
       - name: Check if frontend is ready
         run: |
-          echo "Check if frontend is ready..."
+          echo "Check if frontend is ready"
           until curl -s http://localhost:5173; do sleep 5; done
 
       - name: Install Xvfb
