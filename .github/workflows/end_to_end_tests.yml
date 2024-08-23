@@ -67,4 +67,6 @@ jobs:
 
       - name: Run end-to-end tests
         working-directory: ./frontend
-        run: npm run test
+        run: |
+          sudo apt-get install xvfb
+          xvfb-run --auto-servernum npm test -- --env chrome
