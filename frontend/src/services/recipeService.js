@@ -51,7 +51,7 @@ export async function createRecipe(recipe) {
     if (response.ok) {
         return convertToRecipe(await response.json());
     } else {
-        throw new Error(`Impossible d'ajouter le produit ${recipe.id}: ${response.status}`);
+        throw new Error(`Impossible d'ajouter la recette ${recipe.id}: ${response.status}`);
     }
 }
 
@@ -68,6 +68,6 @@ export async function updateRecipe(recipe) {
     if (response.ok) {
         return convertToRecipe(await response.json());
     } else {
-        throw new Error(`Impossible d'éditer le produit ${recipe.id}: ${response.status}`);
+        throw new Error(`Impossible d'éditer la recette ${recipe.id}: ${response.status}`);
     }
 }
