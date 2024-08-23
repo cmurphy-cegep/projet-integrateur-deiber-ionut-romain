@@ -72,5 +72,6 @@ jobs:
         run: |
           # Set up GeckoDriver for Firefox
           npm install geckodriver --save-dev
+          
           export PATH=$(npm bin):$PATH
           npm run test
