@@ -74,8 +74,9 @@ jobs:
           echo "Check if frontend is ready..."
           until curl -s http://localhost:5173; do sleep 5; done
 
+      - name: Install Xvfb
+        run: sudo apt-get install -y xvfb
+
       - name: Run end-to-end tests
         working-directory: ./frontend
-        run: |
-          sudo apt-get install xvfb
-          xvfb-run --auto-servernum npm test -- --env chrome
+        run: xvfb-run --auto-servernum npm test -- --env chrome
