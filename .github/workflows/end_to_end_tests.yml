@@ -3,9 +3,9 @@ on:
   push:
     branches-ignore:
       - main
-  #    paths:
-  #      - 'backend/**'
-  #      - 'frontend/**'  # Déclenche si des fichiers du backend ou du frontend sont modifiés
+    paths:
+      - 'backend/**'
+      - 'frontend/**'  # Déclenche si des fichiers du backend ou du frontend sont modifiés
 
   workflow_call:
 
