@@ -71,3 +71,19 @@ export async function updateRecipe(recipe) {
         throw new Error(`Impossible d'éditer la recette ${recipe.id}: ${response.status}`);
     }
 }
+
+export async function updateRecipeImage(recipeId, formData) {
+    const response = await fetch(`/api/recipes/${recipeId}/image`, {
+        method: "POST",
+        headers: {
+            ...session.getAuthHeaders()
+        },
+        body: formData
+    });
+
+    if (response.ok) {
+        return;
+    } else {
+        throw new Error(`Impossible de modifier l'image de la recette ${recipeId}: ${response.status}`);
+    }
+}

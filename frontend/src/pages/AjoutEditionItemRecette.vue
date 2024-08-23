@@ -113,13 +113,29 @@
             </div>
             <button type="submit">Soumettre</button>
         </form>
+        <div class="-#" v-if="edition">
+            <form @submit.prevent="submitImage">
+                <div>
+                    <div>
+                        <label for="recipe-image">Téléverser nouvelle image: </label>
+                    </div>
+                    <div>
+                        <input type="file" id="recipe-image" accept="image/png, image/jpeg, image/gif" />
+                    </div>
+                    &nbsp;
+                    <div>
+                        <button type="submit">Soumettre la image</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
     <div v-else>Vous n'avez pas les permissions pour voir cette page</div>
 </template>
 
 <script>
 import session from '../session';
-import { createRecipe, fetchRecipe, updateRecipe } from '../services/recipeService.js';
+import { createRecipe, fetchRecipe, updateRecipe, updateRecipeImage } from '../services/recipeService.js';
 
 export default {
     props: ['id'],
@@ -207,6 +223,19 @@ export default {
                 }
                 console.log(recipe);
                 this.$router.push('/recipes/' + this.recipeId);
+            } catch (err) {
+                console.error(err);
+                alert(err.message);
+            }
+        },
+        async submitImage() {
+            const formData = new FormData();
+            const fileField = document.querySelector("input[id='recipe-image']");
+            formData.append('recipe-image', fileField.files[0]);
+
+            try {
+                await updateRecipeImage(this.recipeId, formData);
+                this.edition = false;
             } catch (err) {
                 console.error(err);
                 alert(err.message);
