@@ -5,7 +5,7 @@ on:
       - main
     paths:
       - 'backend/**'
-      - 'frontend/**'  # Déclenche si des fichiers du backend ou du frontend sont modifiés
+      - 'frontend/**'
 
   workflow_call:
 

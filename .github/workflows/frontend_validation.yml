@@ -4,8 +4,8 @@ on:
     branches-ignore:
       - main
     paths:
-      - 'frontend/**'   # Déclenche uniquement si les fichiers du frontend sont modifiés
-
+      - 'frontend/**'
+  
   workflow_call:
 
 jobs:
