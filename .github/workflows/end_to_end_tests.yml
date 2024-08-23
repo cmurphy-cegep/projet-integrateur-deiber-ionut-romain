@@ -71,7 +71,7 @@ jobs:
 
       - name: Start frontend
         working-directory: ./frontend
-        run: npm run dev
+        run: npm run dev &
 
       - name: Run end-to-end tests
         working-directory: ./frontend
