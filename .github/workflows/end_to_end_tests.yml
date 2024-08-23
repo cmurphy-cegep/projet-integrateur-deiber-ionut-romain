@@ -54,29 +54,24 @@ jobs:
 
       - name: Start backend
         working-directory: ./backend
-        run: npm run start &
+        run: npm run start
 
       - name: Install frontend dependencies
         working-directory: ./frontend
         run: npm install
 
-      - name: Wait for backend to be ready
-        run: |
-          echo "Waiting for backend to be ready..."
-          until curl -s http://localhost:3000/health; do sleep 5; done
+      #      - name: Wait for backend to be ready
+      #        run: |
+      #          echo "Waiting for backend to be ready..."
+      #          until curl -s http://localhost:3000/health; do sleep 5; done
 
-      - name: Build frontend application
+      #      - name: Build frontend application
+      #        working-directory: ./frontend
+      #        run: npm run build
+
+      - name: Start frontend
         working-directory: ./frontend
-        run: npm run build
-
-      - name: Start frontend server
-        working-directory: ./frontend
-        run: npm run dev &
-
-      - name: Wait for frontend to be ready
-        run: |
-          echo "Waiting for frontend to be ready..."
-          until curl -s http://localhost:5173; do sleep 5; done
+        run: npm run dev
 
       - name: Run end-to-end tests
         working-directory: ./frontend
