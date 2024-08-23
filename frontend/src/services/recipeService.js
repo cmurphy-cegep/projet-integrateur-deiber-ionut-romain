@@ -54,3 +54,20 @@ export async function createRecipe(recipe) {
         throw new Error(`Impossible d'ajouter le produit ${recipe.id}: ${response.status}`);
     }
 }
+
+export async function updateRecipe(recipe) {
+    const response = await fetch(`/api/recipes/${recipe.id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            ...session.getAuthHeaders()
+        },
+        body: JSON.stringify(recipe)
+    });
+
+    if (response.ok) {
+        return convertToRecipe(await response.json());
+    } else {
+        throw new Error(`Impossible d'éditer le produit ${recipe.id}: ${response.status}`);
+    }
+}

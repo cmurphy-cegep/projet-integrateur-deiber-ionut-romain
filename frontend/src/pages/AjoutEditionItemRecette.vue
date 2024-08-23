@@ -119,7 +119,7 @@
 
 <script>
 import session from '../session';
-import { createRecipe, fetchRecipe } from '../services/recipeService.js';
+import { createRecipe, fetchRecipe, updateRecipe } from '../services/recipeService.js';
 
 export default {
     props: ['id'],
@@ -199,7 +199,12 @@ export default {
             };
 
             try {
-                await createRecipe(recipe);
+                if (this.edition) {
+
+                    await updateRecipe(recipe);
+                } else {
+                    await createRecipe(recipe);
+                }
                 console.log(recipe);
                 this.$router.push('/recipes/' + this.recipeId);
             } catch (err) {
