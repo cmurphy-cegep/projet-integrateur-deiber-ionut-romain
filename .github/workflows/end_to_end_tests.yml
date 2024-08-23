@@ -67,4 +67,10 @@ jobs:
 
       - name: Run end-to-end tests
         working-directory: ./frontend
-        run: npm run test
+        env:
+          PATH: ${{ runner.tool_cache }}/geckodriver:$PATH
+        run: |
+          # Set up GeckoDriver for Firefox
+          npm install geckodriver --save-dev
+          export PATH=$(npm bin):$PATH
+          npm run test
