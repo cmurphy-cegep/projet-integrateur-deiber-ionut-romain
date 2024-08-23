@@ -1,7 +1,9 @@
 <template>
     <div class="recipe" v-if="session.user && session.user.isAdmin">
+        <h2 v-if="edition"> Édition </h2>
+        <h2 v-else> Nouvelle recette </h2>
         <form @submit.prevent="submitRecipe">
-            <div><!--champ conditionnels -->
+            <div v-if="!edition">
                 <div>
                     <label for="recipe-id">Identifiant unique de la recette: </label>
                 </div>
@@ -49,7 +51,7 @@
                     <label for="recipe-desc">Description: </label>
                 </div>
                 <div>
-                    <textarea class="recipe-desc" id="recipe-desc" v-model="recipeDesc"></textarea>
+                    <textarea class="recipe-desc" id="recipe-desc" v-model="recipeDesc" required></textarea>
                 </div>
             </div>
             <div class="zone-add-edit">
