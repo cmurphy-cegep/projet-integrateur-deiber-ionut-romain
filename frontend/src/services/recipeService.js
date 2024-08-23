@@ -87,3 +87,18 @@ export async function updateRecipeImage(recipeId, formData) {
         throw new Error(`Impossible de modifier l'image de la recette ${recipeId}: ${response.status}`);
     }
 }
+
+export async function deleteRecipe(recipeId) {
+    const response = await fetch(`/api/recipes/${recipeId}`, {
+        method: "DELETE",
+        headers: {
+            ...session.getAuthHeaders()
+        }
+    });
+
+    if (response.ok) {
+        return;
+    } else {
+        throw new Error(`Impossible de supprimer la recette ${recipeId}: ${response.status}`);
+    }
+}

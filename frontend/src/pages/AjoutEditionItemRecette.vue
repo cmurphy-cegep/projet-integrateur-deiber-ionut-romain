@@ -130,6 +130,7 @@
                     </div>
                 </div>
             </form>
+            <button type="button" @click="deleteRecipe" v-if="edition">Supprimer la recette</button>
         </div>
     </div>
     <div v-else>Vous n'avez pas les permissions pour voir cette page</div>
@@ -137,7 +138,7 @@
 
 <script>
 import session from '../session';
-import { createRecipe, fetchRecipe, updateRecipe, updateRecipeImage } from '../services/recipeService.js';
+import { createRecipe, fetchRecipe, updateRecipe, updateRecipeImage, deleteRecipe } from '../services/recipeService.js';
 
 export default {
     props: ['id'],
@@ -238,6 +239,16 @@ export default {
             try {
                 await updateRecipeImage(this.recipeId, formData);
                 this.edition = false;
+            } catch (err) {
+                console.error(err);
+                alert(err.message);
+            }
+        },
+        async deleteRecipe() {
+            try {
+                await deleteRecipe(this.recipeId);
+                alert("Recette supprimée avec succès.");
+                this.$router.push('/');
             } catch (err) {
                 console.error(err);
                 alert(err.message);
