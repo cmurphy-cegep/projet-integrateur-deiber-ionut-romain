@@ -54,7 +54,7 @@ jobs:
 
       - name: Start backend
         working-directory: ./backend
-        run: npm run start
+        run: npm run start &
 
       - name: Install frontend dependencies
         working-directory: ./frontend
