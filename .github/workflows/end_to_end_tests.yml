@@ -65,6 +65,15 @@ jobs:
           echo "Waiting for backend to be ready..."
           until curl -s http://localhost:3000/health; do sleep 5; done
 
+      - name: Build frontend application
+        working-directory: ./frontend
+        run: npm run build
+
+      - name: Wait for frontend to be ready
+        run: |
+          echo "Waiting for frontend to be ready..."
+          until curl -s http://localhost:5173; do sleep 5; done
+
       - name: Run end-to-end tests
         working-directory: ./frontend
         run: |
