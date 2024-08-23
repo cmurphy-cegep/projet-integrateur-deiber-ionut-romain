@@ -3,9 +3,9 @@ on:
   push:
     branches-ignore:
       - main
-    paths:
-      - 'backend/**'
-      - 'frontend/**'  # Déclenche si des fichiers du backend ou du frontend sont modifiés
+  #    paths:
+  #      - 'backend/**'
+  #      - 'frontend/**'  # Déclenche si des fichiers du backend ou du frontend sont modifiés
 
   workflow_call:
 
@@ -72,6 +72,5 @@ jobs:
         run: |
           # Set up GeckoDriver for Firefox
           npm install geckodriver --save-dev
-          
           export PATH=$(npm bin):$PATH
           npm run test
