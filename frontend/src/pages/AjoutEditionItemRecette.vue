@@ -222,6 +222,37 @@ export default {
                 alert(err.message);
             }
         },
+        refreshForm() {
+            this.recipeId = '';
+            this.idValide = true;
+            this.recipeName = '';
+            this.nameValide = true;
+            this.recipeTempsPreparation = 0;
+            this.recipeTempsCuisson = 0;
+            this.recipePortions = 0;
+            this.recipeDesc = '';
+            this.descValide = true;
+            this.recipeIngredients = [
+                {
+                    index: 1,
+                    quantity: null,
+                    unit: '',
+                    name: ''
+                }
+            ];
+            this.ingredientErrors = [];
+            this.recipeSteps = [
+                {
+                    index: 1,
+                    description: ''
+                }
+            ];
+            this.stepsErrors = [];
+        },
+        switchToNewRecipe() {
+            this.edition = false;
+            this.refreshForm();
+        },
         addItem(array, newItem) {
             newItem.index = array.length + 1;
             array.push(newItem);
@@ -352,7 +383,7 @@ export default {
                 this.edition = true;
                 this.loadRecipe();
             } else {
-                this.edition = false;
+                this.switchToNewRecipe();
             }
         },
         recipeId(newId) {
