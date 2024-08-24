@@ -3,21 +3,30 @@
         <h2 v-if="edition"> Édition </h2>
         <h2 v-else> Nouvelle recette </h2>
         <form @submit.prevent="submitRecipe">
-            <div v-if="!edition">
+            <div v-if="!edition" class="form-control" :class="{ invalide: !idValide }">
                 <div>
                     <label for="recipe-id">Identifiant unique de la recette: </label>
                 </div>
                 <div>
-                    <input class="recipe-id" id="recipe-id" v-model="recipeId" required />
+                    <input class="recipe-id" id="recipe-id" v-model="recipeId" type="text" v-model.lazy.trim="recipeId"
+                        @blur="validateId(recipeId)" required />
                 </div>
+                <span v-if="!idValide">
+                    L'identifiant ne peut pas être vide et il doit contenir uniquement des caractères alphanumériques et
+                    des underscores ( _ ).
+                </span>
             </div>
-            <div>
+            <div class="form-control" :class="{ invalide: !nameValide }">
                 <div>
                     <label for="recipe-name">Nom de la recette: </label>
                 </div>
                 <div>
-                    <input class="recipe-name" type="text" id="recipe-name" v-model="recipeName" required />
+                    <input class="recipe-name" type="text" id="recipe-name" v-model="recipeName" @blur="validateName"
+                        required />
                 </div>
+                <span v-if="!nameValide">
+                    Le nom est requis.
+                </span>
             </div>
             <div>
                 <div>
@@ -46,13 +55,17 @@
                         v-model="recipePortions" />
                 </div>
             </div>
-            <div>
+            <div class="form-control" :class="{ invalide: !descValide }">
                 <div>
                     <label for="recipe-desc">Description: </label>
                 </div>
                 <div>
-                    <textarea class="recipe-desc" id="recipe-desc" v-model="recipeDesc" required></textarea>
+                    <textarea class="recipe-desc" id="recipe-desc" v-model="recipeDesc" @blur="validateDesc"
+                        required></textarea>
                 </div>
+                <span v-if="!descValide">
+                    Une description est requise.
+                </span>
             </div>
             <div class="zone-add-edit">
                 <table>
@@ -71,7 +84,12 @@
                             <td><input type="number" step="0.01" v-model.number="ingredient.quantity"
                                     placeholder="Quantité" /></td>
                             <td><input type="text" v-model="ingredient.unit" placeholder="Unité" /></td>
-                            <td><input type="text" v-model="ingredient.name" placeholder="Ingrédient" required /></td>
+                            <td>
+                                <div class="form-control" :class="{ invalide: !ingredientValide }">
+                                    <input type="text" v-model="ingredient.name" placeholder="Ingrédient"
+                                        @blur="validateIngredient" required />
+                                </div>
+                            </td>
                             <td>
                                 <button type="button" @click="moveItemUp(recipeIngredients, index)"
                                     :disabled="index === 0">&uarr;</button>
@@ -146,13 +164,30 @@ export default {
         return {
             session: session,
             recipeId: this.id || "",
+            idValide: true,
             recipeName: '',
+            nameValide: true,
             recipeTempsPreparation: 0,
             recipeTempsCuisson: 0,
             recipePortions: 0,
             recipeDesc: '',
-            recipeIngredients: [],
-            recipeSteps: [],
+            descValide: true,
+            recipeIngredients: [
+                {
+                    index: 1,
+                    quantity: null,
+                    unit: '',
+                    name: ''
+                }
+            ],
+            ingredientValide: true,
+            recipeSteps: [
+                {
+                    index: 1,
+                    description: ''
+                }
+            ],
+            stepValide: true,
             edition: false
         };
     },
@@ -253,6 +288,42 @@ export default {
                 console.error(err);
                 alert(err.message);
             }
+        },
+        validateId(newId) {
+            const regexId = /^[a-zA-Z0-9_]+$/;
+            if (!newId || !regexId.test(newId)) {
+                this.idValide = false;
+            } else {
+                this.idValide = true;
+            }
+        },
+        validateName() {
+            if (this.recipeName === '') {
+                this.nameValide = false;
+            } else {
+                this.nameValide = true;
+            }
+        },
+        validateDesc() {
+            if (this.recipeDesc === '') {
+                this.descValide = false;
+            } else {
+                this.descValide = true;
+            }
+        },
+        validateIngredient() {
+            if (this.recipeIngredients.name === '') {
+                this.ingredientValide = false;
+            } else {
+                this.ingredientValide = true;
+            }
+        },
+        validateStep() {
+            if (this.recipeSteps.description === '') {
+                this.stepValide = false;
+            } else {
+                this.stepValide = true;
+            }
         }
     },
     watch: {
@@ -264,6 +335,9 @@ export default {
             } else {
                 this.edition = false;
             }
+        },
+        recipeId(newId) {
+            this.validateId(newId);
         }
     },
     mounted() {
@@ -274,3 +348,18 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.form-control.invalide input,
+.form-control.invalide textarea {
+    border-color: red;
+}
+
+.form-control.invalide span {
+    color: red;
+}
+
+form * {
+    margin: 0.25rem;
+}
+</style>
