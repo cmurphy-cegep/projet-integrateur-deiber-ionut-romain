@@ -5,9 +5,6 @@ import pluginVue from "eslint-plugin-vue";
 
 export default [
 	{
-		files: ["**/*.{js,mjs,cjs,vue}"]
-	},
-	{
 		languageOptions: {
 			globals: globals.node
 		}
@@ -15,6 +12,7 @@ export default [
 	pluginJs.configs.recommended,
 	...pluginVue.configs["flat/essential"],
 	{
+		files: ["src/**/*.{js,mjs,cjs,vue}"],
 		rules: {
 			"max-lines": "error",
 			"no-var": "error",

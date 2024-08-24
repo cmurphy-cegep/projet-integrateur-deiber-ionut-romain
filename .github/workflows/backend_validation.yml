@@ -4,7 +4,7 @@ on:
     branches-ignore:
       - main
     paths:
-      - 'backend/**'   # Déclenche uniquement si les fichiers du backend sont modifiés
+      - 'backend/**'
 
   workflow_call:
 
