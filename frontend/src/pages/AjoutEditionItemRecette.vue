@@ -386,9 +386,6 @@ export default {
                 this.switchToNewRecipe();
             }
         },
-        recipeId(newId) {
-            this.validateId(newId);
-        }
     },
     mounted() {
         if (this.recipeId) {
