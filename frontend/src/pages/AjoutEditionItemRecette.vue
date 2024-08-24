@@ -8,8 +8,8 @@
                     <label for="recipe-id">Identifiant unique de la recette: </label>
                 </div>
                 <div>
-                    <input class="recipe-id" id="recipe-id" v-model="recipeId" type="text" v-model.lazy.trim="recipeId"
-                        @blur="validateId(recipeId)" required />
+                    <input class="recipe-id" id="recipe-id" name="recipe-id" v-model="recipeId" type="text"
+                        v-model.lazy.trim="recipeId" @blur="validateId(recipeId)" required />
                 </div>
                 <span v-if="!idValide">
                     L'identifiant ne peut pas être vide et il doit contenir uniquement des caractères alphanumériques et
@@ -21,8 +21,8 @@
                     <label for="recipe-name">Nom de la recette: </label>
                 </div>
                 <div>
-                    <input class="recipe-name" type="text" id="recipe-name" v-model="recipeName" @blur="validateName"
-                        required />
+                    <input class="recipe-name" type="text" id="recipe-name" name="recipe-name" v-model="recipeName"
+                        @blur="validateName" required />
                 </div>
                 <span v-if="!nameValide">
                     Le nom est requis.
@@ -33,8 +33,8 @@
                     <label for="recipe-temps-preparation">Temps de préparation en minutes: </label>
                 </div>
                 <div>
-                    <input class="recipe-temps-preparation" id="recipe-temps-preparation" type="number" step="1"
-                        v-model="recipeTempsPreparation" />
+                    <input class="recipe-temps-preparation" id="recipe-temps-preparation"
+                        name="recipe-temps-preparation" type="number" step="1" v-model="recipeTempsPreparation" />
                 </div>
             </div>
             <div>
@@ -42,8 +42,8 @@
                     <label for="recipe-temps-cuisson">Temps de cuisson en minutes: </label>
                 </div>
                 <div>
-                    <input class="recipe-temps-cuisson" id="recipe-temps-cuisson" type="number" step="1"
-                        v-model="recipeTempsCuisson" />
+                    <input class="recipe-temps-cuisson" id="recipe-temps-cuisson" name="recipe-temps-cuisson"
+                        type="number" step="1" v-model="recipeTempsCuisson" />
                 </div>
             </div>
             <div>
@@ -51,7 +51,7 @@
                     <label for="recipe-portions">Nombre de portions: </label>
                 </div>
                 <div>
-                    <input class="recipe-portions" id="recipe-portions" type="number" step="1"
+                    <input class="recipe-portions" id="recipe-portions" name="recipe-portions" type="number" step="1"
                         v-model="recipePortions" />
                 </div>
             </div>
@@ -81,15 +81,18 @@
                     <tbody>
                         <tr v-for="(ingredient, index) in recipeIngredients" :key="index">
                             <td>{{ ingredient.index }}</td>
-                            <td><input type="number" step="0.01" v-model.number="ingredient.quantity"
+                            <td><input :id="'ingredient-quantity-' + index" :name="'ingredient-quantity-' + index"
+                                    type="number" step="0.01" v-model.number="ingredient.quantity"
                                     placeholder="Quantité" /></td>
-                            <td><input type="text" v-model="ingredient.unit" placeholder="Unité" /></td>
-                            <td>
-                                <div class="form-control" :class="{ invalide: !ingredientValide }">
-                                    <input type="text" v-model="ingredient.name" placeholder="Ingrédient"
-                                        @blur="validateIngredient" required />
-                                </div>
-                            </td>
+                            <td><input :id="'ingredient-unit-' + index" :name="'ingredient-unit-' + index" type="text"
+                                    v-model="ingredient.unit" placeholder="Unité" /></td>
+                            <div class="form-control" :class="{ invalide: ingredientErrors[index]?.name }">
+                                <td>
+                                    <input :id="'ingredient-name-' + index" :name="'ingredient-name-' + index"
+                                        type="text" v-model="ingredient.name" placeholder="Nom de l'ingrédient "
+                                        @blur="validateIngredient(index)" required />
+                                </td>
+                            </div>
                             <td>
                                 <button type="button" @click="moveItemUp(recipeIngredients, index)"
                                     :disabled="index === 0">&uarr;</button>
@@ -97,6 +100,9 @@
                                     :disabled="index === recipeIngredients.length - 1">&darr;</button>
                                 <button type="button" @click="removeItem(recipeIngredients, index)">Supprimer</button>
                             </td>
+                            <span v-if="ingredientErrors[index]?.name" class="error-message">
+                                {{ ingredientErrors[index].name }}
+                            </span>
                         </tr>
                     </tbody>
                 </table>
@@ -116,8 +122,12 @@
                     <tbody>
                         <tr v-for="(step, index) in recipeSteps" :key="index">
                             <td>{{ step.index }}</td>
-                            <td><input type="text" v-model="step.description" placeholder="Décrivez l'étape" required />
-                            </td>
+                            <div class="form-control" :class="{ invalide: stepsErrors[index]?.description }">
+                                <td><input :id="'steps-description-' + index" :name="'steps-description-' + index"
+                                        type="text" v-model="step.description" placeholder="Décrivez l'étape"
+                                        @blur="validateSteps(index)" required />
+                                </td>
+                            </div>
                             <td>
                                 <button type="button" @click="moveItemUp(recipeSteps, index)"
                                     :disabled="index === 0">&uarr;</button>
@@ -125,6 +135,9 @@
                                     :disabled="index === recipeSteps.length - 1">&darr;</button>
                                 <button type="button" @click="removeItem(recipeSteps, index)">Supprimer</button>
                             </td>
+                            <span v-if="stepsErrors[index]?.description" class="error-message">
+                                {{ stepsErrors[index].description }}
+                            </span>
                         </tr>
                     </tbody>
                 </table>
@@ -180,14 +193,14 @@ export default {
                     name: ''
                 }
             ],
-            ingredientValide: true,
+            ingredientErrors: [],
             recipeSteps: [
                 {
                     index: 1,
                     description: ''
                 }
             ],
-            stepValide: true,
+            stepsErrors: [],
             edition: false
         };
     },
@@ -311,18 +324,24 @@ export default {
                 this.descValide = true;
             }
         },
-        validateIngredient() {
-            if (this.recipeIngredients.name === '') {
-                this.ingredientValide = false;
+        validateIngredient(index) {
+            if (!this.ingredientErrors[index]) {
+                this.ingredientErrors[index] = {};
+            }
+            if (this.recipeIngredients[index].name.trim() === '') {
+                this.ingredientErrors[index].name = 'Le nom de l\'ingrédient ne peut pas être vide.';
             } else {
-                this.ingredientValide = true;
+                this.ingredientErrors[index].name = '';
             }
         },
-        validateStep() {
-            if (this.recipeSteps.description === '') {
-                this.stepValide = false;
+        validateSteps(index) {
+            if (!this.stepsErrors[index]) {
+                this.stepsErrors[index] = {};
+            }
+            if (this.recipeSteps[index].description.trim() === '') {
+                this.stepsErrors[index].description = 'La description d\'une étape ne peut pas être vide';
             } else {
-                this.stepValide = true;
+                this.stepsErrors[index].description = '';
             }
         }
     },
@@ -355,7 +374,8 @@ export default {
     border-color: red;
 }
 
-.form-control.invalide span {
+.form-control.invalide span,
+.error-message {
     color: red;
 }
 
