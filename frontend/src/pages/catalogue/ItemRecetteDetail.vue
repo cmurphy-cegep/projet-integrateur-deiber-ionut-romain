@@ -2,6 +2,9 @@
 	<LoadingSpinner :error="loadError" :loading="loading"/>
 	<div v-if="recipe && !loading && !loadError" class="recipe">
 		<div class="recipe-name">{{ recipe.name }}</div>
+		<button v-if="session.user && session.user.isAdmin" type="button"
+				@click="$router.push({ path: `/admin/ajout-edition-item-recette/${recipe.id}` })">Éditer
+		</button>
 		<div class="recipe-row">
 			<div class="recipe-image-container">
 				<img :src="imageSrc" alt="Recipe Image" class="recipe-image"/>
@@ -9,8 +12,12 @@
 			<div class="recipe-description">{{ recipe.description }}</div>
 		</div>
 		<div class="recipe-row">
-			<div v-if="recipe.preparation_time" class="recipe-preparation-time">Preparation <br> {{ recipe.preparation_time }} minutes</div>
-			<div v-if="recipe.cooking_time" class="recipe-cooking-time">Cuisson <br>{{ recipe.cooking_time }} minutes</div>
+			<div v-if="recipe.preparation_time" class="recipe-preparation-time">Preparation <br> {{
+					recipe.preparation_time
+				}} minutes
+			</div>
+			<div v-if="recipe.cooking_time" class="recipe-cooking-time">Cuisson <br>{{ recipe.cooking_time }} minutes
+			</div>
 			<div v-if="recipe.servings" class="recipe-servings">Portion(s) <br>{{ recipe.servings }}</div>
 		</div>
 		<div class="recipe-row">
@@ -30,24 +37,24 @@
 			</div>
 		</div>
 		<div class="recipe-row">
-			<AppreciationsRecette :recipeId="recipe.id" />
+			<AppreciationsRecette :recipeId="recipe.id"/>
 		</div>
 		<div class="recipe-row">
-			<CommentairesRecette :recipeId="recipe.id" />
+			<CommentairesRecette :recipeId="recipe.id"/>
 		</div>
 	</div>
 </template>
 
 <script>
-import { fetchRecipe } from '../../services/recipeService.js';
-import { addApiPrefixToPath } from '../../api_utils';
-import session from '../../session';
-import LoadingSpinner from '../../components/LoadingSpinner.vue';
+import {fetchRecipe} from '../../services/recipeService.js';
+import {addApiPrefixToPath} from '../../api_utils';
 import AppreciationsRecette from "./AppreciationsRecette.vue";
 import CommentairesRecette from './CommentairesRecette.vue';
+import LoadingSpinner from '../../components/LoadingSpinner.vue';
+import session from '../../session';
 
 export default {
-	components: { AppreciationsRecette, CommentairesRecette, LoadingSpinner },
+	components: {AppreciationsRecette, CommentairesRecette, LoadingSpinner},
 	props: {
 		id: String,
 		image: String
@@ -128,13 +135,15 @@ export default {
 	margin-left: 20px;
 }
 
-.recipe-ingredients, .recipe-steps {
+.recipe-ingredients,
+.recipe-steps {
 	flex: 1;
 	border: 1px solid black;
 	padding: 20px;
 }
 
-.recipe-ingredients-title, .recipe-steps-title {
+.recipe-ingredients-title,
+.recipe-steps-title {
 	font-weight: bold;
 	margin-bottom: 5px;
 }
