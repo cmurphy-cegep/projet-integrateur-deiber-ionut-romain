@@ -5,7 +5,7 @@ on:
       - main
     paths:
       - 'backend/**'
-      - 'frontend/**'  # Déclenche si des fichiers du backend ou du frontend sont modifiés
+      - 'frontend/**'
 
   workflow_call:
 
@@ -60,11 +60,23 @@ jobs:
         working-directory: ./frontend
         run: npm install
 
-      - name: Wait for backend to be ready
+      - name: Start frontend
+        working-directory: ./frontend
+        run: npm run dev &
+
+      - name: Check if backend is ready
         run: |
-          echo "Waiting for backend to be ready..."
+          echo "Check if backend is ready"
           until curl -s http://localhost:3000/health; do sleep 5; done
+
+      - name: Check if frontend is ready
+        run: |
+          echo "Check if frontend is ready"
+          until curl -s http://localhost:5173; do sleep 5; done
+
+      - name: Install Xvfb
+        run: sudo apt-get install -y xvfb
 
       - name: Run end-to-end tests
         working-directory: ./frontend
-        run: npm run test
+        run: xvfb-run --auto-servernum npm test -- --env chrome
