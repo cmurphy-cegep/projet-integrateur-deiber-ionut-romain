@@ -8,7 +8,8 @@
 					<label for="recipe-id">Identifiant unique de la recette: </label>
 				</div>
 				<div>
-					<input id="recipe-id" v-model="recipeId" v-model.lazy.trim="recipeId" class="recipe-id" name="recipe-id"
+					<input id="recipe-id" v-model="recipeId" v-model.lazy.trim="recipeId" class="recipe-id"
+						   name="recipe-id"
 						   required type="text" @blur="validateId(recipeId)"/>
 				</div>
 				<span v-if="!idValide">
@@ -51,7 +52,8 @@
 					<label for="recipe-portions">Nombre de portions: </label>
 				</div>
 				<div>
-					<input id="recipe-portions" v-model="recipePortions" class="recipe-portions" name="recipe-portions" step="1"
+					<input id="recipe-portions" v-model="recipePortions" class="recipe-portions" name="recipe-portions"
+						   step="1"
 						   type="number"/>
 				</div>
 			</div>
@@ -84,7 +86,8 @@
 						<td><input :id="'ingredient-quantity-' + index" v-model.number="ingredient.quantity"
 								   :name="'ingredient-quantity-' + index" placeholder="Quantité" step="0.01"
 								   type="number"/></td>
-						<td><input :id="'ingredient-unit-' + index" v-model="ingredient.unit" :name="'ingredient-unit-' + index"
+						<td><input :id="'ingredient-unit-' + index" v-model="ingredient.unit"
+								   :name="'ingredient-unit-' + index"
 								   placeholder="Unité" type="text"/></td>
 						<div :class="{ invalide: ingredientErrors[index]?.name }" class="form-control">
 							<td>
@@ -324,7 +327,6 @@ export default {
 
 			try {
 				await updateRecipeImage(this.recipeId, formData);
-				this.edition = false;
 			} catch (err) {
 				console.error(err);
 				alert(err.message);
