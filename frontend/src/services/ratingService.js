@@ -57,6 +57,8 @@ export async function getUserRatingForRecipe(recipeId) {
     if (response.ok) {
         const jsonResponse = await response.json();
         return jsonResponse.rating;
+    } else if (response.status === 404) {
+        return null;
     } else {
         throw new Error(`Impossible de récupérer la note de l'utilisateur pour la recette ${recipeId}`);
     }
