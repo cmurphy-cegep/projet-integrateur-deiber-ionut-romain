@@ -1,35 +1,52 @@
-/*
+function loginUser(browser, username, password, callback) {
+    browser
+        .waitForElementVisible('form', 5000) // Ensure the form is visible before interacting
+        .setValue('input#username', username)
+        .setValue('input#password', password)
+        .click('button.connection-button')
+        .pause(3000) // Increase pause to ensure the error message has time to appear
+        .elements('css selector', '#app > div > form > div.error-message', function(result) {
+            if (result.value.length > 0) {
+                callback(true);
+            } else {
+                callback(false);
+            }
+        });
+}
+function signUpUser(browser, username, password, fullName) {
+    browser
+        .navigateTo('http://localhost:5173/register')
+        .waitForElementVisible('#app > div > form', 5000) // Increase wait time for the form to be visible
+        .setValue('input#username', username)
+        .setValue('input#password', password)
+        .setValue('input#confirmPassword', password)
+        .setValue('input#fullName', fullName)
+        .click('#app > div > form > button')
+        .waitForElementVisible('button.connection-button', 5000); // Increase wait time for the button to be visible
+}
+
+function verifyWelcomeMessage(browser, fullName) {
+    browser
+        .waitForElementVisible('div.connexion > div > div:nth-child(1)', 5000)
+        .assert.textContains('div.connexion > div > div:nth-child(1)', `Bienvenue, ${fullName}`)
+        .assert.textContains('div.connexion > div > div:nth-child(2) > a', 'Déconnexion');
+}
 describe('Add comment', function() {
     before(function (browser) {
         browser
             .navigateTo('http://localhost:5173/login')
-            .waitForElementVisible('form', 1000) // Wait for the form to be visible
-            .setValue('input#username', 'don_corleone')
-            .setValue('input#password', '12345')
-            .click('button.connection-button')
-            .waitForElementVisible('div.connexion > div > div:nth-child(1)', 1000, function(result) {
-                if (result.value) {
-                    browser
-                        .assert.textContains('div.connexion > div > div:nth-child(1)', 'Bienvenue, Vito Andolini Corleone')
-                        .assert.textContains('div.connexion > div > div:nth-child(2) > a', 'Déconnexion');
-                } else {
-                    browser
-                        .navigateTo('http://localhost:5173/signup')
-                        .waitForElementVisible('#app > div > form', 1000) // Wait for the form to be visible
-                        .setValue('input#username', 'don_corleone')
-                        .setValue('input#password', '12345')
-                        .setValue('input#confirmPassword', '12345')
-                        .setValue('input#fullName', 'Vito Andolini Corleone')
-                        .click('#app > div > form > button')
-                        .waitForElementVisible('button.connection-button', 1000)
-                        .setValue('input#username', 'don_corleone')
-                        .setValue('input#password', '12345')
-                        .click('button.connection-button')
-                        .waitForElementVisible('div.connexion > div > div:nth-child(1)', 1000)
-                        .assert.textContains('div.connexion > div > div:nth-child(1)', 'Bienvenue, Vito Andolini Corleone')
-                        .assert.textContains('div.connexion > div > div:nth-child(2) > a', 'Déconnexion');
-                }
-            });
+        loginUser(browser, 'don_corleone', '12345', function(errorVisible) {
+            if (errorVisible) {
+                // Error message is present, navigate to signup
+                signUpUser(browser, 'don_corleone', '12345', 'Vito Andolini Corleone');
+                loginUser(browser, 'don_corleone', '12345', function() {
+                    verifyWelcomeMessage(browser, 'Vito Andolini Corleone');
+                });
+            } else {
+                // Error message is not present, verify welcome message
+                verifyWelcomeMessage(browser, 'Vito Andolini Corleone');
+            }
+        });
     });
     it('adds a comment to the recipe', function(browser) {
         browser
@@ -47,4 +64,4 @@ describe('Add comment', function() {
     after(function (browser) {
         browser.end();
     });
-});*/
+});

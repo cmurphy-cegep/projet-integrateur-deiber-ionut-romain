@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "nightwatch --config ./config/nightwatch.conf.cjs",
+    "test": "nightwatch",
     "eslint": "eslint ./src --config ./config/eslint.config.js"
   },
   "dependencies": {
