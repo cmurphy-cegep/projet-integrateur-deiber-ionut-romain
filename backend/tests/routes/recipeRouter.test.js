@@ -638,20 +638,6 @@ describe('Test recipes routes', () => {
 			expect(response.body).toEqual(mockRating);
 		});
 
-		it('throws error with code 404 if user rating not found for this recipe', async () => {
-			const expectedMessageError = `Aucune note correspondante pour l'utilisateur userId et la recette recipeId`;
-
-			mockRecipeServices.getRecipeById.mockResolvedValue(true);
-			mockRecipeServices.getUserRatingForRecipe.mockResolvedValue(undefined);
-
-			const response = await request(app)
-				.get('/recipes/recipeId/ratings/user-rating')
-				.auth('userId', 'topsecret')
-				.expect(404)
-
-			expect(response.body.message).toEqual(expectedMessageError);
-		});
-
 		it('should return code 500 if query fails', async () => {
 			mockRecipeServices.getRecipeById.mockRejectedValue(new Error('Database query failed'));
 

@@ -224,8 +224,6 @@ router.get('/:id/ratings/user-rating',
 			const result = await RecipeServices.getUserRatingForRecipe(recipeId, userId);
 			if (result) {
 				res.json(result);
-			} else {
-				return next(new HttpError(404, `Aucune note correspondante pour l'utilisateur ${userId} et la recette ${recipeId}`));
 			}
 		} catch (err) {
 			next(err);
