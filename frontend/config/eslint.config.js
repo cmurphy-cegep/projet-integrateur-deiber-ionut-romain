@@ -14,7 +14,6 @@ export default [
 	{
 		files: ["src/**/*.{js,mjs,cjs,vue}"],
 		rules: {
-			"max-lines": "error",
 			"no-var": "error",
 			"eqeqeq": "error",
 			"no-shadow": "error",
