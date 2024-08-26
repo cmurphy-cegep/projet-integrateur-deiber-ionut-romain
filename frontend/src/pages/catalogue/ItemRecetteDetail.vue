@@ -1,7 +1,7 @@
 <template>
 	<LoadingSpinner :error="loadError" :loading="loading" />
 	<div v-if="recipe && !loading && !loadError" class="recipe">
-		<button v-if="session.user && session.user.isAdmin" type="button"
+		<button v-if="session.user && session.user.isAdmin" type="button" class="button-admin"
 			@click="$router.push({ path: `/admin/ajout-edition-item-recette/${recipe.id}` })">Éditer
 		</button>
 		<div class="recipe-row">
@@ -169,5 +169,16 @@ export default {
 	margin-bottom: 5px;
 	font-size: 2em;
 	padding: 10px;
+}
+
+.button-admin {
+	background-color: #4E9F3D;
+	padding: 20px;
+	cursor: pointer;
+	margin: 10px;
+	border: none;
+	border-radius: 10px;
+	font-weight: bold;
+	font-size: 1.2em;
 }
 </style>
