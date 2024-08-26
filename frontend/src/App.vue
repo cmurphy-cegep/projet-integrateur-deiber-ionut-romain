@@ -29,4 +29,9 @@ export default {
 html {
 	font-family: sans-serif;
 }
+
+h2 {
+	font-size: 2rem;
+	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
 </style>

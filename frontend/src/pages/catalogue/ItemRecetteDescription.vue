@@ -1,10 +1,12 @@
 <template>
 	<div class="recipe">
 		<img v-bind:src="imageSrc" />
-		<div class="recipe-name">
-			<Router-link :to="recipeDetailUrl">{{ name }}</Router-link>
+		<div class="recipe-info">
+			<div class="recipe-name">
+				<Router-link :to="recipeDetailUrl">{{ name }}</Router-link>
+			</div>
+			<div class="recipe-description">{{ description }}</div>
 		</div>
-		<div class="recipe-description">{{ description }}</div>
 	</div>
 </template>
 
@@ -31,32 +33,49 @@ export default {
 
 <style scoped>
 .recipe {
-	border: 1px solid black;
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(150px, 0fr));
-	width: auto;
-	grid-template-rows: auto;
-	grid-template-areas:
-		"recipe_img recipe_name recipe_name recipe_name"
-		"recipe_img recipe_description recipe_description recipe_description"
-		"recipe_img recipe_description recipe_description recipe_description";
-	padding: 20px;
+	position: relative;
+	max-width: 450px;
+	border-radius: 8px;
+	overflow: hidden;
+	background: #1E5128;
 }
 
 .recipe img {
-	grid-area: recipe_img;
-	width: 120px;
-	height: 150px;
+	width: 100%;
+	height: auto;
+	display: block;
+}
+
+.recipe-info {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	box-sizing: border-box;
+	background-color: rgba(25, 26, 25, 0.97);
+	min-height: 200px;
+	padding: 20px;
 }
 
 .recipe-name {
-	grid-area: recipe_name;
-	font-weight: bold;
 	font-size: 1.2em;
+	margin: 0;
+	text-align: center;
+	padding: 10px;
+}
+
+.recipe-name a {
+	text-decoration: none;
+	font-weight: bold;
+	color: #D8E9A8;
+}
+
+.recipe-name a:hover {
+	color: #fff;
 }
 
 .recipe-description {
-	grid-area: recipe_description;
+	font-size: 1em;
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 4;
@@ -66,5 +85,7 @@ export default {
 	height: calc(1.2em * 4);
 	line-height: 1.2em;
 	text-align: justify;
+	margin: 10px;
+	color: #fff;
 }
 </style>
