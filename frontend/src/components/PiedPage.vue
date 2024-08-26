@@ -6,7 +6,6 @@
 
 <style scoped>
 footer {
-	border: 1px solid black;
 	padding: 20px;
 	text-align: center;
 }
