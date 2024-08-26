@@ -10,7 +10,7 @@
 			</div>
 			<div class="container-description">
 				<div class="recipe-name">{{ recipe.name }}</div>
-				<div class="recipe-description">{{ recipe.description }}</div>
+				<div class="recipe-description" v-html="formattedDescription"></div>
 				<div class="recipe-Appreciations">
 					<AppreciationsRecette :recipeId="recipe.id" />
 				</div>
@@ -95,6 +95,11 @@ export default {
 			}
 			return num.toString().replace(/(\.\d*[1-9])0+$|\.0*$/, '$1');
 		},
+	},
+	computed: {
+		formattedDescription() {
+			return this.recipe.description.replace(/\n/g, '<br>');
+		}
 	},
 	mounted() {
 		this.refreshRecipe(this.id);
