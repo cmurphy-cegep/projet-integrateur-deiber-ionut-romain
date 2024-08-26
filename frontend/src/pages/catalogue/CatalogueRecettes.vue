@@ -42,7 +42,6 @@ export default {
 
 <style scoped>
 .container {
-	border: 1px solid black;
 	padding: 20px;
 }
 
