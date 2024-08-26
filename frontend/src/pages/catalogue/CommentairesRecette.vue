@@ -70,12 +70,32 @@ export default {
 </script>
 
 <style scoped>
-.recipe-comments, .recipe-add-comment {
+.recipe-comments,
+.recipe-add-comment {
 	flex: 1;
-	border: 1px solid black;
 	padding: 20px;
 	height: 300px;
 	overflow: auto;
+	background-color: #183D3D;
+	color: #fff;
+}
+
+.recipe-comments h3,
+.recipe-add-comment {
+	padding-bottom: 20px;
+	font-size: 1.5em;
+}
+
+.comment {
+	padding: 5px;
+}
+
+.comment p {
+	margin-left: 20px;
+}
+
+.comment :first-child {
+	margin-left: 0px;
 }
 
 .recipe-add-comment textarea {
