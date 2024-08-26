@@ -186,7 +186,7 @@ VALUES ('Mon pixar préféré !', '2024-08-10 14:30:00', 'ratatouille', 'josblea
 
 INSERT INTO rating (rating, recipe_id, user_account_id)
 VALUES (5, 'ratatouille', 'tomcruise'),
-       (0, 'poutine_au_tofu_a_la_plaque_sauce_aux_poivrons', 'josbleau'),
+       (1, 'poutine_au_tofu_a_la_plaque_sauce_aux_poivrons', 'josbleau'),
        (3, 'poutine_au_tofu_a_la_plaque_sauce_aux_poivrons', 'tomcruise'),
        (4, 'burger_saumon_sauce_barbecue_poivrons_grilles', 'josbleau'),
        (4, 'saumon_teriyaki_au_four_a_pizza', 'josbleau');
