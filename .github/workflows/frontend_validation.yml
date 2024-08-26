@@ -23,7 +23,7 @@ jobs:
         run: npm install
 
       - name: Security audit
-        working-directory: ./backend
+        working-directory: ./frontend
         run: npm run audit
 
       - name: Run eslint
