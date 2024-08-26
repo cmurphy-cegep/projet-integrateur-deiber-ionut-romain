@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "nightwatch --config ./config/nightwatch.conf.cjs",
-    "eslint": "eslint ./src --config ./config/eslint.config.js"
+    "eslint": "eslint ./src --config ./config/eslint.config.js",
+    "audit": "better-npm-audit audit --production"
   },
   "dependencies": {
     "vue": "^3.4.29",
@@ -17,6 +18,7 @@
   "devDependencies": {
     "@eslint/js": "^9.9.0",
     "@vitejs/plugin-vue": "^5.0.5",
+    "better-npm-audit": "^3.8.3",
     "eslint": "^9.9.0",
     "eslint-plugin-vue": "^9.27.0",
     "globals": "^15.9.0",

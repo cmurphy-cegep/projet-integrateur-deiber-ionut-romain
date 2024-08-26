@@ -22,9 +22,9 @@ jobs:
         working-directory: ./frontend
         run: npm install
 
-      - name: Fix vulnerabilities
-        working-directory: ./frontend
-        run: npm audit fix
+      - name: Security audit
+        working-directory: ./backend
+        run: npm run audit
 
       - name: Run eslint
         working-directory: ./frontend
