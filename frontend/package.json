@@ -7,8 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "nightwatch",
-    "eslint": "eslint ./src --config ./config/eslint.config.js"
+    "test": "nightwatch --config ./config/nightwatch.conf.cjs",
+    "eslint": "eslint ./src --config ./config/eslint.config.js",
+    "audit": "better-npm-audit audit --production"
   },
   "dependencies": {
     "vue": "^3.4.29",
