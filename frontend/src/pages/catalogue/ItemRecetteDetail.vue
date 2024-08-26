@@ -1,24 +1,30 @@
 <template>
-	<LoadingSpinner :error="loadError" :loading="loading"/>
+	<LoadingSpinner :error="loadError" :loading="loading" />
 	<div v-if="recipe && !loading && !loadError" class="recipe">
-		<div class="recipe-name">{{ recipe.name }}</div>
-		<button v-if="session.user && session.user.isAdmin" type="button"
-				@click="$router.push({ path: `/admin/ajout-edition-item-recette/${recipe.id}` })">Éditer
+		<button v-if="session.user && session.user.isAdmin" type="button" class="button-admin"
+			@click="$router.push({ path: `/admin/ajout-edition-item-recette/${recipe.id}` })">Éditer
 		</button>
 		<div class="recipe-row">
 			<div class="recipe-image-container">
-				<img :src="imageSrc" alt="Recipe Image" class="recipe-image"/>
+				<img :src="imageSrc" alt="Recipe Image" class="recipe-image" />
 			</div>
-			<div class="recipe-description">{{ recipe.description }}</div>
-		</div>
-		<div class="recipe-row">
-			<div v-if="recipe.preparation_time" class="recipe-preparation-time">Preparation <br> {{
-					recipe.preparation_time
-				}} minutes
+			<div class="container-description">
+				<div class="recipe-name">{{ recipe.name }}</div>
+				<div class="recipe-description" v-html="formattedDescription"></div>
+				<div class="recipe-Appreciations">
+					<AppreciationsRecette :recipeId="recipe.id" />
+				</div>
+				<div class="container-preparation">
+					<div v-if="recipe.preparation_time" class="recipe-preparation-time">Preparation <br> {{
+						recipe.preparation_time
+					}} minutes
+					</div>
+					<div v-if="recipe.cooking_time" class="recipe-cooking-time">Cuisson <br>{{ recipe.cooking_time }}
+						minutes
+					</div>
+					<div v-if="recipe.servings" class="recipe-servings">Portion(s) <br>{{ recipe.servings }}</div>
+				</div>
 			</div>
-			<div v-if="recipe.cooking_time" class="recipe-cooking-time">Cuisson <br>{{ recipe.cooking_time }} minutes
-			</div>
-			<div v-if="recipe.servings" class="recipe-servings">Portion(s) <br>{{ recipe.servings }}</div>
 		</div>
 		<div class="recipe-row">
 			<div class="recipe-ingredients">
@@ -37,24 +43,21 @@
 			</div>
 		</div>
 		<div class="recipe-row">
-			<AppreciationsRecette :recipeId="recipe.id"/>
-		</div>
-		<div class="recipe-row">
-			<CommentairesRecette :recipeId="recipe.id"/>
+			<CommentairesRecette :recipeId="recipe.id" />
 		</div>
 	</div>
 </template>
 
 <script>
-import {fetchRecipe} from '../../services/recipeService.js';
-import {addApiPrefixToPath} from '../../api_utils';
+import { fetchRecipe } from '../../services/recipeService.js';
+import { addApiPrefixToPath } from '../../api_utils';
 import AppreciationsRecette from "./AppreciationsRecette.vue";
 import CommentairesRecette from './CommentairesRecette.vue';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
 import session from '../../session';
 
 export default {
-	components: {AppreciationsRecette, CommentairesRecette, LoadingSpinner},
+	components: { AppreciationsRecette, CommentairesRecette, LoadingSpinner },
 	props: {
 		id: String,
 		image: String
@@ -93,6 +96,11 @@ export default {
 			return num.toString().replace(/(\.\d*[1-9])0+$|\.0*$/, '$1');
 		},
 	},
+	computed: {
+		formattedDescription() {
+			return this.recipe.description.replace(/\n/g, '<br>');
+		}
+	},
 	mounted() {
 		this.refreshRecipe(this.id);
 	}
@@ -100,51 +108,77 @@ export default {
 </script>
 
 <style scoped>
-.recipe-name {
-	text-align: center;
-	font-size: 2em;
-	margin-bottom: 20px;
-	font-weight: bold;
-}
-
 .recipe-row {
 	display: flex;
 	justify-content: space-between;
 	margin-bottom: 10px;
-	border: 1px solid black;
-	padding: 20px;
+	padding: 0px;
 }
 
-.recipe-image-container {
-	flex: 0 0 60%;
-	padding-top: 30%;
-	position: relative;
-}
-
-.recipe-image {
-	position: absolute;
-	top: 0;
-	left: 0;
+.container-description {
+	display: grid;
+	place-items: center;
+	padding: 5em 7em 0;
+	gap: 10px;
 	width: 100%;
-	height: 100%;
-	object-fit: cover;
+}
+
+.recipe-name {
+	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+	font-size: 4em;
+	font-weight: bold;
 }
 
 .recipe-description {
-	flex: 1;
-	margin-left: 20px;
+	font-size: 1.2em;
+}
+
+.container-preparation {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+	font-size: 1em;
+	font-weight: bold;
+	background-color: #183D3D;
+	color: #fff;
+	padding: 20px;
+	align-self: end;
+}
+
+.recipe-Appreciations {
+	font-size: 1.5em;
+	justify-self: end;
 }
 
 .recipe-ingredients,
 .recipe-steps {
 	flex: 1;
-	border: 1px solid black;
-	padding: 20px;
+	padding: 4em;
+}
+
+.recipe-ingredients ul li,
+.recipe-steps ol li {
+	margin: 20px;
+	padding-left: 20px;
+	font-size: 1.2em;
 }
 
 .recipe-ingredients-title,
 .recipe-steps-title {
 	font-weight: bold;
 	margin-bottom: 5px;
+	font-size: 2em;
+	padding: 10px;
+}
+
+.button-admin {
+	background-color: #4E9F3D;
+	padding: 20px;
+	cursor: pointer;
+	margin: 10px;
+	border: none;
+	border-radius: 10px;
+	font-weight: bold;
+	font-size: 1.2em;
 }
 </style>

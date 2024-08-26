@@ -1,10 +1,10 @@
 <template>
 	<div class="container">
 		<h2>Les Recettes</h2>
-		<LoadingSpinner :error="loadError" :loading="loading"/>
+		<LoadingSpinner :error="loadError" :loading="loading" />
 		<div v-if="!loading" id="recipe-list">
 			<ItemRecetteDescription v-for="recipe in recipes" :id="recipe.id" :key="recipe.id"
-									:description="recipe.description" :image="recipe.image" :name="recipe.name"/>
+				:description="recipe.description" :image="recipe.image" :name="recipe.name" />
 		</div>
 	</div>
 </template>
@@ -12,7 +12,7 @@
 <script>
 import ItemRecetteDescription from './ItemRecetteDescription.vue';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
-import {fetchRecipes} from '../../services/recipeService.js';
+import { fetchRecipes } from '../../services/recipeService.js';
 
 export default {
 	components: {
@@ -42,7 +42,6 @@ export default {
 
 <style scoped>
 .container {
-	border: 1px solid black;
 	padding: 20px;
 }
 
@@ -55,7 +54,7 @@ export default {
 	width: 90%;
 	margin: 0 auto;
 	padding: 20px;
-	grid-template-columns: repeat(2, 1fr);
+	grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
 	grid-gap: 20px;
 }
 </style>
