@@ -1,10 +1,8 @@
+import { login } from './tools_tests.js';
 describe('Edit comment', function () {
 	before(function (browser) {
+		login(browser, 'admin', 'topsecret');
 		browser
-			.navigateTo('http://localhost:5173/login')
-			.setValue('input#username', 'admin')
-			.setValue('input#password', 'topsecret')
-			.click('button.connection-button')
 			.click('#recipe-list > div:nth-child(1) > div.recipe-name > a')
 			.waitForElementVisible('#app > div > button', 1000)
 			.click('#app > div > button')

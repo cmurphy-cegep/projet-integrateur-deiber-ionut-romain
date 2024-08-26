@@ -1,10 +1,9 @@
+import {login} from "./tools_tests.js";
+
 describe('Add comment', function () {
 	before(function (browser) {
+		login(browser, 'josbleau', '12345');
 		browser
-			.navigateTo('http://localhost:5173/login')
-			.setValue('input#username', 'josbleau')
-			.setValue('input#password', '12345')
-			.click('#app > div > form > button')
 			.waitForElementVisible('#app > header > div > div.connexion > div > div:nth-child(1)', 5000);
 	});
 	it('add a comment to the recipe and after that the comment should be displayed', function (browser) {
