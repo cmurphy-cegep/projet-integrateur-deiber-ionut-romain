@@ -55,7 +55,6 @@ export default {
 	width: 90%;
 	margin: 0 auto;
 	padding: 20px;
-	/* grid-template-columns: repeat(3, 1fr); */
 	grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
 	grid-gap: 20px;
 }

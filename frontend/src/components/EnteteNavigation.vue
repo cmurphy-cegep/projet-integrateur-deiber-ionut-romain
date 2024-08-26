@@ -76,7 +76,7 @@ export default {
 
 .navigation {
 	grid-area: container_nav;
-	background-color: #1E5128;
+	background-color: #183D3D;
 }
 
 .nav_router {
