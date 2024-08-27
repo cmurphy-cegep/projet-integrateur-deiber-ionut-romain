@@ -17,7 +17,7 @@ describe('Add comment', function () {
 			.waitForElementVisible('#app > div > div:nth-child(3) > div.recipe-add-comment > form', 1000)
 			.setValue('#app > div > div:nth-child(3) > div.recipe-add-comment > form > textarea', comment)
 			.click('#app > div > div:nth-child(3) > div.recipe-add-comment > form > button')
-			.assert.textContains('#app > div > div:nth-child(3) > div.recipe-comments > div:nth-child(2) > p:nth-child(2)', expectedComment);
+			.assert.textContains('#app > div > div:nth-child(3) > div.recipe-comments > div:last-child > p:nth-child(2)', expectedComment);
 	});
 	after(function (browser) {
 		browser.end();
