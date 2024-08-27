@@ -130,7 +130,7 @@ class RecipeQueries {
              FROM comment c
                       JOIN user_account u ON u.user_account_id = c.user_account_id
              WHERE recipe_id = $1
-             ORDER BY publication_date DESC`,
+             ORDER BY publication_date`,
 			[recipeId]
 		);
 		return result.rows;
