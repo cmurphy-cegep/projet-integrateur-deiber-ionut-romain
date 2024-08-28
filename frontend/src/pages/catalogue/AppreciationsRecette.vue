@@ -5,7 +5,7 @@
 		</div>
 		<div v-if="session.user">
 			<span v-if="userRating">Votre appréciation: {{ userRating }} <span v-html="generateStars(userRating)"></span></span>
-			<button @click="showRatingForm = !showRatingForm">{{ showRatingForm ? 'Annuler' : userRating ? 'Modifiez votre appréciation' : 'Ajouter votre appréciation' }}</button>
+			<button @click="showRatingForm = !showRatingForm">{{ showRatingForm ? 'Annuler' : userRating ? 'Modifier votre appréciation' : 'Ajouter votre appréciation' }}</button>
 			<form v-if="showRatingForm" @submit.prevent="submitRating">
 				<label for="rating">Votre note:</label>
 				<div class="star-rating">
