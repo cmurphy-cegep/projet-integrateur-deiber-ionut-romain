@@ -25,15 +25,12 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Deploy backend to Vercel
-        # run: curl -X POST https://api.vercel.com/v1/integrations/deploy/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
         run: |
-          echo "Déploiement en cours"
-          echo "curl -X POST https://api.vercel.com/v1/integrations/deploy/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-          echo "Déploiement effectué. (À faire)"
+          echo "curl -X POST https://api.vercel.com/v1/integrations/deploy/prj_g0ehkF5dpb7xoaZ4ZbtzzmvBk2Xd/BTRD4kq7xk"
 
       - name: Deploy frontend to Vercel
-        # run: curl -X POST https://api.vercel.com/v1/integrations/deploy/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
         run: |
-          echo "Déploiement en cours"
-          echo "curl -X POST https://api.vercel.com/v1/integrations/deploy/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-          echo "Déploiement effectué. (À faire)"
+          echo "curl -X POST https://api.vercel.com/v1/integrations/deploy/prj_zNmNyfdqrPcxWUoN2ARzwSKfiYLo/qrF1UgWsFh"
+
+      - name: Lien site web
+        run: echo "https://projet-integrateur-deiber-ionut-romain.vercel.app"
