@@ -20,7 +20,7 @@
 					<div><a href="" @click.prevent="session.disconnect()">Déconnexion</a></div>
 				</div>
 				<div v-else>
-					<router-link to="/login" class="button_connecter">Se connecter</router-link>
+					<router-link class="button_connecter" to="/login">Se connecter</router-link>
 				</div>
 			</div>
 		</div>
@@ -30,12 +30,13 @@
 
 <script>
 import session from '../session';
+import logo from '../assets/logo.png';
 
 export default {
 	data: function () {
 		return {
 			session: session,
-			logoUrl: '../../public/logo.png'
+			logoUrl: logo
 		};
 	}
 }
